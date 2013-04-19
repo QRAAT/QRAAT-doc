@@ -6,6 +6,7 @@
 \usepackage{graphics}
 \usepackage{sidecap}
 \usepackage{wrapfig}
+\usepackage[toc,page]{appendix}
 
 \usepackage{hyperref}
 \usepackage{parskip}
@@ -60,7 +61,7 @@ required at a minimum.\footnote{One solution we tried was the net6501-70 from So
 ships with a single 1.6 Ghz Atom core. The backend software was installed on top of the OpenWRT operating 
 system, a stripped-down version of GNU/Linux meant for embedded systems. The Soekris board failed to 
 process the radio signal at line-rate with the system running full-bore.}
-\begin{wrapfigure}{r}{0.5\textwidth}
+\begin{wrapfigure}{h}{0.5\textwidth}
   \vspace{-10pt}
   \begin{center}
     \includegraphics[scale=0.24]{pictures/power_rmg_computer.JPG}
@@ -95,41 +96,145 @@ not only allows us to input the proper power, but provides an array of features
 uesful for our deployment of QRAAT. The EPIW104P can switch a 12 V DC relay instead of
 POE, and the ethernet ports can be used as a dumb switch. In addition, its http-based 
 interface can be used to monitor the input voltage and power consumption. Our nominal 
-hardware configuration with the PingBrother powerswitch and fit-PC3 is as follows: 
+hardware specification with the PingBrother powerswitch and fit-PC3 is as follows: 
 
 \begin{description}
-  \item[\quad Network.] The network router and field computer are plugged into the 
+  \item[\quad Network] The network router and field computer are plugged into the 
     powerswitch's ethernet switch. The powerswitch and computer are assigned static
     IP addresses in the subnet of the router. Static addresses are necessary because 
     the QRAAT server must know how to reach the site; this information is not 
     distributed when the node comes into the network. (See software overview section 
     for details.) 
     
-  \item[\quad Power.] The field computer's power is attached to the powerswitch's 
+  \item[\quad Power] The field computer's power is attached to the powerswitch's 
     first relay on NC ("normally closed"). If power goes down and is then made 
     availalbe, the field computer will be powered automatically. The RMG receiver is
     attached to the second relay on NO ("normally opened") so that it won't get power 
     automatically. 
     
+  \item[\quad Receiver] The receiver has a two ports: one, a straight-through serial 
+    port for communication with the receiver's PIC interface, and two, a standard USB
+    2.0 port for data transfer from the USRP. The fit-PC3 doesn't have a straight-through
+    serial interface, but an off-the-shelf a serial $\rightarrow$ USB converter is 
+    sufficient. The PIC uses a 9600,8n1 baud-rate/parity-bit scheme.  
 \end{description}
  
-
 \subsection{Software}
+We begin this section with an eagle eye view of the QRAAT dataflow. Each transmitter emits 
+a periodic pulse on a specific radio frequency, e.g. 164.599 Mhz. The pulse is received and
+amplifed on four channels, then converted to a digital signal by the RMG receiver.
+The software-defined radio filters the signal and inputs it into a pulse detector. When the 
+pulse detector is triggered, the signal region surrounding the pulse on all four channels
+is dumped to file. This kind of record is created for each pulse and each transmitter
+that the SDR is conifgured to listen to. These files are produced and store in memory locally
+on site; when the server requests them, they are tranferred over the network and removed from
+the field computer. 
 
-TODO 
+The backend software package is comprised of two elements: one, the software defined radio 
+module, and two, a system for managing QRAAT's resources and collecting data. We now describe 
+these in turn. This section refers to the software repository published on Github at 
+\href{http://github.com/QRAAT/QRAAT/}{\tt github.com/QRAAT}.
+
+\subsubsection{RMG module}
+The SDR pulse detector is implemented with a mixture of C++ and Python on top of 
+GNU Radio.\footnote{\href{http://gnuradio.org/redmine/}{\tt gnuradio.org}.} 
+In GNU Radio terms, the module is made up of a radio signal processing block with a suite 
+of high-level applications that run it. The transmitters that the RMG module listen for
+are specified by a file called \texttt{tx.csv}. (See Appendix A for file format.) When 
+the software starts, a signal filter and peak detector is instantiated for each 
+frequency passed by \texttt{tx.csv}, up to 32. The pulse data files are stored in a 
+directory structure that reflects the time and date it was created. For example: 
+\begin{verbatim}
+  /tmp/ramdisk/det_files/2013/03/22/15/20/03439743.det
+\end{verbatim}
+The file name gives the second it was created with millisecond precision, i.e. 
+\texttt{SSUUUUUU.det}.
+
+\subsubsection{Dataflow}
+Each QRAAT node has a state associated with it: \textit{down}---computer should shutdown,
+\textit{up}---computer should be on, but the RMG receiver should be off and not listening 
+for transmitters, or \textit{active}---the RMG receiver should be on and pulse detector should
+be running. The state is specified by a file on the server called \texttt{sitelist.csv}.
+(See Appendix A for file format.) Along with the state, the site list specifies the 
+configuration information of each site. The parameters are:
+\begin{enumerate}
+  \item \textit{Name} - of the site, 
+  \item \textit{CompIP} - hostname or IP address of the remote computer, 
+  \item \textit{PowerIP} - hostname or IP address of the network addressible power source,
+  \item \textit{CompOutlet} - outlet number of the computer, 
+  \item \textit{RxOutlet} - outlet number of the RMG receiver module, 
+  \item \textit{PowerType} - power source type, e.g. Netbooter, PingBrother, or WebPowerSwitch, and finally
+  \item \textit{State}.
+\end{enumerate}
+
+When a site's configuration information needs to be updated or the user wishes to change 
+its state, the parameters \textit{(PowerIP, RxOutlet, PowerType, State)} are transmitted to the
+site computer as a configuration file called \texttt{site.csv}. 
+
+\textbf{Node}. Although the node's \textit{goal} state is specified by the server, the server
+cannot directly coerce its state; only the node can power on its RMG receiver and start the RMG
+module or power itself down. We've designed it this way so that the nodes can function independently
+of the server in case of network failure. In addition to controlling its own state, the node 
+implements monitoring and error recovery by checking its state periodically. If the pulse detector
+crashes for any reason, the process is controlled by a monitor script that cycles the recevier's 
+power and attempts to restart the module. If the process crashes a certain number of time before 
+the system successfully reaches \textit{active}, the node gives up. Each time the site's state is 
+checked or transitioned, the \textit{real} state, which we'll call \textit{site status}, is 
+reported to a file called \texttt{status.log}. 
+
+\textbf{Server}. There are three essential tasks that the server implements: one, pole the 
+sites for status information, two, update the sites' configuration and goal state, and three,
+download and store pulse data. When a site is poled, the server collects network and site status. 
+If the site is reachable, then the server reads the last line of \texttt{status.log}. Site status
+is reported as \textit{(net\_status, site\_status)}. After a site is udpated (the \texttt{site.csv} 
+file is transmitted to the field computer), the server instructs it to check its own state. 
+   
+Finally, when the server fetches the pulse data files, it downloads all available files excluding 
+those that were recently produced (within the last minute). This is to avoid attempting to download 
+a file that is currrently being written. Note that this design critically depends on real time clock
+synchronization, which we achieve through the \texttt{ntpd}\footnote{Network time protocol (NTP).}
+daemon. 
 
 \subsection{Usage}
+Dataflow and site management for the prototype system is implemented with shell scripts. The
+user-level programs are \texttt{rmg} and \texttt{rmg-node}. When invoked, they immediately 
+set up environment variables specifying data, configuration files, etc. 
 
-TODO
+\textbf{rmg}.\footnote{The name "rmg" is admittedly a bit of a misnomer, since it 
+has nothing to do with "Rapid Multichannel Goniometers". It just stuck, I suppose.} This program
+takes as arguments a task and a list of sites. Before performing the task, the status of the site
+is checked. Possible tasks are the following: 
+\begin{description}
+  \item[\quad \textbf{status} ---] Just report site's current status as \textit{(net\_status, site\_status)}.
+  \item[\quad \textbf{update} ---] Passive site update. Copy new \texttt{site.csv}. 
+  \item[\quad \textbf{up/down/start/stop} ---] New goal state. Update \texttt{sitelist.csv} and copy new 
+    \texttt{site.csv}. Tell the site to check its new state. 
+  \item[\quad \textbf{on/off} ---] Switch the field computer's power supply. 
+  \item[\quad \textbf{updatetx --file \textit{FILE}} ---] Update site's \texttt{tx.csv}.
+  \item[\quad \textbf{cyclerx} ---] Cycle the site's receiver power. This is needed sometimes. 
+  \item[\quad \textbf{fetch} ---] Download \texttt{.det} files.  
+\end{description}
+
+\textbf{rmg-node}. Control a site's state locally. This program is used for monitoring 
+and is invoked by \texttt{rmg} when the user changes the site's goal state. It can also be safely
+called directly. As its argument, it accepts either a new state or \texttt{check}: 
+\begin{description}
+  \item[\quad \textbf{active} ---] Check that RMG receiver is on and the SDR is running. 
+  \item[\quad \textbf{up} ---] Check that the RMG receiver is off and the SDR is stopped. 
+  \item[\quad \textbf{down --delay \textit{M}} ---] Set a timer to shutdown. If $M$ minutes have 
+    elapsed the next time state is checked, then poweroff the computer. 
+  \item[\quad \textbf{check} ---] Look up goal state in \texttt{site.csv} and transition
+    as described above. 
+\end{description}
 
 
 
-\section{System specifications}
+\section{Dataflow specifications [REDO]}
 QRAAT has two main components: the remote field computers, which implement the initial 
 signal detection, and the server, which collects data from the field computers for 
 higher order processing. Here we outline the structure of these two components. 
 
-\subsection{RMG Remote}
+\subsection{QRAAT node}
 Each field computer is configured to run the software defined radio. We are using 
 fanless, low-power machines manufactured by fit-PC.\footnote{For details, visit
 \href{http://www.fit-pc.com}{\tt fit-pc.com}.} The fit-PC3 has a dual-core, 32-bit AMD
@@ -157,7 +262,7 @@ the server's password.
 
 The transmitter file is /home/rmg/tx.csv. 
 
-\subsection{RMG Server}
+\subsection{QRAAT server}
 Along with managing the field computers and collecting data, the server is responsible for
 callibration and triangulation. The \texttt{rmg} script allows us to power the computer and 
 RMG module on and off, cycle the RMG module power, start and stop the software defined radio, 
@@ -189,9 +294,6 @@ RMG remotes store the public part of the key and the server the private part.
 
 We keep a copy of the software repository on the server from which the remote ocmputers pull; the server 
 copy pulls directly from github. 
-
-
-
 
 \section{Configuration instructions}
 
@@ -310,7 +412,7 @@ $ dd if=qraat.img of=/dev/sda bs=4K
 \end{verbatim}
 
 Both of these commands should take about 30 minutes. Once you've finished copying the image, you'll 
-want to edit the hostname and network interfaces as described in the preceeding section.  
+want to edit the hostname and network interfaces as described in the preceeding section. 
 
 
 
@@ -353,5 +455,60 @@ The second part is to make sure the git repository is pointed to the right place
   url = christopher@10.253.1.55:work/QRAAT # change me!
 \end{verbatim}
 Change this to the correct user and directory and you're set!
+
+\pagebreak
+\begin{appendices}
+
+\section{Configuration files}
+QRAAT metadata is stored in CSV-style files. Elements are seperated by commas and 
+spaces are not allowed. The first row specifies the column parameters. 
+
+\textbf{tx.csv}. The transmitter file maps a name to frequency and also passes 
+parameters to the pulse detector. These are described in detail in the backend
+software manual. 
+\begin{verbatim}
+use,name,freq,type,pulse_width,rise_trigger,fall_trigger,filter_alpha
+yes,robin1,164.42,Pulse,20,3.0,2.0,0.01
+yes,robin1_heart,164.65,Continuous,,,,
+no,noisy,164.5,Pulse,20,1.010,1.005,0.01
+yes,test_tx,165.99,Pulse,25,3.00,1.15,.001
+yes,mouse1,164.3,Pulse,25,3.0,2.0,0.01
+\end{verbatim}
+
+\textbf{sitelist.csv}. The site list stores information about the nodes that is needed
+by the server. 
+\begin{verbatim}
+name,comp_ip,power_ip,comp_outlet,rx_outlet,powertype,state
+site0,10.0.0.55,10.0.0.56,1,2,webpowerswitch,down
+site1,localhost,,,,,up
+site2,10.2.1.55,10.2.1.56,1,2,netbooter,up
+site10,10.10.1.55,10.10.1.56,2,3,pingbrother,up
+site13,10.13.1.55,10.13.1.56,1,2,pingbrother,active
+site20,10.20.1.55,10.20.1.56,1,2,pingbrother,down
+site21,10.20.1.55,10.21.1.56,1,2,pingbrother,active
+\end{verbatim}
+
+\textbf{site.csv}. Each field computer has a file that specifies its own configuration. 
+This is necessary so that it can switch the receiver's power, as well as check its own 
+goal state. 
+\begin{verbatim}
+power_ip,rx_outlet,powertype,state
+10.13.1.56,2,pingbrother,active
+\end{verbatim}
+
+\textbf{status.log}. Each field computer keeps a log as a time stamp
+in seconds since the epoch and its status when checked. 
+\begin{verbatim}
+timestamp,site_status
+1366307941,up
+1366312980,active
+1366312996,up
+1366313467,down(300)
+1366313445,shutdown
+1366323435,down(300)
+1366323974,up
+\end{verbatim}
+
+\end{appendices}
 
 \end{document}
