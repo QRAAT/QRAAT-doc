@@ -1,9 +1,11 @@
-\documentclass[letter]{article}
+  \documentclass[letter]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[margin=1in]{geometry}
 \usepackage{tikz}
 \usepackage{ulem}
 \usepackage{graphics}
+\usepackage{sidecap}
+\usepackage{wrapfig}
 
 \usepackage{hyperref}
 \usepackage{parskip}
@@ -41,14 +43,76 @@ stuff for the prototype system. Build this doc with pdflatex (sudo apt-get insta
 \end{abstract}
 
 \tableofcontents
+\pagebreak
 
 \section{Overview} 
 \subsection{Hardware}
 
-TODO
+Along with the antenna, preamps, RMG receiver, batteries, and solar panels, a node 
+in the QRAAT network consists of a router for the network, a field computer, and a network-addressible 
+powerswitch. The last two are pictured together with the receiver in Figure 1. 
 
+\textbf{Field computer}. To run the software defined radio remotely, we require a headless system
+that can run on limited power and be able to withstand high temperatures. The ideal system would 
+have no moving parts---fanless, solid-state memory instead of a harddrive---and draw only a few 
+amps. However, in our tests with various solutions, we've concluded that a dual-core CPU is 
+required at a minimum.\footnote{One solution we tried was the net6501-70 from Soekris Engineering, which
+ships with a single 1.6 Ghz Atom core. The backend software was installed on top of the OpenWRT operating 
+system, a stripped-down version of GNU/Linux meant for embedded systems. The Soekris board failed to 
+process the radio signal at line-rate with the system running full-bore.}
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \vspace{-10pt}
+  \begin{center}
+    \includegraphics[scale=0.24]{pictures/power_rmg_computer.JPG}
+  \end{center}
+  \caption{Network powerswitch, field computer, and RMG receiver.}
+  \vspace{-10pt}
+\end{wrapfigure}
+There are a number of products available that strike a comprimise between power consumption 
+and processing power. The fit-PC3 suites our needs well.\footnote{For details, visit
+\href{http://www.fit-pc.com}{\tt fit-pc.com}.} The fit-PC3 has a dual-core, 32-bit AMD
+processor, 2 GBs of ram, and a 8GB solid state drive. Although it is designed to run 
+any general-purpose desktop operating system, the fit-PC3 can easily be configured to 
+run as a headless system. It even comes with a mini-rs232 console interface, although 
+we don't make use of this in QRAAT. With our software running full-bore, the fit-PC3 
+draws 46 W. 
 
-\includegraphics[scale=0.42]{pictures/power_rmg_computer.JPG}
+\textbf{Powerswitch}. A network-addressible powerswitch makes it possible to turn the 
+equipment on and off remotely and, with certain products, monitor power levels. We've 
+deemed this feature necessary for two reasons: one, an intermittent issue related to 
+the RMG receiver's USRP\footnote{For details, visit
+\href{https://www.ettus.com}{\tt ettus.com}.} can be fixed by 
+cycling the power; two, we need to be able to save energy. The powerswitch, field computer,
+and network router are connected via an ethernet switch. The field computer and RMG 
+receiver are powered by the powerswitch. The computer's power is switched over the 
+network by the server, and the the computer is set up to switch the receiver. 
+
+Again, there are various solutions for network power switching. Most of these input 
+mains power, i.e. 120 V AC, and require us to mofidy them to work with our solar 
+panels (12 V DC). The PingBrother EPIW104P\footnote{For details, visit
+\href{http://www.pingbrother.com}{\tt pingbrother.com}.} passive POE ethernet switch 
+not only allows us to input the proper power, but provides an array of features 
+uesful for our deployment of QRAAT. The EPIW104P can switch a 12 V DC relay instead of
+POE, and the ethernet ports can be used as a dumb switch. In addition, its http-based 
+interface can be used to monitor the input voltage and power consumption. Our nominal 
+hardware configuration with the PingBrother powerswitch and fit-PC3 is as follows: 
+
+\begin{description}
+  \item[\quad Network.] The network router and field computer are plugged into the 
+    powerswitch's ethernet switch. The powerswitch and computer are assigned static
+    IP addresses in the subnet of the router. Static addresses are necessary because 
+    the QRAAT server must know how to reach the site; this information is not 
+    distributed when the node comes into the network. (See software overview section 
+    for details.) 
+    
+  \item[\quad Power.] The field computer's power is attached to the powerswitch's 
+    first relay on NC ("normally closed"). If power goes down and is then made 
+    availalbe, the field computer will be powered automatically. The RMG receiver is
+    attached to the second relay on NO ("normally opened") so that it won't get power 
+    automatically. 
+    
+\end{description}
+ 
 
 \subsection{Software}
 
