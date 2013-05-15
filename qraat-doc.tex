@@ -160,15 +160,15 @@ for transmitters, or \textit{active}---the RMG receiver should be on and pulse d
 be running. The state is specified by a file on the server called \texttt{sitelist.csv}.
 (See Appendix A for file format.) Along with the state, the site list specifies the 
 configuration information of each site. The parameters are:
-\begin{enumerate}
-  \item \textit{Name} - of the site, 
-  \item \textit{CompIP} - hostname or IP address of the remote computer, 
-  \item \textit{PowerIP} - hostname or IP address of the network addressible power source,
-  \item \textit{CompOutlet} - outlet number of the computer, 
-  \item \textit{RxOutlet} - outlet number of the RMG receiver module, 
-  \item \textit{PowerType} - power source type, e.g. Netbooter, PingBrother, or WebPowerSwitch, and finally
-  \item \textit{State} $\in$ \{\textit{up}, \textit{down}, \textit{active}\}.
-\end{enumerate}
+\begin{description}
+  \item \textit{Name} --- of the site, 
+  \item \textit{CompIP} --- hostname or IP address of the remote computer, 
+  \item \textit{PowerIP} --- hostname or IP address of the network addressible power source,
+  \item \textit{CompOutlet} --- outlet number of the computer, 
+  \item \textit{RxOutlet} --- outlet number of the RMG receiver module, 
+  \item \textit{PowerType} --- power source type, e.g. Netbooter, PingBrother, or WebPowerSwitch, and finally
+  \item \textit{State} $\in$ \{\textit{Up}, \textit{Down}, \textit{Active}\}.
+\end{description}
 
 When a site's configuration information needs to be updated or the user wishes to change 
 its state, the parameters (\textit{PowerIP, RxOutlet, PowerType, State}) are transmitted to the
@@ -279,9 +279,54 @@ suggested values.)
   
 \end{description}
 
+
+\subsection{Server} 
+Along with managing the field computers and collecting data, the server is responsible for
+callibration and triangulation. The \texttt{rmg} script allows us to power the computer and 
+RMG module on and off, cycle the RMG module power, start and stop the software defined radio, 
+update the field computer's transmitter file, and collect \texttt{.det}s. The server has a 
+file called \texttt{sitelist.csv} that stores various parameters as well as the state of 
+nodes. Because the server doesn't direclty control the state of the nodes, this is referred to
+as the goal state. The following parameters are specified per site: 
+\begin{description}
+  \item \textit{Name} --- of the site, 
+  \item \textit{CompIP} --- hostname or IP address of the remote computer, 
+  \item \textit{PowerIP} --- hostname or IP address of the network addressible power source,
+  \item \textit{CompOutlet} --- outlet number of the computer, 
+  \item \textit{RxOutlet} --- outlet number of the RMG receiver module, 
+  \item \textit{PowerType} --- power source type, e.g. Netbooter, PingBrother, or WebPowerSwitch, and finally
+  \item \textit{State} $\in$ \{\textit{Up}, \textit{Down}, \textit{Active}\}.
+\end{description}
+Possible states are: 
+\begin{description}
+  \item \textit{Up} --- Site computer is on, the RMG receiver is off, and the pulse detector 
+    is not running. 
+  \item \textit{Down} --- The RMG receiver is off and either the computer is off or there 
+    is a timer set on site to shutdown. The server does not directly run the shutdown the 
+    on the node. 
+  \item \textit{Active} --- Site computer is on, the RMG receiver is on, and the pulse detector is
+    running. 
+\end{description}
+
+When a site's goal state is to be updated, the parameters (\textit{PowerIP, RxOutlet, PowerType, State})
+are transmitted to the site computer in a file called \path{site.csv}. The site computer then immediately
+verifies that it's actual state is \textit{State}. 
+
+When collecting status information, the server reports two components per site. \textit{NetworkStatus}
+is either \textit{ErrorPower}, meaning the site's powerswitch couldn't be reached over the network, 
+or \textit{ErrorComputer}, meaning the powerswitch could be reached, but not the computer. If the 
+computer is reachable, then \textit{NetworkStatus} = \textit{Ok}. \textit{SiteStatus} is the actual 
+state reported by the site computer. If it can't be reached, then \textit{Unknown} is reported. 
+
+To determine reachibility of the computer, the powerswitch is queried for the power status of the 
+computer. If it's off, then it's assumed to be reachable if it were turned on; Hence, (\textit{Ok}, \textit{Down})
+is reported. If it's on and the computer is unreachable, then (\textit{ErrorComp}, \textit{Unknown}) is reported. 
+Note that this status will be reported even when the field computer shuts itself down cleanly; though the system
+is halted, its input is still powered and must be switched. 
+
 \subsection{Nodes}
 Field computers run the pulse detection software on GNU Radio. As such, QRAAT must be
-run on GNU/Linux. The next section details the installation and configuration of our
+run on GNU/Linux. Section 3 details the installation and configuration of our
 software on Ubuntu Server 12.04 LTS. In addition to GNU Radio, each site must run 
 an ssh daemon, git, and ntpdate. Each node has a user called \textit{rmg} who runs SDR. 
 
@@ -294,31 +339,30 @@ locally in memory. To accomplish this, a temporary file system, called a ramdisk
 is created in \path{/etc/fstab}. The location must be the parent directory 
 of \path{RMG_SITE_DET_DIR}. 
 
-\subsubsection{State} TODO
-Distinction between goal and real state
+Though the \textit{goal} state is specified by the server, nodes control their own state 
+and report their actual state. The site computer periodically checks the goal state given in 
+\path{site.csv} and verifies the computer is in that state, looks up the last reported 
+status, and reports change in the real state to \path{status.log}. \textit{SiteStatus} is 
+reported as one of the following: 
 
-\begin{enumerate}
-  \item \textit{Up} - d
-  \item \textit{Down(N)} - d
-  \item \textit{Shutdown} - d
-  \item \textit{Active} - d
-  \item \textit{ErrorRetry(i)} - d
-  \item \textit{ErrorFatal} - d
-\end{enumerate}
-
-
-\subsection{Server} TODO
-Along with managing the field computers and collecting data, the server is responsible for
-callibration and triangulation. The \texttt{rmg} script allows us to power the computer and 
-RMG module on and off, cycle the RMG module power, start and stop the software defined radio, 
-update the field computer's transmitter file, and collect \texttt{.det}s. The server has a 
-file called \texttt{sitelist.csv} that stores various parameters and the status of the RMG remotes.
-
-Status
-
-Update
-
-
+\begin{description}
+  \item \textit{Up} --- Site computer is on, the RMG receiver is off, and the pulse detector 
+    is not running. 
+  \item \textit{Down(N)} --- Site computer is on, the RMG receiver is off, the pulse detector is 
+    on, and a timer is set to power down the system. If $N$ seconds have elapsed since the 
+    site last checked its status, then \textit{Shutdown} is reported and computer powers itself
+    off. 
+  \item \textit{Shutdown} --- If this is the last reported status and the goal state is \textit{Down}, 
+    then the shutdown timer is reset. 
+  \item \textit{Active} --- Site computer is on, the RMG receiver is on, and the pulse detector is
+    running 
+  \item \textit{ErrorRetry(i)} --- The pulse detector crashed and is restarting. The software 
+    may crash for various reasons, sometimes resulting from upstream code such as GNU Radio
+    or the driver for the USRP. Before retrying, the RMG receiver's power is cycled. $i$ gives
+    the retry count. 
+  \item \textit{ErrorFatal} --- $i$ = \path{RETRY_MAX}, do not attempt to recover. The computer
+    remains on, but the RMG receiver is off. 
+\end{description}
 
 
 \subsection{Programs}
@@ -396,19 +440,26 @@ program verifies the real state is consistent with the goal state specified in
 verifies that configuration information is available. If no \path{status.log} exists, 
 one is created. Next, current status information is collected, including the RMG 
 receiver power state, the process I.D. of the pulse detector (if it's running), and
-the timestamp of the last-known status. 
-
-TODO shutdown explanation. 
+the timestamp of the last-known status. We set up each node with the cron task 
+\path{rmg-node check}. This is how the site periodically checks its status. 
 
 \subsubsection{\texttt{rmg}}
 \begin{verbatim}
     usage: rmg task [-options] {site list}/all 
 \end{verbatim}
 (Detailed usage in overview section.) \path{rmg} is used to monitor and manipulate the 
-state of QRAAT. 
+state of QRAAT. Before \textit{task} is performed, the status of the site is checked, 
+i.e. (\textit{NetworkStatus, SiteStatus}) is reported. If the task is only to report 
+the status, a warning is emitted if the site's goal state is not consistent with the
+server-specified goal state. When an update or state-transition is to be performed, 
+the server transmits the relevant \path{site.csv} to the field computer and runs 
+\path{rmg-node check}. 
 
-
-
+\path{rmg} is also capable of some other miscellaneous taks that don't cause state 
+checks. These are \path{cyclerx}, which cycles the RMG receiver's power directly 
+from the server, and \path{updatetx}, which transmits a new transmitter file to 
+the site. Note that this doesn't cause a running pulse detector to reload its 
+tranmitter configuration. 
 
 
 \section{Configuration instructions}
@@ -659,7 +710,19 @@ Test setup (on RMG Server):\\
 \texttt{\$ rmg fetch site}$N$\\
 
 \section{Suggested environment variable values}
-TODO
+QRAAT's variables are defined in \path{rmg_env} and are included at the start of both 
+\path{rmg} and \path{rmg-node}. The default values for these variables are given as 
+follows: 
+
+\begin{verbatim}
+RMG_SITE_METADATA_DIR="/home/rmg"
+RMG_SITE_DET_DIR="/tmp/ramdisk/det_files"
+RETRY_MAX=3
+RMG_SERVER_SSH_KEYFILE="$HOME/.ssh/rmg_rsa"
+RMG_SERVER_DET_DIR="$HOME/det_files"
+RMG_SERVER_EST_DIR="$HOME/est_files"
+RMG_SERVER_METADATA_DIR="$HOME"
+\end{verbatim}
 
 \end{appendices}
 
