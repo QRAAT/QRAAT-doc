@@ -60,7 +60,9 @@ amps. However, in our tests with various solutions, we've concluded that a dual-
 required at a minimum.\footnote{One solution we tried was the net6501-70 from Soekris Engineering, which
 ships with a single 1.6 Ghz Atom core. The backend software was installed on top of the OpenWRT operating 
 system, a stripped-down version of GNU/Linux meant for embedded systems. The Soekris board failed to 
-process the radio signal at line-rate with the system running full-bore.}
+process the radio signal at line-rate with the system running full-bore.} The parallelisation that 
+can be achieved with multiple cores drastically improves the performance of the signal processing
+software. There are a number of products available that strike a comprimise between power consumption 
 \begin{wrapfigure}{h}{0.5\textwidth}
   \vspace{-10pt}
   \begin{center}
@@ -69,27 +71,25 @@ process the radio signal at line-rate with the system running full-bore.}
   \caption{Network powerswitch, field computer, and RMG receiver.}
   \vspace{-10pt}
 \end{wrapfigure}
-There are a number of products available that strike a comprimise between power consumption 
 and processing power. The fit-PC3 suites our needs well.\footnote{For details, visit
 \href{http://www.fit-pc.com}{\tt fit-pc.com}.} The fit-PC3 has a dual-core, 32-bit AMD
 processor, 2 GBs of ram, and a 8GB solid state drive. Although it is designed to run 
-any general-purpose desktop operating system, the fit-PC3 can easily be configured to 
+any general-purpose desktop OS, the fit-PC3 can easily be configured to 
 run as a headless system. It even comes with a mini-rs232 console interface, though 
-we don't make use of this in QRAAT. With our software running full-bore, the fit-PC3 
+we don't make use of this in QRAAT at the moment. With our software running full-bore, the fit-PC3 
 draws 46 W. 
 
 \textbf{Powerswitch}. The powerswitch, field computer,
-and network router are connected via an ethernet switch. The field computer and RMG 
-receiver are powered by the powerswitch. The computer's power is switched over the 
-network by the server, and the the computer is set up to switch the receiver. 
-A network-addressible powerswitch makes it possible to turn the equipment on and off
-remotely and, with certain products, monitor power levels. We've deemed this feature 
-necessary for two reasons: one, an intermittent issue related to 
-the RMG receiver's USRP\footnote{For details, visit
-\href{https://www.ettus.com}{\tt ettus.com}.} can be fixed by 
-cycling the power. Remote switching makes fixing this problem much more convenient; 
-two, turning off equipment, in particular the   
-RMG receiver, when it's not needed is the best way to save battery power.
+and network router are connected with an ethernet switch. The field computer and RMG 
+receiver are powered by a network-addressible powerswitch. The computer's power is 
+switched over the network by the server, and the the computer is set up to switch the receiver. 
+This makes it possible to turn the equipment on and off remotely and, with certain products, 
+monitor power levels. We've deemed this feature necessary for two reasons: one, an intermittent 
+issue related to the RMG receiver's USRP\footnote{For details, visit
+\href{https://www.ettus.com}{\tt ettus.com}.} can be fixed by cycling the power. Remote 
+switching makes fixing this problem much more convenient; two, turning off equipment, 
+in particular the RMG receiver, when it's not needed is the best way to save battery power.
+(Note that it is possible to deploy QRAAT without such switches.) 
 
 Again, there are various solutions for network power switching. Most of these input 
 mains power, i.e. 120 V AC, and require us to mofidy them to work with our solar 
@@ -97,7 +97,7 @@ panels (12 V DC). The PingBrother EPIW104P\footnote{For details, visit
 \href{http://www.pingbrother.com}{\tt pingbrother.com}.} passive POE ethernet switch 
 not only allows us to input the proper power, but provides an array of features 
 uesful for our deployment of QRAAT. The EPIW104P can switch a 12 V DC relay instead of
-POE, and the ethernet ports can be used as a dumb switch. In addition, its http-based 
+POE, and the ethernet ports can be used as a switch. In addition, its http-based 
 interface can be used to monitor the input voltage and power consumption. Our nominal 
 hardware specification with the PingBrother powerswitch and fit-PC3 is as follows: 
 
@@ -129,7 +129,7 @@ amplifed on four channels, then converted to a digital signal by the RMG receive
 The software-defined radio filters the signal and inputs it into a pulse detector. When the 
 pulse detector is triggered, the signal region surrounding the pulse on all four channels
 is dumped to file. This kind of record is created for each pulse and each transmitter
-that the SDR is conifgured to listen to. These files are produced and store in memory locally
+that the SDR is conifgured to listen to. These files are produced and stored in memory 
 on site; when the server requests them, they are tranferred over the network and deleted from
 the field computer. 
 
@@ -163,9 +163,9 @@ configuration information of each site. The parameters are:
 \begin{description}
   \item \textit{Name} --- of the site, 
   \item \textit{CompIP} --- hostname or IP address of the remote computer, 
-  \item \textit{PowerIP} --- hostname or IP address of the network addressible power source,
+  \item \textit{PowerIP} --- hostname or IP address of the network addressible power switch,
   \item \textit{CompOutlet} --- outlet number of the computer, 
-  \item \textit{RxOutlet} --- outlet number of the RMG receiver module, 
+  \item \textit{RxOutlet} --- outlet number of the RMG receiver, 
   \item \textit{PowerType} --- power source type, e.g. Netbooter, PingBrother, or WebPowerSwitch, and finally
   \item \textit{State} $\in$ \{\textit{Up}, \textit{Down}, \textit{Active}\}.
 \end{description}
@@ -182,21 +182,21 @@ implements monitoring and error recovery by checking its state periodically. If 
 crashes for any reason, the process is controlled by a monitor script that cycles the recevier's 
 power and attempts to restart the module. If the process crashes a certain number of time before 
 the system successfully reaches \textit{active}, the node gives up. Each time the site's state is 
-checked or transitioned, the \textit{real} state, which we'll call \textit{site status}, is 
+checked or transitioned, the \textit{real} state, which we'll call \textit{SiteStatus}, is 
 reported to a file called \texttt{status.log}. 
 
 \textbf{Server}. There are three essential tasks that the server implements: one, pole the 
 sites for status information, two, update the sites' configuration and goal state, and three,
 download and store pulse data. When a site is poled, the server collects network and site status. 
 If the site is reachable, then the server reads the last line of \texttt{status.log}. Site status
-is reported as (\textit{NetworkStatus, SiteStatus}). After a site is udpated (the \texttt{site.csv} 
-file is transmitted to the field computer), the server instructs it to check its own state. 
+is reported as (\textit{NetworkStatus, SiteStatus}). After a site is updated (the \texttt{site.csv} 
+file is transmitted to the field computer), the server instructs it to check its state. 
    
 Finally, when the server fetches the pulse data files, it downloads all available files excluding 
 those that were recently produced (within the last minute). This is to avoid attempting to download 
-a file that is currrently being written. Note that this design critically depends on real time clock
-synchronization, which we achieve through the \texttt{ntpd}\footnote{Network time protocol (NTP).}
-daemon. 
+a file that is currrently being written by the RMG module. Note that this design critically depends 
+on real time clock synchronization, which we achieve through the \texttt{ntpd}\footnote{Network time 
+protocol (NTP).} daemon. 
 
 \subsection{Usage}
 In the QRAAT protoype system, dataflow and site management are implemented with shell scripts. The
@@ -204,9 +204,9 @@ user-level programs are \texttt{rmg} and \texttt{rmg-node}. When invoked, they i
 set up environment variables specifying data, configuration files, etc. 
 
 \textbf{rmg}.\footnote{The name "rmg" is admittedly a bit of a misnomer, since it 
-has nothing to do with "Rapid Multichannel Goniometers". It just stuck, I suppose.} This program
-takes as arguments a task and a list of sites. Before performing the task, the status of the site
-is checked. Possible tasks are the following: 
+has nothing to do with "Rapid Multichannel Goniometers". It just stuck, I suppose.} The server
+control program. \texttt{rmg} takes as arguments a task and a list of sites. Before performing 
+the task, the status of the site is checked. Possible tasks are the following: 
 \begin{description}
   \item[\quad \textbf{status} ---] Just report site's current status as (\textit{NetworkStatus, SiteStatus}).
   \item[\quad \textbf{update} ---] Passive site update. Copy new \texttt{site.csv}. 
@@ -228,7 +228,7 @@ called directly. As its argument, it accepts either a new state or \texttt{check
     exists (i.e., state is already down), the timeer has elapsed and no $M$ isn't specified, than 
     power off the computer. If a delay is specified, reset timer to $M$ minutes. 
   \item[\quad \textbf{check} ---] Look up goal state in \texttt{site.csv} and transition
-    as described above. 
+    as described. 
 \end{description}
 
 
@@ -263,7 +263,8 @@ suggested values.)
    each site. 
   
   \item[\quad \path{RETRY_MAX} ---] The maximum number of attempts to start the 
-   pulse detector before a fatal error state is reached. 
+   pulse detector before a fatal error state is reached. This value is needed 
+   by the site. 
    
   \item[\quad \path{RMG_SERVER_METADATA_DIR} ---] Location of metadata on the 
    server. Files included in this directory are \path{sitelist.csv} and transmitter
@@ -312,14 +313,14 @@ When a site's goal state is to be updated, the parameters (\textit{PowerIP, RxOu
 are transmitted to the site computer in a file called \path{site.csv}. The site computer then immediately
 verifies that it's actual state is \textit{State}. 
 
-When collecting status information, the server reports two components per site. \textit{NetworkStatus}
+Status is reported as the pair (\textit{NetworkStatus, SiteStatus}). \textit{NetworkStatus}
 is either \textit{ErrorPower}, meaning the site's powerswitch couldn't be reached over the network, 
 or \textit{ErrorComputer}, meaning the powerswitch could be reached, but not the computer. If the 
 computer is reachable, then \textit{NetworkStatus} = \textit{Ok}. \textit{SiteStatus} is the actual 
 state reported by the site computer. If it can't be reached, then \textit{Unknown} is reported. 
 
 To determine reachibility of the computer, the powerswitch is queried for the power status of the 
-computer. If it's off, then it's assumed to be reachable if it were turned on; Hence, (\textit{Ok}, \textit{Down})
+computer. If it's off, then it's assumed to be reachable if it were turned on; hence, (\textit{Ok}, \textit{Down})
 is reported. If it's on and the computer is unreachable, then (\textit{ErrorComp}, \textit{Unknown}) is reported. 
 Note that this status will be reported even when the field computer shuts itself down cleanly; though the system
 is halted, its input is still powered and must be switched. 
@@ -328,7 +329,7 @@ is halted, its input is still powered and must be switched.
 Field computers run the pulse detection software on GNU Radio. As such, QRAAT must be
 run on GNU/Linux. Section 3 details the installation and configuration of our
 software on Ubuntu Server 12.04 LTS. In addition to GNU Radio, each site must run 
-an ssh daemon, git, and ntpdate. Each node has a user called \textit{rmg} who runs SDR. 
+an ssh daemon, git, and ntpdate. Each node has a user called \textit{rmg} who runs the SDR. 
 
 RSA encryption is used over ssh for secure data transfer between nodes and server. The 
 public key is stored on the node in \path{/home/rmg/.ssh/authorized_keys} and the private key
@@ -339,8 +340,8 @@ locally in memory. To accomplish this, a temporary file system, called a ramdisk
 is created in \path{/etc/fstab}. The location must be the parent directory 
 of \path{RMG_SITE_DET_DIR}. 
 
-Though the \textit{goal} state is specified by the server, nodes control their own state 
-and report their actual state. The site computer periodically checks the goal state given in 
+Though the \textit{goal} state is specified by the server, nodes control and report their actual state 
+The site computer periodically checks the goal state given in 
 \path{site.csv} and verifies the computer is in that state, looks up the last reported 
 status, and reports change in the real state to \path{status.log}. \textit{SiteStatus} is 
 reported as one of the following: 
@@ -425,7 +426,7 @@ useful for the PingBrother system when a device is attached to NO instead of NC.
 run on nodes. It starts the pulse detector and waits for it to fail. Once it fails, 
 it cycles the power of the RMG receiver with \path{rmg_powerswitch} and retries up 
 to \path{RETRY_MAX} times. After each failure, the status is written to \path{status.log}
-with the retry count. After \path{RETRY_MAX} failures, \textit{ErrorFatal} is written and 
+with the retry count. After \path{RETRY_MAX} failures, \textit{ErrorFatal} is reproted and 
 the program closes. Because this script is normally called from a higher level
 program, \path{RETRY_MAX} is expected to be declared before runnning.
 
@@ -441,7 +442,7 @@ verifies that configuration information is available. If no \path{status.log} ex
 one is created. Next, current status information is collected, including the RMG 
 receiver power state, the process I.D. of the pulse detector (if it's running), and
 the timestamp of the last-known status. We set up each node with the cron task 
-\path{rmg-node check}. This is how the site periodically checks its status. 
+\texttt{rmg-node check}.
 
 \subsubsection{\texttt{rmg}}
 \begin{verbatim}
@@ -453,12 +454,12 @@ i.e. (\textit{NetworkStatus, SiteStatus}) is reported. If the task is only to re
 the status, a warning is emitted if the site's goal state is not consistent with the
 server-specified goal state. When an update or state-transition is to be performed, 
 the server transmits the relevant \path{site.csv} to the field computer and runs 
-\path{rmg-node check}. 
+\texttt{rmg-node check}. 
 
-\path{rmg} is also capable of some other miscellaneous taks that don't cause state 
+\path{rmg} is also capable of some other miscellaneous tasks that don't cause state 
 checks. These are \path{cyclerx}, which cycles the RMG receiver's power directly 
 from the server, and \path{updatetx}, which transmits a new transmitter file to 
-the site. Note that this doesn't cause a running pulse detector to reload its 
+the site. Note that \path{updatetx} doesn't cause a running pulse detector to reload its 
 tranmitter configuration. 
 
 
@@ -472,9 +473,9 @@ the image, we first installed a stock copy of Ubuntu Server 12.04 on a 7.5 GB pa
 their time not connected to the internet. After booting the system and updating, the first thing
 to do is install the following packages via apt-get: 
 \begin{enumerate}
-  \item \texttt{git-core} - clone our software repository from github,
-  \item \texttt{openssh-server} - each field site needs to run an ssh daemon,
-  \item \texttt{minicom} - serial interface to RMG receiver module, and
+  \item \texttt{git-core} - clone our software repository from github.
+  \item \texttt{openssh-server} - each field site needs to run an ssh daemon.
+  \item \texttt{minicom} - serial interface to RMG receiver module.
   \item \texttt{ntpdate} - remote computers will be clock synced to the server via \texttt{ntpd}. 
 \end{enumerate}
 
@@ -488,7 +489,7 @@ of the gnuradio build script written by Marcus Leech. Type
 \begin{verbatim}
 $ QRAAT/build-gnuradio -v all
 \end{verbatim}
-to start downloading and building. This may take a few hours; however, you'll only need to do this once. When the 
+to start downloading and building. This may take a few hours, but you'll only need to do this once. When the 
 build finishes, it will output a couple post-install tasks. Make sure you do these. Next, building
 and installing the QRAAT software is essentially the same procedure, though it will take less than 
 two minutes: 
@@ -520,15 +521,15 @@ Set \textit{Bps/Par/Bits} to \texttt{9600 8N1}. Lastly, set \textit{Hardware/Sof
 
 \subsubsection{Post-configuration} 
 
-We don't want the RMG remotes to save their pulse data locally to disk; the files will be stored
-locally in memory. For this reason, we need to set up a ramdisk to be created at start up. Add 
-the following line to the end of \texttt{/etc/fstab} (be careful!): 
+The SDR pulse detetcor can potentially produce a lot of files, and since they aren't needed 
+permanently down stream, we store them locally in memory. We create a temporary file system 
+in RAM in order to accomplish this. Add the following line to the end of \texttt{/etc/fstab} (be careful!): 
 \begin{verbatim}
 tmpfs   /tmp/ramdisk  tmpfs  nodev,nosuid,mode=1777,size=1024M   0   0
 \end{verbatim}
 1 GB is reasonable since the field computers have 2 GBs of ram. 
 
-If linux shutsdown uncleanly, e.g. the site loses power, the GRUB bootloader will wait for user 
+If linux shuts down uncleanly, e.g. the site loses power, the GRUB bootloader will wait for user 
 input before rebooting the operating system. This is bad for headless systems, so we need to 
 configure GRUB to timeout in this situation. Add the following to /etc/default/grub: 
 \begin{verbatim}
@@ -538,7 +539,7 @@ Then type \texttt{sudo update-grub}.
 
 Up until now, we've been using the field computer with a monitor, keyboard, and ethernet connection
 to the internet. The next thing we have to do is configure the network interface so that we can 
-access it over ssh without a head. In /etc/network/interfaces, comment out the default 
+access it over ssh without a head. In \path{/etc/network/interfaces}, comment out the default 
 ethernet interface and add a static IP address: 
 \begin{verbatim}
   # auto eth0
@@ -552,7 +553,7 @@ To connect to the computer directly through an ethernet cable, just setup a stat
 the host system in the same subnet. See the section on networking for details. 
 
 The next thing to do is change the system's hostname. This needs to be changed in two places:
-/etc/hostname and /etc/hosts. 
+\path{/etc/hostname} and \path{/etc/hosts}. 
 
 Lastly, since we will be managing the power of this system remotely, we want to be able to 
 shutdown and reboot the computer without typing in a sudo password. Type 
@@ -569,9 +570,9 @@ and add the following lines to the end of the sudoers file:
 \subsubsection{Creating an image}
 The preceeding configuration is time-consuming, though not difficult. For configuring many sites, 
 it's best to create an image from a fully configured system and copy this to other sites. The 
-simplest way to do this is with a Ubuntu live-USB. Plug a monitor, keyboard, and mouse into the 
+simplest way to do this is with an Ubuntu live-USB. Plug a monitor, keyboard, and mouse into the 
 FitPC and boot a live copy of Ubuntu on a thumbdrive. Grab a terminal and make sure the harddrive
-is unmounted. ("\texttt{mount | grep "sda"}. Verify that /dev/sda is indeed the 
+is unmounted. ("\texttt{mount | grep sda}"). Verify that /dev/sda is indeed the 
 harddrive.) Plug in an external harddrive or thumbdrive that can 
 fit the 8 GB file we're about to create. Change the directory to the external drive and run: 
 \begin{verbatim}
@@ -589,26 +590,7 @@ want to edit the hostname and network interfaces as described in the preceeding 
 
 
 \subsection{Networking}
-Here are the configuration steps that need to be taken as of this writing (27 March).
-
-\subsubsection{West campus prototype}
-We won't have networking for this implementation. As they are the ethernet interfaces of the RMG 
-remotes are configured with a static IP address 10.\texttt{<site\_no>}.1.55 and netmask 255.0.0.0. 
-To connect to it, the simplest thing to do is create an interface 
-in network manager. \textit{Network Manager} $\rightarrow$ \textit{Edit Connections...}, in the 
-\textit{Wired} tab, choose \textit{Add}. In \textit{IPv4 Settings}, choose \textit{Method = Manual}. 
-Add an address like 10.253.1.55 with netmask 255.0.0.0. You should be good to go.  
-
-In lue of networking, we're collecting the data on external harddrives at all three sites. We 
-can use udev to setup automounting, Create a new udev rule file, like /etc/udev/rules.d/
-90-hd-backup.rules and add the following lines:
-\begin{verbatim}
-ACTION=="add", SUBSYSTEMS=="scsi", KERNEL=="sd[a-h]1", RUN+="/bin/mount /dev/%k /media/backup"
-ACTION=="remove", SUBSYSTEMS=="scsi", KERNEL=="sd[b-h]1",RUN+="/bin/umount /dev/%k"
-\end{verbatim}
-
-
-\subsubsection{Quail Ridge}
+These instructions apply to our deployment at Quail Ridge. 
 The ethernet interface needs to be configured to use the Qurinet router as its gateway. 
 In /etc/network/interfaces, you'll find an interface that is commented out. 
 Uncomment this and comment out the old one. 
@@ -688,7 +670,7 @@ timestamp,site_status
 \section{Creating an encryption key}
 We use RSA encryption for communication between server and nodes for secure transmission
 as well as efficient SSH scripting, since RSA keys don't require a password. 
-Here's how we made a keys.
+Here's how we made a key.
 
 On the server:\\
 \texttt{\$ ssh-keygen -t rsa}\\
@@ -717,7 +699,7 @@ follows:
 \begin{verbatim}
 RMG_SITE_METADATA_DIR="/home/rmg"
 RMG_SITE_DET_DIR="/tmp/ramdisk/det_files"
-RETRY_MAX=3
+RETRY_MAX=10
 RMG_SERVER_SSH_KEYFILE="$HOME/.ssh/rmg_rsa"
 RMG_SERVER_DET_DIR="$HOME/det_files"
 RMG_SERVER_EST_DIR="$HOME/est_files"
