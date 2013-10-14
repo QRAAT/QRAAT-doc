@@ -1,0 +1,13 @@
+Setting up a sample database
+============================
+
+To set up the tables, make sure to create a DB called 'qraat'. Then do:
+$ mysql -u <user> -p < db_schema.sql
+
+Now, load the tables:
+$ tar -zxf db_sample.tgz
+$ mysql -u <user> -p --local-infile
+mysql> load data local infile 'sitelist.txt' into table qraat.sitelist ignore 1 lines;
+mysql> load data local infile 'txlist.txt' into table qraat.txlist ignore 1 lines;
+mysql> load data local infile 'est.txt' into table qraat.est ignore 1 lines;
+
