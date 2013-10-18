@@ -11,3 +11,4 @@ mysql> load data local infile 'sitelist.txt' into table qraat.sitelist ignore 1 
 mysql> load data local infile 'txlist.txt' into table qraat.txlist ignore 1 lines;
 mysql> load data local infile 'est.txt' into table qraat.est ignore 1 lines;
 
+

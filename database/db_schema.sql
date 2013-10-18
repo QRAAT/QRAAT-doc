@@ -122,3 +122,50 @@ CREATE TABLE IF NOT EXISTS qraat.timecheck (
   time_offset decimal(10,3) DEFAULT NULL, 
   PRIMARY KEY (ID) 
 ) ENGINE=MyISAM ;
+
+CREATE TABLE IF NOT EXISTS qraat.Calibration_Information (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Start_Timestamp` decimal(16,6) DEFAULT NULL,
+  `Stop_Timestamp` decimal(16,6) DEFAULT NULL,
+  `Description` varchar(1000) DEFAULT NULL,
+  `TxID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM ;
+
+CREATE TABLE IF NOT EXISTS qraat.GPS_Calibration_Data (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `Cal_InfoID` int(11) DEFAULT NULL,
+  `timestamp` int(11) DEFAULT NULL,
+  `latitude` decimal(10,6) DEFAULT NULL,
+  `longitutde` decimal(11,6) DEFAULT NULL,
+  `elevation` decimal(7,2) DEFAULT NULL,
+  `easting` decimal(9,2) DEFAULT NULL,
+  `northing` decimal(10,2) DEFAULT NULL,
+  `zone` char(3) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM ;
+
+CREATE TABLE IF NOT EXISTS qraat.Steering_Vectors (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `Cal_InfoID` int(11) DEFAULT NULL,
+  `SiteID` int(11) DEFAULT NULL,
+  `Bearing` decimal(5,2) DEFAULT NULL,
+  `sv1r` double DEFAULT NULL,
+  `sv1i` double DEFAULT NULL,
+  `sv2r` double DEFAULT NULL,
+  `sv2i` double DEFAULT NULL,
+  `sv3r` double DEFAULT NULL,
+  `sv3i` double DEFAULT NULL,
+  `sv4r` double DEFAULT NULL,
+  `sv4i` double DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM ;
+
+CREATE TABLE IF NOT EXISTS qraat.Position (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `txID` bigint(20) DEFAULT NULL,
+  `timestamp` decimal(16,6) DEFAULT NULL,
+  `easting` decimal(9,2) DEFAULT NULL,
+  `northing` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM ;
