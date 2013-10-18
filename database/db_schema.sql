@@ -145,6 +145,15 @@ CREATE TABLE IF NOT EXISTS qraat.GPS_Calibration_Data (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
+CREATE TABLE IF NOT EXISTS qraat.True_Position (
+  `estID` bigint(20) NOT NULL,
+  `Cal_InfoID` int(11) DEFAULT NULL,
+  `easting` decimal(9,2) DEFAULT NULL,
+  `northing` decimal(10,2) DEFAULT NULL,
+  `bearing` decimal(5,2) DEFAULT NULL,
+  PRIMARY KEY (`estID`)
+) ENGINE=MyISAM ; 
+
 CREATE TABLE IF NOT EXISTS qraat.Steering_Vectors (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `Cal_InfoID` int(11) DEFAULT NULL,
