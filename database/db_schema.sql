@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS qraat.GPS_Calibration_Data (
   `Cal_InfoID` int(11) DEFAULT NULL,
   `timestamp` int(11) DEFAULT NULL,
   `latitude` decimal(10,6) DEFAULT NULL,
-  `longitutde` decimal(11,6) DEFAULT NULL,
+  `longitude` decimal(11,6) DEFAULT NULL,
   `elevation` decimal(7,2) DEFAULT NULL,
   `easting` decimal(9,2) DEFAULT NULL,
   `northing` decimal(10,2) DEFAULT NULL,
