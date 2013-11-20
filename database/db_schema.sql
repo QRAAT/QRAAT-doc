@@ -97,7 +97,10 @@ CREATE TABLE IF NOT EXISTS qraat.est (
   timezone varchar(6) DEFAULT NULL, 
   txid bigint(20) DEFAULT NULL, 
   PRIMARY KEY (ID), 
-  KEY datetime (datetime) 
+  KEY datetime (datetime),
+  KEY timestamp (timestamp),
+  KEY txid (txid),
+  KEY frequency (frequency)
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.telemetry ( 
