@@ -1,4 +1,6 @@
--- run mysql with --local-infile. 
+-- Run like this: mysql -u writer -p --local-infile <db_load.sql.
+-- Make sure the text files containing the rows are in the current
+-- directory.
 
 LOAD DATA LOCAL INFILE 'sitelist.txt' INTO TABLE qraat.sitelist ignore 1 lines; 
 LOAD DATA LOCAL INFILE 'txlist.txt' INTO TABLE qraat.txlist ignore 1 lines; 
