@@ -182,3 +182,12 @@ CREATE TABLE IF NOT EXISTS qraat.Position (
   `northing` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
+
+CREATE TABLE IF NOT EXISTS qraat.provenance (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `obj_table` varchar(30) NOT NULL,
+  `obj_id` bigint(20) NOT NULL,
+  `dep_table` varchar(30) NOT NULL,
+  `dep_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM ;
