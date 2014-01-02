@@ -11,20 +11,6 @@ CREATE TABLE IF NOT EXISTS qraat.sitelist (
   PRIMARY KEY (ID) 
 ) ENGINE=MyISAM ;
 
--- Store site-specific state and configuration information. 
--- This will used functionally the way sitelist.csv is used. 
-CREATE TABLE IF NOT EXISTS qraat.siteconfig (
-  siteID int(11) NOT NULL,
-  comp_ip varchar(20), 
-  power_ip varchar(20), 
-  comp_outlet int(11),
-  rx_outlet int(11),
-  powertype enum('nil', 'pingbrother', 'webpowerswitch', 'netbooter'), 
-  state enum('down', 'up', 'active') NOT NULL, 
-  scheduler enum('auto', 'off') NOT NULL,
-  schedule_start int(11), -- time of day, HHMM
-  schedule_end int(11)    -- time of day, HHMM
-) ENGINE=MyISAM ; 
 
 CREATE TABLE IF NOT EXISTS qraat.txlist ( 
   ID int(11) NOT NULL AUTO_INCREMENT, 
