@@ -1,0 +1,195 @@
+\documentclass[letter]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2in]{geometry}
+\usepackage{tikz}
+\usepackage{ulem}
+\usepackage{graphics}
+\usepackage{sidecap}
+\usepackage{wrapfig}
+\usepackage[toc,page]{appendix}
+\usepackage[font={small}]{caption}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{cancel}
+
+\hypersetup{
+    colorlinks,%
+    citecolor=black,%
+    filecolor=black,%
+    linkcolor=black,%
+    urlcolor=black
+}
+
+\def\dashuline{\bgroup 
+  \ifdim\ULdepth=\maxdimen  % Set depth based on font, if not set already
+	  \settodepth\ULdepth{(j}\advance\ULdepth.4pt\fi
+  \markoverwith{\kern.15em
+	\vtop{\kern\ULdepth \hrule width .3em}%
+	\kern.15em}\ULon}
+
+\newcounter{foot}
+\setcounter{foot}{1}
+
+\setlength\parindent{2em}
+
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\trace}{tr}
+
+
+
+\author{Todd Borrowman, Christopher Patton}
+\date{\today}
+\title{QRAAT}
+
+
+
+
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Assorted topics on QRAAT. 
+\end{abstract}
+
+\tableofcontents
+\pagebreak
+
+
+
+\section{Position estimation} 
+
+  \subsection{Signal model}
+The signal is modeled as a complex vector of length $n$: 
+\begin{equation}
+  \mathbf{V} = T\mathbf{G}(\theta) + \mathbf{N}
+\end{equation}
+$T$ is the signal power, $\mathbf{G}(\theta)$ corresponds to the antenna pattern 
+with respect to the direction of arrival $\theta$\footnote{Also called the steering 
+vector of $\theta$.}, and $\mathbf{N}$ represents 
+the Gaussian-distributed signal noise. The probability of $\mathbf{V}$ given the
+direction of arrival is used to derive the direction finder:
+\begin{equation}
+  P(\mathbf{V} | \theta) = \frac{1}{\pi^n \det{R}} \exp{(-\mathbf{V}^HR^{-1}\mathbf{V})}
+\end{equation}
+where $R$ is the covariance matrix of $\mathbf{V}$. To derive this value, we first 
+notice that
+$$ E[\mathbf{V}] = E[T\mathbf{G}(\theta) + \mathbf{N}] = E[T\mathbf{G}(\theta)] + E[\mathbf{N}] = 0 + 0 $$
+since $\mathbf{V}$ has zero mean if $T$ is zero mean. 
+\begin{equation*}
+  \begin{aligned}
+    R &= E[ (\mathbf{V} - E[\mathbf{V}])(\mathbf{V} - E[\mathbf{V}])^H ] & \text{Def. of covariance.} \\
+      &= E[\mathbf{V}\mathbf{V}^H] & E[\mathbf{V}] = 0. \\ 
+      &= E[(T\mathbf{G}(\theta) + \mathbf{N})(T\mathbf{G}(\theta)+ \mathbf{N})^H] \\ 
+      &= E[TT^H\mathbf{G}(\theta)\mathbf{G}(\theta)^H] + E[\mathbf{N}\mathbf{N}^H] \\
+       & \qquad \qquad + E[T\mathbf{G}(\theta)\mathbf{N}^H] + E[T^H\mathbf{G}(\theta)^H\mathbf{N}] \\
+      &= E[TT^H]\mathbf{G}(\theta)\mathbf{G}(\theta)^H + E[\mathbf{N}\mathbf{N}^H] + 0 + 0
+  \end{aligned}
+\end{equation*}
+since $\mathbf{G}(\theta)$ is a deterministic function and $T$ and $\mathbf{N}$ are non-coherent. 
+We rewrite this equation with the following notation: 
+\begin{equation}
+    R = \sigma_T^2\mathbf{G}(\theta)\mathbf{G}(\theta)^H + \Sigma
+\end{equation}
+The signal power covariance is computed as $\sigma_T^2 = t - \trace{(\Sigma)}$, where 
+$t$ is equal to the power of $\mathbf{V}$. 
+
+
+
+  \subsection{Direction finders}
+The direction finder computes the most probable $\theta$ given the signal $\mathbf{V}$:
+$$ \argmax_\theta{P( \mathbf{V} | \theta )}$$
+The maximum likelihood estimator (MLE) simplifies this computation by taking the log-likelihood 
+of this distribution. 
+\begin{equation}
+  \begin{aligned}
+    \hat{\theta}_{m} &= \argmax_\theta{ \ln{P(\mathbf{V} | \theta)} } \\
+                 &= \argmax_\theta{ \ln{P(\mathbf{V} | \theta)} } \\
+                 &= \argmax_\theta{\big( -{\ln{\pi^n}} - \ln{(\det{R})} - 
+                      \mathbf{V}^HR^{-1}\mathbf{V} \big)} \\ 
+                 &= \argmin_\theta{\big( \ln{(\det{R})} + \mathbf{V}^HR^{-1}\mathbf{V} \big)} \\
+                 &\approx \argmin_\theta{\big( \mathbf{V}^H
+                    (\mathbf{G}(\theta)\mathbf{G}(\theta)^H)^{-1}
+                    \mathbf{V} \big)}
+  \end{aligned}
+\end{equation}
+Bartlett's estimator simplifies this computation even further. (\textbf{TODO} explanation 
+and references needed.)
+\begin{equation} \label{eq:bartlett}
+  \hat{\theta}_b = \argmax_\theta{\big( \mathbf{V}^H
+        \mathbf{G}(\theta)\mathbf{G}(\theta)^H\mathbf{V} \big)}
+\end{equation}
+
+  \subsection{Search space} 
+We now define the search space for position estimation algorithms in terms of Bartlett's 
+direction finder. Suppose we have a set of pulse signals $\mathcal{V}$ from multiple receiver 
+sites within a particular window of time. Let $P_1, P_2, \dots P_n$ be the coordinates of the 
+receivers and suppose we have a candidate position $P$ of the transmitter within the given 
+time window. Let $\theta_k$ be the bearing from $P$ to $P_k$ for $1 \le k \le n$. Finally, 
+we define the following function: 
+\begin{equation*}
+  f(\theta_k | \mathbf{V}) = 
+    \mathbf{V}^\mathbf{G}(\theta_k)\mathbf{G}(\theta_k)^H\mathbf{V} 
+  \qquad \text{for $\mathbf{V} \in \mathcal{V}$. (See (\ref{eq:bartlett}).)}
+\end{equation*}
+where $k$ is the source site of $\mathbf{V}$, i.e., the receiver where the pulse was recorded.
+We say that the log likelihood of $P$ being the true position of the target wihtin the time 
+window as the following quantity: 
+\begin{equation}
+  \mathcal{L}(P) = \sum_{\mathbf{V} \in \mathcal{V}}{f(\theta_k | \mathbf{V}}) 
+  \qquad \text{$k$ source of $\mathbf{V}$.}
+\end{equation}
+Thus, the goal of position estimation is to find a point $P$ with that maximizes this 
+function. 
+
+\pagebreak
+\begin{figure}
+  \vspace{-60pt}
+  \begin{center}
+    \includegraphics[scale=0.5]{figures/ll_space.png}
+  \end{center}
+  \caption{Distribution of $\mathcal{L}(P)$ over the Quail Ridge reserve. 
+   The "ray"-like artifacts correspond to regions where callibration data 
+   is sparse.}
+  \vspace{-10pt}
+\end{figure}
+
+
+\begin{appendices}
+
+\section{Database definitions}
+This appendix defines the various parameters in the QRAAT system in terms of the 
+database schema. 
+
+\subsection{Signal model} 
+Transmitter pulses are stored in the \texttt{est} table of the QRAAT database. This section 
+provides a mapping of the various parameters in the signal model to the schema. The complex 
+signal vector $\mathbf{V}$ is the eigenvalue decomposition of the sampled pulse.
+$$ \mathbf{V} \equiv 
+  \langle 
+    \texttt{ed}1\texttt{r} + i \cdot \texttt{ed}1\texttt{i}, \quad
+    \texttt{ed}2\texttt{r} + i \cdot \texttt{ed}2\texttt{i}, \quad \dots \quad
+    \texttt{ed}n\texttt{r} + i \cdot \texttt{ed}n\texttt{i}  
+  \rangle $$
+The noise covariance matrix is also stored in the \texttt{est} table. 
+$$ \Sigma_{x,y} \equiv \Big[ \texttt{nc}xy\texttt{r} + 
+                            i \cdot \texttt{nc}xy\texttt{i} \Big] $$
+$$ t \equiv \texttt{edsp}, \quad \sigma_T^2 = \texttt{edsp} - 
+                                 \texttt{trace(}\Sigma\texttt{)} $$ 
+
+The steering vectors $\mathbf{G}(\theta)$ are stored in the \texttt{Steering\_Vectors} table.
+Because these are simply derived from pulses interpolated with known GPS coordinates, we 
+store their eigenvalue decomposition just like the \texttt{est} records. 
+$$ \mathbf{G}(\theta) \equiv 
+  \langle 
+    \texttt{sv}1\texttt{r} + i \cdot \texttt{sv}1\texttt{i}, \quad
+    \texttt{sv}2\texttt{r} + i \cdot \texttt{sv}2\texttt{i}, \quad \dots \quad
+    \texttt{sv}n\texttt{r} + i \cdot \texttt{sv}n\texttt{i}  
+  \rangle $$
+where $\texttt{Steering\_Vectors.Bearing} = \theta$ and $\theta \in \{ 0, 1, 2, \dots 359 \}$.  
+\end{appendices}
+
+\end{document}
