@@ -102,12 +102,11 @@ $t$ is equal to the power of $\mathbf{V}$.
   \subsection{Direction finders}
 The direction finder computes the most probable $\theta$ given the signal $\mathbf{V}$:
 $$ \argmax_\theta{P( \mathbf{V} | \theta )}$$
-The maximum likelihood estimator (MLE) simplifies this computation by taking the log-likelihood 
-of this distribution. 
+The maximum likelihood estimator (MLE) simplifies this computation by taking the natural log 
+of the distribution.
 \begin{equation}
   \begin{aligned}
     \hat{\theta}_{m} &= \argmax_\theta{ \ln{P(\mathbf{V} | \theta)} } \\
-                 &= \argmax_\theta{ \ln{P(\mathbf{V} | \theta)} } \\
                  &= \argmax_\theta{\big( -{\ln{\pi^n}} - \ln{(\det{R})} - 
                       \mathbf{V}^HR^{-1}\mathbf{V} \big)} \\ 
                  &= \argmin_\theta{\big( \ln{(\det{R})} + \mathbf{V}^HR^{-1}\mathbf{V} \big)} \\
@@ -124,25 +123,25 @@ and references needed.)
 \end{equation}
 
   \subsection{Search space} 
-We now define the search space for position estimation algorithms in terms of Bartlett's 
-direction finder. Suppose we have a set of pulse signals $\mathcal{V}$ from multiple receiver 
+We now define the search space for position estimation algorithms in terms of the direction 
+finder $\hat{\theta}_b$. Suppose we have a set of pulse signals $\mathcal{V}$ from multiple receiver 
 sites within a particular window of time. Let $P_1, P_2, \dots P_n$ be the coordinates of the 
 receivers and suppose we have a candidate position $P$ of the transmitter within the given 
 time window. Let $\theta_k$ be the bearing from $P$ to $P_k$ for $1 \le k \le n$. Finally, 
 we define the following function: 
 \begin{equation*}
   f(\theta_k | \mathbf{V}) = 
-    \mathbf{V}^\mathbf{G}(\theta_k)\mathbf{G}(\theta_k)^H\mathbf{V} 
+    \mathbf{V}^H\mathbf{G}(\theta_k)\mathbf{G}(\theta_k)^H\mathbf{V} 
   \qquad \text{for $\mathbf{V} \in \mathcal{V}$. (See (\ref{eq:bartlett}).)}
 \end{equation*}
 where $k$ is the source site of $\mathbf{V}$, i.e., the receiver where the pulse was recorded.
 We say that the log likelihood of $P$ being the true position of the target wihtin the time 
-window as the following quantity: 
+window is the following quantity: 
 \begin{equation}
-  \mathcal{L}(P) = \sum_{\mathbf{V} \in \mathcal{V}}{f(\theta_k | \mathbf{V}}) 
+  F(P) = \sum_{\mathbf{V} \in \mathcal{V}}{f(\theta_k | \mathbf{V}}) 
   \qquad \text{$k$ source of $\mathbf{V}$.}
 \end{equation}
-Thus, the goal of position estimation is to find a point $P$ with that maximizes this 
+The goal of position estimation is to find a point $P$ that maximizes this 
 function. 
 
 \pagebreak
@@ -151,7 +150,7 @@ function.
   \begin{center}
     \includegraphics[scale=0.5]{figures/ll_space.png}
   \end{center}
-  \caption{Distribution of $\mathcal{L}(P)$ over the Quail Ridge reserve. 
+  \caption{Distribution of $F(P)$ over the Quail Ridge reserve. 
    The "ray"-like artifacts correspond to regions where callibration data 
    is sparse.}
   \vspace{-10pt}
