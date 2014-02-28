@@ -178,3 +178,8 @@ CREATE TABLE IF NOT EXISTS qraat.Position (
   `northing` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
+
+CREATE TABLE IF NOT EXISTS qraat.position_processing (
+  `last_processed` bigint NOT NULL,
+  PRIMARY KEY (`last_processed`)
+) ENGINE=MyISAM ;
