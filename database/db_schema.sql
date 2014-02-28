@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS qraat.Position (
   `timestamp` decimal(16,6) DEFAULT NULL,
   `easting` decimal(9,2) DEFAULT NULL,
   `northing` decimal(10,2) DEFAULT NULL,
-  `likelihood` decimal(10,6) DEFAULT NULL,
+  `likelihood` double DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
