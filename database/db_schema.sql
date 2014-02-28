@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS qraat.sitelist (
   PRIMARY KEY (ID) 
 ) ENGINE=MyISAM ;
 
+
 CREATE TABLE IF NOT EXISTS qraat.txlist ( 
   ID int(11) NOT NULL AUTO_INCREMENT, 
   `use` varchar(6) DEFAULT NULL, 
@@ -97,7 +98,10 @@ CREATE TABLE IF NOT EXISTS qraat.est (
   timezone varchar(6) DEFAULT NULL, 
   txid bigint(20) DEFAULT NULL, 
   PRIMARY KEY (ID), 
-  KEY datetime (datetime) 
+  KEY datetime (datetime),
+  KEY timestamp (timestamp),
+  KEY txid (txid),
+  KEY frequency (frequency)
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.telemetry ( 
@@ -176,6 +180,16 @@ CREATE TABLE IF NOT EXISTS qraat.Position (
   `timestamp` decimal(16,6) DEFAULT NULL,
   `easting` decimal(9,2) DEFAULT NULL,
   `northing` decimal(10,2) DEFAULT NULL,
+  `likelihood` double DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM ;
+
+CREATE TABLE IF NOT EXISTS qraat.provenance (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `obj_table` varchar(30) NOT NULL,
+  `obj_id` bigint(20) NOT NULL,
+  `dep_table` varchar(30) NOT NULL,
+  `dep_id` bigint(20) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 

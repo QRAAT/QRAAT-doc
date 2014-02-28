@@ -1,6 +1,9 @@
 Setting up a sample database
 ============================
 
+To dump table rows to a file: 
+mysql -u rmg -p -B -e "select * from qraat.est where datetime <= '2013-07-04 00:00:00' AND datetime >= '2013-07-03 23:30:00';" > mice.txt
+
 To set up the tables, make sure to create a DB called 'qraat'. Then do:
 $ mysql -u <user> -p < db_schema.sql
 
