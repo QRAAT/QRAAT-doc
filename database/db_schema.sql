@@ -193,10 +193,13 @@ CREATE TABLE IF NOT EXISTS qraat.provenance (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
+
+-- Counter for automated position estimation. 
+-- Is there a cleaner way to do this besides
+-- creating a table? 
 CREATE TABLE IF NOT EXISTS qraat.position_processing (
   `last_processed` bigint NOT NULL,
   PRIMARY KEY (`last_processed`)
 ) ENGINE=MyISAM ;
-
 INSERT INTO qraat.position_processing (last_processed) VALUES (0);
 
