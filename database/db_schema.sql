@@ -197,3 +197,6 @@ CREATE TABLE IF NOT EXISTS qraat.position_processing (
   `last_processed` bigint NOT NULL,
   PRIMARY KEY (`last_processed`)
 ) ENGINE=MyISAM ;
+
+INSERT INTO qraat.position_processing (last_processed) VALUES (0);
+
