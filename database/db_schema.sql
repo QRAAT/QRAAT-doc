@@ -97,6 +97,7 @@ CREATE TABLE IF NOT EXISTS qraat.est (
   edsnr double DEFAULT NULL COMMENT 'Eigenvalue Decomposition SNR (dB)', 
   timezone varchar(6) DEFAULT NULL, 
   txid bigint(20) DEFAULT NULL, 
+  score tinyint DEFAULT NULL,
   PRIMARY KEY (ID), 
   KEY datetime (datetime),
   KEY timestamp (timestamp),
