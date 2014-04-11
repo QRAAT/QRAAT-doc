@@ -191,6 +191,7 @@ CREATE TABLE IF NOT EXISTS qraat.Track (
   `lon` double DEFAULT NULL,
   `lat` double DEFAULT NULL, 
   `datetime` datetime DEFAULT NULL, 
+  `timezone` varchar(6) DEFAULT NULL, 
   PRIMARY KEY (posID),
   KEY (datetime), 
   KEY (txID) 
