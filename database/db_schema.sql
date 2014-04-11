@@ -185,6 +185,17 @@ CREATE TABLE IF NOT EXISTS qraat.Position (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
+CREATE TABLE IF NOT EXISTS qraat.Track (
+  `posID` bigint(20) NOT NULL, -- UNIQUE qraat.Position.ID
+  `txID` bigint(20) NOT NULL, 
+  `lon` double DEFAULT NULL,
+  `lat` double DEFAULT NULL, 
+  `datetime` datetime DEFAULT NULL, 
+  PRIMARY KEY (posID),
+  KEY (datetime), 
+  KEY (txID) 
+) ENGINE=MyISAM ; 
+
 CREATE TABLE IF NOT EXISTS qraat.provenance (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `obj_table` varchar(30) NOT NULL,
