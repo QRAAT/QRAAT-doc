@@ -104,12 +104,13 @@ CREATE TABLE IF NOT EXISTS qraat.est (
   KEY frequency (frequency)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS qraat.estscore (
-  ID bigint(20) NOT NULL AUTO_INCREMENT,
-  estid bigint(20) NOT NULL,
-  absscore tinyint NOT NULL,
-  relscore double not NULL
-) ENGINE=MyISAM ;
+CREATE TABLE `estscore` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `estid` bigint(20) NOT NULL,
+  `absscore` tinyint(4) NOT NULL,
+  `relscore` double NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM
 
 CREATE TABLE IF NOT EXISTS qraat.telemetry ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
