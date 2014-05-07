@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS qraat.tx_type (
   PRIMARY KEY (ID)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS qraat.pulse_tx (
+CREATE TABLE IF NOT EXISTS qraat.tx_pulse (
   tx_ID int unsigned NOT NULL COMMENT 'ID from tx_ID table',
   frequency float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
   pulse_width float unsigned DEFAULT NULL COMMENT 'Pulse Width in milliseconds (ms)', 
