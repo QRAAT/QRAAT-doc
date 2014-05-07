@@ -105,10 +105,10 @@ CREATE TABLE IF NOT EXISTS qraat.est (
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.estscore (
-  estid bigint(20) NOT NULL,
-  absscore tinyint NOT NULL,
-  relscore double not NULL,
-  PRIMARY KEY (estid)
+  `estid` bigint(20) NOT NULL,
+  `absscore` tinyint(4) NOT NULL,
+  `relscore` double NOT NULL,
+  PRIMARY KEY (`estid`)
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.telemetry ( 
