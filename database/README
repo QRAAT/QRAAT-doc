@@ -1,3 +1,8 @@
+(0) Prerequisities
+
+  $ sudo apt-get install python-mysqldb python-pip
+  $ sudo pip install utm
+
 (1) Setting up the QRAAT environment
 
   (1.1) Create a user in the system for running QRAAT programs, probably 

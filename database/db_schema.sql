@@ -1,3 +1,7 @@
+-- WARNING!! When altering the DB schema, don't run this script directly. 
+-- There are some stuff at the bottom which will smash the automated data
+-- flow. 
+
 CREATE TABLE IF NOT EXISTS qraat.sitelist ( 
   ID int(11) NOT NULL AUTO_INCREMENT, 
   name varchar(20) DEFAULT NULL, 
@@ -29,6 +33,8 @@ CREATE TABLE IF NOT EXISTS qraat.txlist (
   start datetime DEFAULT NULL, 
   stop datetime DEFAULT NULL, 
   programid int(11) DEFAULT NULL, 
+  thresh_band3 smallint(6) DEFAULT NULL COMMENT ' ', 
+  thresh_band10 smallint(6) DEFAULT NULL COMMENT '10dB Bandwidth', 
   PRIMARY KEY (ID) 
 ) ENGINE=MyISAM ; 
 
@@ -104,13 +110,12 @@ CREATE TABLE IF NOT EXISTS qraat.est (
   KEY frequency (frequency)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE `estscore` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS qraat.estscore (
   `estid` bigint(20) NOT NULL,
   `absscore` tinyint(4) NOT NULL,
   `relscore` double NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM
+  PRIMARY KEY (`estid`)
+) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.telemetry ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
