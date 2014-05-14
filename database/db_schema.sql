@@ -223,3 +223,9 @@ CREATE TABLE IF NOT EXISTS qraat.position_processing (
 ) ENGINE=MyISAM ;
 INSERT INTO qraat.position_processing (last_processed) VALUES (0);
 
+CREATE TABLE IF NOT EXISTS qraat.`cursor` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `value` bigint(20) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM ;
