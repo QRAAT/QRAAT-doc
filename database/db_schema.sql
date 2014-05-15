@@ -187,15 +187,39 @@ CREATE TABLE IF NOT EXISTS qraat.Steering_Vectors (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
+
+CREATE TABLE IF NOT EXISTS qraat.Bearing (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `txID` bigint(20) NOT NULL,
+  `siteID` bigint(20) NOT NULL,
+  `posID` bigint(20) DEFAULT NULL, 
+  `timestamp` decimal(16,6) NOT NULL,
+  `bearing` double NOT NULL COMMENT "Most likely bearing.",
+  `likelihood` double NOT NULL COMMENT "Maximum Likelihood over bearing distribution.",
+  `activity` double DEFAULT NULL COMMENT "Normalized activity metric.",
+  PRIMARY KEY (`ID`),
+  KEY (`timestamp`),
+  KEY (`txID`)
+) ENGINE=MyISAM ;
+
 CREATE TABLE IF NOT EXISTS qraat.Position (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `txID` bigint(20) DEFAULT NULL,
-  `timestamp` decimal(16,6) DEFAULT NULL,
-  `easting` decimal(9,2) DEFAULT NULL,
-  `northing` decimal(10,2) DEFAULT NULL,
-  `likelihood` double DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  `txID` bigint(20) NOT NULL,
+  `timestamp` decimal(16,6) NOT NULL,
+  `easting` decimal(9,2) NOT NULL COMMENT "Most likely position (UTM east).",
+  `northing` decimal(10,2) NOT NULL COMMENT "Most likely position (UTM north).",
+  `utm_zone` tinyint(3) DEFAULT 10 COMMENT "Most likely position (UTM zone).",
+  `utm_zone_letter` varchar(1) DEFAULT "S" COMMENT "Most likely position (UTM zone letter).",
+  `likelihood` double NOT NULL COMMENT "Maximum likelihood value over search space.",
+  `activity` double DEFAULT NULL COMMENT "Averaged over bearing data from all sites.",
+  PRIMARY KEY (`ID`),
+  KEY (`timestamp`),
+  KEY (`txID`)
 ) ENGINE=MyISAM ;
+
+
+
+
 
 CREATE TABLE IF NOT EXISTS qraat.Track (
   `posID` bigint(20) NOT NULL, -- UNIQUE qraat.Position.ID
@@ -217,7 +241,6 @@ CREATE TABLE IF NOT EXISTS qraat.provenance (
   `dep_id` bigint(20) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
-
 
 -- Counter for automated position estimation. 
 -- Is there a cleaner way to do this besides
