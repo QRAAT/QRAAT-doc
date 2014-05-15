@@ -245,6 +245,7 @@ INSERT INTO tx_ID (tx_info_ID, active) VALUES ('2', FALSE) ;
 INSERT INTO tx_pulse (tx_ID, frequency, pulse_width, pulse_rate, band3, band10) VALUES (54, 164.033, 19.0, 23.0, 150, 900) ;
 INSERT INTO tx_alias (tx_ID, alias) VALUES (54, 'F5792') ;
 INSERT INTO tx_deployment (tx_ID, start_time) VALUES (54, 1380697200);
+update tx_deployment set stop_time=1399842000 where tx_ID=54 ;
 
 INSERT INTO tx_ID (tx_info_ID, active) VALUES ('2', FALSE) ;
 INSERT INTO tx_pulse (tx_ID, frequency, pulse_width, pulse_rate, band3, band10) VALUES (55, 164.042, 19.0, 23.0, 150, 900) ;
@@ -293,4 +294,30 @@ INSERT INTO tx_deployment (tx_ID, start_time, stop_time) VALUES (62, 1391241600,
 INSERT INTO tx_deployment (tx_ID, start_time, stop_time) VALUES (62, 1396681200, 1396767600);
 
 
+
+INSERT INTO tx_info (tx_type_ID, manufacturer, model) VALUES ('1', 'Holohil', 'MI-2M(12)') ;
+
+INSERT INTO tx_ID (tx_info_ID, active) VALUES ('4', FALSE) ;
+INSERT INTO tx_pulse (tx_ID, frequency, pulse_width, pulse_rate) VALUES (63, 163.847, 30.0, 39.6) ;
+INSERT INTO tx_alias (tx_ID, alias) VALUES (63, '190785') ;
+
+INSERT INTO tx_ID (tx_info_ID, active) VALUES ('4', FALSE) ;
+INSERT INTO tx_pulse (tx_ID, frequency, pulse_width, pulse_rate) VALUES (64, 163.874, 30.0, 39.6) ;
+INSERT INTO tx_alias (tx_ID, alias) VALUES (64, '190786') ;
+
+INSERT INTO tx_ID (tx_info_ID, active) VALUES ('4', FALSE) ;
+INSERT INTO tx_pulse (tx_ID, frequency, pulse_width, pulse_rate) VALUES (65, 163.908, 30.0, 39.0) ;
+INSERT INTO tx_alias (tx_ID, alias) VALUES (65, '190787') ;
+
+INSERT INTO tx_ID (tx_info_ID, active) VALUES ('4', FALSE) ;
+INSERT INTO tx_pulse (tx_ID, frequency, pulse_width, pulse_rate) VALUES (66, 163.921, 30.0, 39.6) ;
+INSERT INTO tx_alias (tx_ID, alias) VALUES (66, '190788') ;
+
+INSERT INTO tx_ID (tx_info_ID, active) VALUES ('4', FALSE) ;
+INSERT INTO tx_pulse (tx_ID, frequency, pulse_width, pulse_rate) VALUES (67, 163.974, 30.0, 39.6) ;
+INSERT INTO tx_alias (tx_ID, alias) VALUES (67, '190789') ;
+
+INSERT INTO tx_ID (tx_info_ID, active) VALUES ('4', FALSE) ;
+INSERT INTO tx_pulse (tx_ID, frequency, pulse_width, pulse_rate) VALUES (68, 163.997, 30.0, 40.2) ;
+INSERT INTO tx_alias (tx_ID, alias) VALUES (68, '190790') ;
 
