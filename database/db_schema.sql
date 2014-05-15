@@ -15,28 +15,53 @@ CREATE TABLE IF NOT EXISTS qraat.sitelist (
   PRIMARY KEY (ID) 
 ) ENGINE=MyISAM ;
 
+CREATE TABLE IF NOT EXISTS qraat.tx_ID (
+  ID int unsigned NOT NULL AUTO_INCREMENT,
+  tx_info_ID int unsigned NOT NULL COMMENT 'ID from tx_info table',
+  active BOOLEAN DEFAULT FALSE COMMENT 'Flag for whether sites should look for this tag',
+  PRIMARY KEY (ID)
+) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS qraat.txlist ( 
-  ID int(11) NOT NULL AUTO_INCREMENT, 
-  `use` varchar(6) DEFAULT NULL, 
-  name varchar(20) DEFAULT NULL, 
-  frequency decimal(6,3) DEFAULT NULL, 
-  type varchar(20) DEFAULT NULL, 
-  pulse_width decimal(3,1) DEFAULT NULL, 
-  rise_trigger decimal(4,2) DEFAULT NULL, 
-  fall_trigger decimal(4,2) DEFAULT NULL, 
-  filter_alpha decimal(5,3) DEFAULT NULL, 
-  hertz int(11) DEFAULT NULL, 
-  model varchar(20) DEFAULT NULL, 
-  serial varchar(20) DEFAULT NULL, 
-  alias varchar(20) DEFAULT NULL, 
-  start datetime DEFAULT NULL, 
-  stop datetime DEFAULT NULL, 
-  programid int(11) DEFAULT NULL, 
-  thresh_band3 smallint(6) DEFAULT NULL COMMENT ' ', 
-  thresh_band10 smallint(6) DEFAULT NULL COMMENT '10dB Bandwidth', 
-  PRIMARY KEY (ID) 
-) ENGINE=MyISAM ; 
+CREATE TABLE IF NOT EXISTS qraat.tx_info (
+  ID int unsigned NOT NULL AUTO_INCREMENT,
+  tx_type_ID int unsigned NOT NULL COMMENT 'ID from tx_type table',
+  manufacturer varchar(50) DEFAULT NULL,
+  model varchar(50) DEFAULT NULL,
+  PRIMARY KEY (ID)
+) ENGINE=MyISAM ;
+
+CREATE TABLE IF NOT EXISTS qraat.tx_type (
+  ID int unsigned NOT NULL AUTO_INCREMENT,
+  RMG_type varchar(20) DEFAULT NULL COMMENT 'String that RMG software uses to determine the type of demodulator to use, e.g. pulse',
+  tx_table_name varchar(30) DEFAULT NULL COMMENT 'Table that contains parameters for this type, e.g. pulse_tx',
+  PRIMARY KEY (ID)
+) ENGINE=MyISAM ;
+
+CREATE TABLE IF NOT EXISTS qraat.tx_pulse (
+  tx_ID int unsigned NOT NULL COMMENT 'ID from tx_ID table',
+  frequency float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
+  pulse_width float unsigned DEFAULT NULL COMMENT 'Pulse Width in milliseconds (ms)', 
+  pulse_rate float unsigned DEFAULT NULL COMMENT 'Pulse Rate in pulses per minute (ppm)',
+  band3 smallint unsigned DEFAULT NULL COMMENT 'Nominal 3dB Bandwidth in Hertz (Hz), used in parameter filtering',
+  band10 smallint unsigned DEFAULT NULL COMMENT 'Nomianl 10dB Bandwidth in Hertz (Hz), used in parameter filtering',
+  PRIMARY KEY (tx_ID)
+) ENGINE=MyISAM ;
+
+CREATE TABLE IF NOT EXISTS qraat.tx_alias (
+  ID int unsigned NOT NULL AUTO_INCREMENT,
+  tx_ID int unsigned DEFAULT NULL COMMENT 'ID from tx_ID table',
+  alias varchar(50) DEFAULT NULL,
+  PRIMARY KEY (ID)
+) ENGINE=MyISAM ;
+
+CREATE TABLE IF NOT EXISTS qraat.tx_deployment (
+  ID int unsigned NOT NULL AUTO_INCREMENT,
+  tx_ID int unsigned DEFAULT NULL COMMENT 'ID from tx_ID table',
+  start_time bigint DEFAULT NULL COMMENT 'Unix Timestamp in seconds (s) since Epoch',
+  stop_time bigint  DEFAULT NULL COMMENT 'Unix Timestamp in seconds (s) since Epoch',
+  PRIMARY KEY (ID)
+) ENGINE=MyISAM ;
+>>>>>>> detector_improvements
 
 CREATE TABLE IF NOT EXISTS qraat.est ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
@@ -54,7 +79,7 @@ CREATE TABLE IF NOT EXISTS qraat.est (
   fd3i double DEFAULT NULL COMMENT 'Fourier Decomposition Signal on Channel 3 - imaginary part', 
   fd4r double DEFAULT NULL COMMENT 'Fourier Decomposition Signal on Channel 4 - real part', 
   fd4i double DEFAULT NULL COMMENT 'Fourier Decomposition Signal on Channel 4 - imaginary part', 
-  band3 smallint(6) DEFAULT NULL COMMENT ' ', 
+  band3 smallint(6) DEFAULT NULL COMMENT '3dB Bandwidth', 
   band10 smallint(6) DEFAULT NULL COMMENT '10dB Bandwidth', 
   edsp double DEFAULT NULL COMMENT 'Eigenvalue Decomposition Signal Power', 
   ed1r double DEFAULT NULL COMMENT 'Eigenvalue Decomposition Signal on Channel 1 - real part', 
