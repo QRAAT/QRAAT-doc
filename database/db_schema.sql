@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS qraat.tx_deployment (
   stop_time bigint  DEFAULT NULL COMMENT 'Unix Timestamp in seconds (s) since Epoch',
   PRIMARY KEY (ID)
 ) ENGINE=MyISAM ;
->>>>>>> detector_improvements
+
 
 CREATE TABLE IF NOT EXISTS qraat.est ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
