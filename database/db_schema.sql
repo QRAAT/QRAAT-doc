@@ -234,3 +234,13 @@ CREATE TABLE IF NOT EXISTS qraat.`cursor` (
   `name` varchar(20) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
+
+CREATE TABLE `interval_cache` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `txid` bigint(20) NOT NULL,
+  `siteid` int(11) NOT NULL,
+  `start` decimal(16,6) NOT NULL COMMENT 'UNIX timestamp where this estimated signal interval becomes applicable',
+  `valid_duration` double NOT NULL COMMENT 'Number of seconds after start that this estimated interval is valid for.',
+  `period` double NOT NULL COMMENT 'Interval value in seconds',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
