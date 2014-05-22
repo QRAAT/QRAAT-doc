@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS qraat.`cursor` (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE `interval_cache` (
+CREATE TABLE qraat.`interval_cache` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `txid` bigint(20) NOT NULL,
   `siteid` int(11) NOT NULL,
