@@ -3,16 +3,17 @@
 -- flow. 
 
 CREATE TABLE IF NOT EXISTS qraat.sitelist ( 
-  ID int(11) NOT NULL AUTO_INCREMENT, 
-  name varchar(20) DEFAULT NULL, 
-  location varchar(100) DEFAULT NULL, 
-  latitude decimal(10,6) DEFAULT NULL, 
-  longitude decimal(11,6) DEFAULT NULL, 
-  easting decimal(9,2) unsigned DEFAULT '0.00', 
-  northing decimal(10,2) unsigned DEFAULT '0.00', 
-  zone char(3) DEFAULT NULL, 
-  elevation decimal(7,2) DEFAULT '0.00', 
-  PRIMARY KEY (ID) 
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) DEFAULT NULL,
+  `location` varchar(100) DEFAULT NULL,
+  `latitude` decimal(10,6) DEFAULT NULL,
+  `longitude` decimal(11,6) DEFAULT NULL,
+  `easting` decimal(9,2) unsigned DEFAULT '0.00',
+  `northing` decimal(10,2) unsigned DEFAULT '0.00',
+  `utm_zone_number` tinyint(3) unsigned DEFAULT '10',
+  `utm_zone_letter` char(1) DEFAULT 'S',
+  `elevation` decimal(7,2) DEFAULT '0.00',
+  PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.tx_ID (
@@ -61,7 +62,7 @@ CREATE TABLE IF NOT EXISTS qraat.tx_deployment (
   stop_time bigint  DEFAULT NULL COMMENT 'Unix Timestamp in seconds (s) since Epoch',
   PRIMARY KEY (ID)
 ) ENGINE=MyISAM ;
->>>>>>> detector_improvements
+
 
 CREATE TABLE IF NOT EXISTS qraat.est ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
@@ -282,3 +283,13 @@ CREATE TABLE IF NOT EXISTS qraat.`cursor` (
   `name` varchar(20) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
+
+CREATE TABLE qraat.`interval_cache` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `txid` bigint(20) NOT NULL,
+  `siteid` int(11) NOT NULL,
+  `start` decimal(16,6) NOT NULL COMMENT 'UNIX timestamp where this estimated signal interval becomes applicable',
+  `valid_duration` double NOT NULL COMMENT 'Number of seconds after start that this estimated interval is valid for.',
+  `period` double NOT NULL COMMENT 'Interval value in seconds',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
