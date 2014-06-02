@@ -255,7 +255,7 @@ CREATE TABLE IF NOT EXISTS qraat.track (
   `max_speed_family` ENUM('exp', 'linear', 'const'), 
   `speed_burst` double DEFAULT NULL, 
   `spoed_sustained` double DEFAULT NULL, 
-  `speed_limit` double NOT NULL. 
+  `speed_limit` double NOT NULL, 
   PRIMARY KEY (`ID`),
   KEY (`depID`)
 ) ENGINE=MyISAM ; 
