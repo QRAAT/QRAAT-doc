@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS qraat.sitelist (
   `utm_zone_number` tinyint(3) unsigned DEFAULT '10',
   `utm_zone_letter` char(1) DEFAULT 'S',
   `elevation` decimal(7,2) DEFAULT '0.00',
+  `rx` BOOLEAN DEFAULT True, -- temporary way of identifying a location as a receiver site. 
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
