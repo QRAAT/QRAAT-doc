@@ -242,20 +242,21 @@ CREATE TABLE IF NOT EXISTS qraat.Position (
   KEY (`txID`)
 ) ENGINE=MyISAM ;
 
+CREATE TABLE IF NOT EXISTS qraat.track_pos (
+  `posID` bigint(20) NOT NULL,
+  `TrackID` bigint(20) NOT NULL,
+  PRIMARY KEY (`PosID`, `TrackID`)
+) ENGINE=MyISAM ;
 
-
-
-
-CREATE TABLE IF NOT EXISTS qraat.Track (
-  `posID` bigint(20) NOT NULL, -- UNIQUE qraat.Position.ID
-  `txID` bigint(20) NOT NULL, 
-  `lon` double DEFAULT NULL,
-  `lat` double DEFAULT NULL, 
-  `datetime` datetime DEFAULT NULL, 
-  `timezone` varchar(6) DEFAULT NULL, 
-  PRIMARY KEY (posID),
-  KEY (datetime), 
-  KEY (txID) 
+CREATE TABLE IF NOT EXISTS qraat.track (
+  `ID` bigint(20) NOT NULL, 
+  `depID` bigint(20) NOT NULL, -- ref qraat.tx_deployment
+  `max_speed_family` ENUM('exp', 'linear', 'const'), 
+  `speed_burst` double DEFAULT NULL, 
+  `spoed_sustained` double DEFAULT NULL, 
+  `speed_limit` double NOT NULL. 
+  PRIMARY KEY (`ID`),
+  KEY (`depID`)
 ) ENGINE=MyISAM ; 
 
 CREATE TABLE IF NOT EXISTS qraat.provenance (
