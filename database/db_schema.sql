@@ -234,7 +234,7 @@ CREATE TABLE IF NOT EXISTS qraat.Position (
   `timestamp` decimal(16,6) NOT NULL,
   `easting` decimal(9,2) NOT NULL COMMENT "Most likely position (UTM east).",
   `northing` decimal(10,2) NOT NULL COMMENT "Most likely position (UTM north).",
-  `utm_zone` tinyint(3) DEFAULT 10 COMMENT "Most likely position (UTM zone).",
+  `utm_zone_number` tinyint(3) DEFAULT 10 COMMENT "Most likely position (UTM zone).",
   `utm_zone_letter` varchar(1) DEFAULT "S" COMMENT "Most likely position (UTM zone letter).",
   `likelihood` double NOT NULL COMMENT "Maximum likelihood value over search space.",
   `activity` double DEFAULT NULL COMMENT "Averaged over bearing data from all sites.",
