@@ -17,6 +17,30 @@ CREATE TABLE IF NOT EXISTS qraat.sitelist (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
+-- TODO deprecate this table. 
+CREATE TABLE IF NOT EXISTS qraat.txlist ( 
+  ID int(11) NOT NULL AUTO_INCREMENT, 
+  `use` varchar(6) DEFAULT NULL, 
+  name varchar(20) DEFAULT NULL, 
+  frequency decimal(6,3) DEFAULT NULL, 
+  type varchar(20) DEFAULT NULL, 
+  pulse_width decimal(3,1) DEFAULT NULL, 
+  rise_trigger decimal(4,2) DEFAULT NULL, 
+  fall_trigger decimal(4,2) DEFAULT NULL, 
+  filter_alpha decimal(5,3) DEFAULT NULL, 
+  hertz int(11) DEFAULT NULL, 
+  model varchar(20) DEFAULT NULL, 
+  serial varchar(20) DEFAULT NULL, 
+  alias varchar(20) DEFAULT NULL, 
+  start datetime DEFAULT NULL, 
+  stop datetime DEFAULT NULL, 
+  programid int(11) DEFAULT NULL, 
+  thresh_band3 smallint(6) DEFAULT NULL COMMENT ' ', 
+  thresh_band10 smallint(6) DEFAULT NULL COMMENT '10dB Bandwidth', 
+  PRIMARY KEY (ID) 
+) ENGINE=MyISAM ; 
+
+
 CREATE TABLE IF NOT EXISTS qraat.tx_ID (
   ID int unsigned NOT NULL AUTO_INCREMENT,
   tx_info_ID int unsigned NOT NULL COMMENT 'ID from tx_info table',
@@ -277,7 +301,7 @@ CREATE TABLE IF NOT EXISTS qraat.`cursor` (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE qraat.`interval_cache` (
+CREATE TABLE IF NOT EXISTS qraat.`interval_cache` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `txid` bigint(20) NOT NULL,
   `siteid` int(11) NOT NULL,
