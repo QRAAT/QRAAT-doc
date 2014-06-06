@@ -270,7 +270,8 @@ CREATE TABLE IF NOT EXISTS qraat.Position (
 CREATE TABLE IF NOT EXISTS qraat.track_pos (
   `posID` bigint(20) NOT NULL,
   `trackID` bigint(20) NOT NULL,
-  PRIMARY KEY (`PosID`, `TrackID`)
+  `timestamp` decimal(16,6) NOT NULL, 
+  PRIMARY KEY (`TrackID`, `timestamp`)
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.track (
