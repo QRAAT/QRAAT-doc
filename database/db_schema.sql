@@ -243,7 +243,6 @@ CREATE TABLE IF NOT EXISTS qraat.Bearing (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `txID` bigint(20) NOT NULL,
   `siteID` bigint(20) NOT NULL,
-  `posID` bigint(20) DEFAULT NULL, 
   `timestamp` decimal(16,6) NOT NULL,
   `bearing` double NOT NULL COMMENT "Most likely bearing.",
   `likelihood` double NOT NULL COMMENT "Maximum Likelihood over bearing distribution.",
