@@ -241,7 +241,7 @@ CREATE TABLE IF NOT EXISTS qraat.Steering_Vectors (
 
 CREATE TABLE IF NOT EXISTS qraat.Bearing (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `txID` bigint(20) NOT NULL,
+  `depID` bigint(20) NOT NULL,
   `siteID` bigint(20) NOT NULL,
   `timestamp` decimal(16,6) NOT NULL,
   `bearing` double NOT NULL COMMENT "Most likely bearing.",
@@ -249,12 +249,12 @@ CREATE TABLE IF NOT EXISTS qraat.Bearing (
   `activity` double DEFAULT NULL COMMENT "Normalized activity metric.",
   PRIMARY KEY (`ID`),
   KEY (`timestamp`),
-  KEY (`txID`)
+  KEY (`depID`)
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.Position (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `txID` bigint(20) NOT NULL,
+  `depID` bigint(20) NOT NULL,
   `timestamp` decimal(16,6) NOT NULL,
   `easting` decimal(9,2) NOT NULL COMMENT "Most likely position (UTM east).",
   `northing` decimal(10,2) NOT NULL COMMENT "Most likely position (UTM north).",
@@ -264,21 +264,21 @@ CREATE TABLE IF NOT EXISTS qraat.Position (
   `activity` double DEFAULT NULL COMMENT "Averaged over bearing data from all sites.",
   PRIMARY KEY (`ID`),
   KEY (`timestamp`),
-  KEY (`txID`)
+  KEY (`depID`)
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.track_pos (
   `posID` bigint(20) NOT NULL,
-  `TrackID` bigint(20) NOT NULL,
+  `trackID` bigint(20) NOT NULL,
   PRIMARY KEY (`PosID`, `TrackID`)
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.track (
   `ID` bigint(20) NOT NULL, 
-  `depID` bigint(20) NOT NULL, -- ref qraat.tx_deployment
+  `depID` bigint(20) NOT NULL, 
   `max_speed_family` ENUM('exp', 'linear', 'const'), 
   `speed_burst` double DEFAULT NULL, 
-  `spoed_sustained` double DEFAULT NULL, 
+  `speed_sustained` double DEFAULT NULL, 
   `speed_limit` double NOT NULL, 
   PRIMARY KEY (`ID`),
   KEY (`depID`)
@@ -302,7 +302,7 @@ CREATE TABLE IF NOT EXISTS qraat.`cursor` (
 
 CREATE TABLE IF NOT EXISTS qraat.`interval_cache` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `txid` bigint(20) NOT NULL,
+  `txid` bigint(20) NOT NULL, -- TODO change this `depID`
   `siteid` int(11) NOT NULL,
   `start` decimal(16,6) NOT NULL COMMENT 'UNIX timestamp where this estimated signal interval becomes applicable',
   `valid_duration` double NOT NULL COMMENT 'Number of seconds after start that this estimated interval is valid for.',
