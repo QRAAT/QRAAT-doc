@@ -298,7 +298,8 @@ CREATE TABLE IF NOT EXISTS qraat.`cursor` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `value` bigint(20) NOT NULL,
   `name` varchar(20) NOT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.`interval_cache` (
