@@ -275,7 +275,7 @@ CREATE TABLE IF NOT EXISTS qraat.track_pos (
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.track (
-  `ID` bigint(20) NOT NULL, 
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT, 
   `depID` bigint(20) NOT NULL, 
   `max_speed_family` ENUM('exp', 'linear', 'const'), 
   `speed_burst` double DEFAULT NULL, 
