@@ -17,6 +17,7 @@ mysql -u reader -B -e "SELECT * FROM qraat.Calibration_Information" > Calibratio
 mysql -u reader -B -e "SELECT * FROM qraat.GPS_Calibration_Data" > GPS_Calibration_Data.txt
 mysql -u reader -B -e "SELECT * FROM qraat.True_Position" > True_Position.txt
 mysql -u reader -B -e "SELECT * FROM qraat.Steering_Vectors" > Steering_Vectors.txt
+mysql -u reader -B -e "SELECT * FROM qraat.track" > track.txt
 
 
 
