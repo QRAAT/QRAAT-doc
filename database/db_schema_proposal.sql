@@ -315,6 +315,8 @@ CREATE TABLE IF NOT EXISTS qraat.position (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `depID` bigint(20) NOT NULL,
   `timestamp` decimal(16,6) NOT NULL,
+  `latitude` decimal(10,6) DEFAULT NULL,
+  `longitude` decimal(11,6) DEFAULT NULL,
   `easting` decimal(9,2) NOT NULL COMMENT "Most likely position (UTM east).",
   `northing` decimal(10,2) NOT NULL COMMENT "Most likely position (UTM north).",
   `utm_zone_number` tinyint(3) DEFAULT 10 COMMENT "Most likely position (UTM zone).",
