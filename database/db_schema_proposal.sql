@@ -77,8 +77,7 @@ CREATE TABLE IF NOT EXISTS qraat.proj_site (
 CREATE TABLE IF NOT EXISTS qraat.tx (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
   `tx_infoID` int unsigned NOT NULL,
-  `name` varchar(50) NOT NULL, -- i.e. alias
-  `rmg_type` ENUM ('PULSE', 'CONT'), -- If PULSE, then there exists an entry in tx_pulse 
+  `rmg_type` ENUM ('PULSE', 'CONT', 'AFSK'), -- If PULSE, then there exists an entry in tx_pulse 
                                      -- where tx.ID = tx_pulse.txID. (Similar for CONT 
                                      -- when this mechanism is introduced.)
   `projectID` int unsigned NOT NULL COMMENT 'Project for which transmitter was originally created.',
@@ -94,7 +93,7 @@ CREATE TABLE IF NOT EXISTS qraat.tx_info (
 ) ENGINE=InnoDB; 
 
 CREATE TABLE IF NOT EXISTS qraat.tx_pulse (
-  `txID` int unsigned NOT NULL COMMENT 'ID from tx_ID table',
+  `txID` int unsigned NOT NULL COMMENT 'ID from tx table',
   `frequency` float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
   `pulse_width` float unsigned DEFAULT NULL COMMENT 'Pulse Width in milliseconds (ms)',
   `pulse_rate` float unsigned DEFAULT NULL COMMENT 'Pulse Rate in pulses per minute (ppm)',
@@ -102,6 +101,21 @@ CREATE TABLE IF NOT EXISTS qraat.tx_pulse (
   `band10` smallint unsigned DEFAULT NULL COMMENT 'Nomianl 10dB Bandwidth in Hertz (Hz), used in parameter filtering',
   PRIMARY KEY (`txID`)
 ) ENGINE=InnoDB; 
+
+CREATE TABLE IF NOT EXISTS qraat.tx_cont (
+  `txID` int unsigned NOT NULL COMMENT 'ID from tx table',
+  `frequency` float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
+  PRIMARY KEY (`txID`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS qraat.tx_afsk (
+  `txID` int unsigned NOT NULL COMMENT 'ID from tx table',
+  `frequency` float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
+  `deviation` float unsigned DEFAULT NULL COMMENT 'FM Deviation in kHz',
+  `mark_frequency` float unsigned DEFAULT NULL COMMENT 'MARK audio frequency in Hz',
+  `space_frequency` float unsigned DEFAULT NULL COMMENT 'SPACE audio frequency in Hz',
+  PRIMARY KEY (`txID`)
+) ENGINE=InnoDB;
 
 
 -- Target data (public) -----------------------------------------------------------------
