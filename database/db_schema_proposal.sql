@@ -10,7 +10,7 @@
 
 -- Site data (public) -------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS shitty.site ( 
+CREATE TABLE IF NOT EXISTS qraat.site ( 
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) DEFAULT NULL,
   `location` varchar(100) DEFAULT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS shitty.site (
 
 -- Project data -------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS shitty.project (
+CREATE TABLE IF NOT EXISTS qraat.project (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `ownerID` int unsigned NOT NULL COMMENT 'References UUID in web frontend, i.e. `django.auth_user.id`.', 
   `is_public` boolean NOT NULL,
@@ -37,27 +37,27 @@ CREATE TABLE IF NOT EXISTS shitty.project (
 
 -- Users authorized to view project and associated data, specified by a 
 -- GUID in the web framework. I.e., `django.auth_group.id`.
-CREATE TABLE IF NOT EXISTS shitty.auth_proj_viewer (
+CREATE TABLE IF NOT EXISTS qraat.auth_proj_viewer (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `groupID` int unsigned NOT NULL COMMENt 'References GUID in web frontend, i.e. `django.auth_group.id`.', 
   `projectID` int unsigned NOT NULL,
-  FOREIGN KEY (`projectID`) REFERENCES shitty.project (`ID`), 
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ;
 
 -- Users authorized to edit project and view associated data.
-CREATE TABLE IF NOT EXISTS shitty.auth_proj_collaborator (
+CREATE TABLE IF NOT EXISTS qraat.auth_proj_collaborator (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `groupID` int unsigned NOT NULL COMMENt 'References GUID in web frontend, i.e. `django.auth_group.id`.', 
   `projectID` int unsigned NOT NULL,
-  FOREIGN KEY (`projectID`) REFERENCES shitty.project (`ID`), 
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ;
 
 
 -- Transmitter data (public) ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS shitty.tx (
+CREATE TABLE IF NOT EXISTS qraat.tx (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
   `tx_infoID` int unsigned NOT NULL,
   `name` varchar(50) NOT NULL, -- i.e. alias
@@ -65,18 +65,18 @@ CREATE TABLE IF NOT EXISTS shitty.tx (
                                      -- where tx.ID = tx_pulse.txID. (Similar for CONT 
                                      -- when this mechanism is introduced.)
   `projectID` int unsigned NOT NULL COMMENT 'Project for which transmitter was originally created.',
-  FOREIGN KEY (`projectID`) REFERENCES shitty.project (`ID`), 
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB; 
 
-CREATE TABLE IF NOT EXISTS shitty.tx_info (
+CREATE TABLE IF NOT EXISTS qraat.tx_info (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `manufacturer` varchar(50) DEFAULT NULL,
   `model` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB; 
 
-CREATE TABLE IF NOT EXISTS shitty.tx_pulse (
+CREATE TABLE IF NOT EXISTS qraat.tx_pulse (
   `txID` int unsigned NOT NULL COMMENT 'ID from tx_ID table',
   `frequency` float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
   `pulse_width` float unsigned DEFAULT NULL COMMENT 'Pulse Width in milliseconds (ms)',
@@ -89,12 +89,12 @@ CREATE TABLE IF NOT EXISTS shitty.tx_pulse (
 
 -- Target data (public) -----------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS shitty.target (
+CREATE TABLE IF NOT EXISTS qraat.target (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
   `name` varchar(50) NOT NULL,
   `description` TEXT DEFAULT NULL, 
   `projectID` int unsigned NOT NULL COMMENT 'Project for which target was originally created.',
-  FOREIGN KEY (`projectID`) REFERENCES shitty.project (`ID`), 
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB; 
 
@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS shitty.target (
 -- Pulse, bearing, position, and track data are ultimately associated with a deployment, 
 -- and since the DB engine for these tables is not transactional (i.e. does not respect 
 -- foreign constraints), a depID should not be deleted if there exists associated data. 
-CREATE TABLE IF NOT EXISTS shitty.deployment (
+CREATE TABLE IF NOT EXISTS qraat.deployment (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
   `name` varchar(50) NOT NULL,
   `description` TEXT DEFAULT NULL, 
@@ -113,9 +113,9 @@ CREATE TABLE IF NOT EXISTS shitty.deployment (
   `projectID` int unsigned NOT NULL COMMENT 'Project to which deployment is associated.',
   `t_start` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
   `t_end` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
-  FOREIGN KEY (`txID`) REFERENCES shitty.tx (`ID`), 
-  FOREIGN KEY (`targetID`) REFERENCES shitty.target (`ID`), 
-  FOREIGN KEY (`projectID`) REFERENCES shitty.project (`ID`), 
+  FOREIGN KEY (`txID`) REFERENCES qraat.tx (`ID`), 
+  FOREIGN KEY (`targetID`) REFERENCES qraat.target (`ID`), 
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB; 
 
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS shitty.deployment (
 
 -- Pulse data ---------------------------------------------------------------------------
 -- TODO Change txID to depID
-CREATE TABLE IF NOT EXISTS shitty.est ( 
+CREATE TABLE IF NOT EXISTS qraat.est ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
   siteid int(11) DEFAULT NULL, 
   datetime datetime DEFAULT NULL COMMENT 'Date/Time (UTC)', 
@@ -199,7 +199,7 @@ CREATE TABLE IF NOT EXISTS shitty.est (
   KEY frequency (frequency)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS shitty.estscore (
+CREATE TABLE IF NOT EXISTS qraat.estscore (
   `estid` bigint(20) NOT NULL,
   `absscore` tinyint(4) NOT NULL,
   `relscore` double NOT NULL,
@@ -209,7 +209,7 @@ CREATE TABLE IF NOT EXISTS shitty.estscore (
 
 -- Telemetry ----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS shitty.telemetry ( 
+CREATE TABLE IF NOT EXISTS qraat.telemetry ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
   siteid bigint(20) NOT NULL, 
   datetime datetime DEFAULT NULL, 
@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS shitty.telemetry (
   PRIMARY KEY (ID) 
 ) ENGINE=MyISAM ; 
 
-CREATE TABLE IF NOT EXISTS shitty.timecheck ( 
+CREATE TABLE IF NOT EXISTS qraat.timecheck ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
   siteid bigint(20) NOT NULL, 
   datetime datetime DEFAULT NULL, 
@@ -235,7 +235,7 @@ CREATE TABLE IF NOT EXISTS shitty.timecheck (
 
 -- Calibration --------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS shitty.Calibration_Information (
+CREATE TABLE IF NOT EXISTS qraat.Calibration_Information (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Start_Timestamp` decimal(16,6) DEFAULT NULL,
   `Stop_Timestamp` decimal(16,6) DEFAULT NULL,
@@ -244,7 +244,7 @@ CREATE TABLE IF NOT EXISTS shitty.Calibration_Information (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS shitty.GPS_Calibration_Data (
+CREATE TABLE IF NOT EXISTS qraat.GPS_Calibration_Data (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `Cal_InfoID` int(11) DEFAULT NULL,
   `timestamp` int(11) DEFAULT NULL,
@@ -257,7 +257,7 @@ CREATE TABLE IF NOT EXISTS shitty.GPS_Calibration_Data (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS shitty.True_Position (
+CREATE TABLE IF NOT EXISTS qraat.True_Position (
   `estID` bigint(20) NOT NULL,
   `Cal_InfoID` int(11) DEFAULT NULL,
   `easting` decimal(9,2) DEFAULT NULL,
@@ -266,7 +266,7 @@ CREATE TABLE IF NOT EXISTS shitty.True_Position (
   PRIMARY KEY (`estID`)
 ) ENGINE=MyISAM ; 
 
-CREATE TABLE IF NOT EXISTS shitty.Steering_Vectors (
+CREATE TABLE IF NOT EXISTS qraat.Steering_Vectors (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `Cal_InfoID` int(11) DEFAULT NULL,
   `SiteID` int(11) DEFAULT NULL,
@@ -285,7 +285,7 @@ CREATE TABLE IF NOT EXISTS shitty.Steering_Vectors (
 
 -- Data ---------------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS shitty.bearing (
+CREATE TABLE IF NOT EXISTS qraat.bearing (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `depID` bigint(20) NOT NULL,
   `siteID` bigint(20) NOT NULL,
@@ -298,7 +298,7 @@ CREATE TABLE IF NOT EXISTS shitty.bearing (
   KEY (`depID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS shitty.position (
+CREATE TABLE IF NOT EXISTS qraat.position (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `depID` bigint(20) NOT NULL,
   `timestamp` decimal(16,6) NOT NULL,
@@ -313,14 +313,14 @@ CREATE TABLE IF NOT EXISTS shitty.position (
   KEY (`depID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS shitty.track_pos (
+CREATE TABLE IF NOT EXISTS qraat.track_pos (
   `posID` bigint(20) NOT NULL,
   `trackID` bigint(20) NOT NULL,
   `timestamp` decimal(16,6) NOT NULL, 
   PRIMARY KEY (`TrackID`, `timestamp`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS shitty.track (
+CREATE TABLE IF NOT EXISTS qraat.track (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT, 
   `depID` bigint(20) NOT NULL, 
   `max_speed_family` ENUM('exp', 'linear', 'const'), 
@@ -334,7 +334,7 @@ CREATE TABLE IF NOT EXISTS shitty.track (
 
 -- Processing ---------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS shitty.provenance (
+CREATE TABLE IF NOT EXISTS qraat.provenance (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `obj_table` varchar(30) NOT NULL,
   `obj_id` bigint(20) NOT NULL,
@@ -343,7 +343,7 @@ CREATE TABLE IF NOT EXISTS shitty.provenance (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS shitty.`cursor` (
+CREATE TABLE IF NOT EXISTS qraat.`cursor` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `value` bigint(20) NOT NULL,
   `name` varchar(20) NOT NULL,
@@ -351,7 +351,7 @@ CREATE TABLE IF NOT EXISTS shitty.`cursor` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS shitty.`interval_cache` (
+CREATE TABLE IF NOT EXISTS qraat.`interval_cache` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `txid` bigint(20) NOT NULL, -- TODO change this to `depID`
   `siteid` int(11) NOT NULL,
