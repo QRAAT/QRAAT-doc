@@ -154,6 +154,16 @@ CREATE TABLE IF NOT EXISTS qraat.deployment (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB; 
 
+CREATE TABLE IF NOT EXISTS qraat.track (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT, 
+  `depID` bigint(20) NOT NULL, 
+  `max_speed_family` ENUM('exp', 'linear', 'const'), 
+  `speed_burst` double DEFAULT NULL, 
+  `speed_sustained` double DEFAULT NULL, 
+  `speed_limit` double NOT NULL, 
+  PRIMARY KEY (`ID`),
+  FORIEGN KEY (`depID`) REFERENCES qraat.deployment (`ID`)
+) ENGINE=InnoDB ; 
 
 
 --
@@ -353,16 +363,6 @@ CREATE TABLE IF NOT EXISTS qraat.track_pos (
   PRIMARY KEY (`TrackID`, `timestamp`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS qraat.track (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT, 
-  `depID` bigint(20) NOT NULL, 
-  `max_speed_family` ENUM('exp', 'linear', 'const'), 
-  `speed_burst` double DEFAULT NULL, 
-  `speed_sustained` double DEFAULT NULL, 
-  `speed_limit` double NOT NULL, 
-  PRIMARY KEY (`ID`),
-  KEY (`depID`)
-) ENGINE=MyISAM ; 
 
 
 -- Processing ---------------------------------------------------------------------------
