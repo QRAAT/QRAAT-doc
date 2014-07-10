@@ -129,6 +129,10 @@ CREATE TABLE IF NOT EXISTS qraat.target (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB; 
 
+--TODO add animal information table/s,
+--     Fields: species, ID tag serial number/s, weight, length, location/time captured (multiple entries), notes, etc.
+                             
+
 
 -- Deployment data ----------------------------------------------------------------------
 
@@ -389,3 +393,5 @@ CREATE TABLE IF NOT EXISTS qraat.`interval_cache` (
   `period` double NOT NULL COMMENT 'Interval value in seconds',
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
+
+--TODO add backup/archiving metadata table/s
