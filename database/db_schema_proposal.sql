@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS qraat.deployment (
 -- Pulse data ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS qraat.est ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
-  siteid int(11) DEFAULT NULL, 
+  siteID int(11) DEFAULT NULL, 
   timestamp decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
   frequency int(11) DEFAULT NULL COMMENT 'Tag Frequency (Hz)', 
   center int(11) DEFAULT NULL COMMENT 'Band Center Frequency (Hz)', 
@@ -213,10 +213,10 @@ CREATE TABLE IF NOT EXISTS qraat.est (
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.estscore (
-  `estid` bigint(20) NOT NULL,
+  `estID` bigint(20) NOT NULL,
   `absscore` tinyint(4) NOT NULL,
   `relscore` double NOT NULL,
-  PRIMARY KEY (`estid`)
+  PRIMARY KEY (`estID`)
 ) ENGINE=MyISAM ;
 
 
@@ -224,7 +224,7 @@ CREATE TABLE IF NOT EXISTS qraat.estscore (
 
 CREATE TABLE IF NOT EXISTS qraat.telemetry ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
-  siteid bigint(20) NOT NULL, 
+  siteID bigint(20) NOT NULL, 
   datetime datetime DEFAULT NULL, 
   timezone varchar(6) DEFAULT NULL, 
   intemp decimal(4,2) DEFAULT NULL, 
@@ -238,7 +238,7 @@ CREATE TABLE IF NOT EXISTS qraat.telemetry (
 
 CREATE TABLE IF NOT EXISTS qraat.timecheck ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
-  siteid bigint(20) NOT NULL, 
+  siteID bigint(20) NOT NULL, 
   datetime datetime DEFAULT NULL, 
   timezone varchar(6) DEFAULT NULL, 
   time_offset decimal(10,3) DEFAULT NULL, 
@@ -248,18 +248,18 @@ CREATE TABLE IF NOT EXISTS qraat.timecheck (
 
 -- Calibration --------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS qraat.Calibration_Information (
+CREATE TABLE IF NOT EXISTS qraat.calibration_information (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Start_Timestamp` decimal(16,6) DEFAULT NULL,
-  `Stop_Timestamp` decimal(16,6) DEFAULT NULL,
-  `Description` varchar(1000) DEFAULT NULL,
-  `TxID` bigint(20) DEFAULT NULL,
+  `start_timestamp` decimal(16,6) DEFAULT NULL,
+  `stop_timestamp` decimal(16,6) DEFAULT NULL,
+  `description` varchar(1000) DEFAULT NULL,
+  `txID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS qraat.GPS_Calibration_Data (
+CREATE TABLE IF NOT EXISTS qraat.gps_calibration_data (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `Cal_InfoID` int(11) DEFAULT NULL,
+  `cal_infoID` int(11) DEFAULT NULL,
   `timestamp` int(11) DEFAULT NULL,
   `latitude` decimal(10,6) DEFAULT NULL,
   `longitude` decimal(11,6) DEFAULT NULL,
@@ -270,20 +270,20 @@ CREATE TABLE IF NOT EXISTS qraat.GPS_Calibration_Data (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS qraat.True_Position (
+CREATE TABLE IF NOT EXISTS qraat.true_position (
   `estID` bigint(20) NOT NULL,
-  `Cal_InfoID` int(11) DEFAULT NULL,
+  `cal_infoID` int(11) DEFAULT NULL,
   `easting` decimal(9,2) DEFAULT NULL,
   `northing` decimal(10,2) DEFAULT NULL,
   `bearing` decimal(5,2) DEFAULT NULL,
   PRIMARY KEY (`estID`)
 ) ENGINE=MyISAM ; 
 
-CREATE TABLE IF NOT EXISTS qraat.Steering_Vectors (
+CREATE TABLE IF NOT EXISTS qraat.steering_vectors (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `Cal_InfoID` int(11) DEFAULT NULL,
-  `SiteID` int(11) DEFAULT NULL,
-  `Bearing` decimal(5,2) DEFAULT NULL,
+  `cal_infoID` int(11) DEFAULT NULL,
+  `siteID` int(11) DEFAULT NULL,
+  `bearing` decimal(5,2) DEFAULT NULL,
   `sv1r` double DEFAULT NULL,
   `sv1i` double DEFAULT NULL,
   `sv2r` double DEFAULT NULL,
@@ -368,8 +368,8 @@ CREATE TABLE IF NOT EXISTS qraat.`cursor` (
 
 CREATE TABLE IF NOT EXISTS qraat.`interval_cache` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `depid` bigint(20) NOT NULL,
-  `siteid` int(11) NOT NULL,
+  `depID` bigint(20) NOT NULL,
+  `siteID` int(11) NOT NULL,
   `start` decimal(16,6) NOT NULL COMMENT 'UNIX timestamp where this estimated signal interval becomes applicable',
   `valid_duration` double NOT NULL COMMENT 'Number of seconds after start that this estimated interval is valid for.',
   `period` double NOT NULL COMMENT 'Interval value in seconds',
