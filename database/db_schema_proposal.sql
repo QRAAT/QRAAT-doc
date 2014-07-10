@@ -10,7 +10,7 @@
 
 -- Site data (public) -------------------------------------------------------------------
 
--- only sites with receivers, admin is the only ones with write access
+-- only sites with receivers, admins are the only ones with write access
 CREATE TABLE IF NOT EXISTS qraat.rx_site ( 
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) DEFAULT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS qraat.auth_proj_collaborator (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ;
 
--- Project specific sites, e.g. den locations, trap locations, beacon transmitters
+-- Project specific sites, e.g. den locations, capture locations, beacon transmitters
 CREATE TABLE IF NOT EXISTS qraat.proj_site (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `projectID` int unsigned NOT NULL,
@@ -143,11 +143,9 @@ CREATE TABLE IF NOT EXISTS qraat.deployment (
 --
 
 -- Pulse data ---------------------------------------------------------------------------
--- TODO Change txID to depID
 CREATE TABLE IF NOT EXISTS qraat.est ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
   siteid int(11) DEFAULT NULL, 
-  datetime datetime DEFAULT NULL COMMENT 'Date/Time (UTC)', 
   timestamp decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
   frequency int(11) DEFAULT NULL COMMENT 'Tag Frequency (Hz)', 
   center int(11) DEFAULT NULL COMMENT 'Band Center Frequency (Hz)', 
@@ -206,13 +204,11 @@ CREATE TABLE IF NOT EXISTS qraat.est (
   nc44r double DEFAULT NULL COMMENT 'Noise Covariance 44 - real part', 
   nc44i double DEFAULT NULL COMMENT 'Noise Covariance 44 - imaginary part', 
   fdsnr double DEFAULT NULL COMMENT 'Fourier Decomposition SNR (dB)', 
-  edsnr double DEFAULT NULL COMMENT 'Eigenvalue Decomposition SNR (dB)', 
-  timezone varchar(6) DEFAULT NULL, 
-  txID bigint(20) DEFAULT NULL, 
+  edsnr double DEFAULT NULL COMMENT 'Eigenvalue Decomposition SNR (dB)',  
+  depID bigint(20) DEFAULT NULL, 
   PRIMARY KEY (ID), 
-  KEY datetime (datetime),
   KEY timestamp (timestamp),
-  KEY txID (txID),
+  KEY depID (depID),
   KEY frequency (frequency)
 ) ENGINE=MyISAM ;
 
