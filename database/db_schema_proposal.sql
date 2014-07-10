@@ -368,7 +368,7 @@ CREATE TABLE IF NOT EXISTS qraat.`cursor` (
 
 CREATE TABLE IF NOT EXISTS qraat.`interval_cache` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `txid` bigint(20) NOT NULL, -- TODO change this to `depID`
+  `depid` bigint(20) NOT NULL,
   `siteid` int(11) NOT NULL,
   `start` decimal(16,6) NOT NULL COMMENT 'UNIX timestamp where this estimated signal interval becomes applicable',
   `valid_duration` double NOT NULL COMMENT 'Number of seconds after start that this estimated interval is valid for.',
