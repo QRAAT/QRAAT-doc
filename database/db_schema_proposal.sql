@@ -30,6 +30,8 @@ CREATE TABLE IF NOT EXISTS qraat.rx_site (
 CREATE TABLE IF NOT EXISTS qraat.project (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `ownerID` int unsigned NOT NULL COMMENT 'References UUID in web frontend, i.e. `django.auth_user.id`.', 
+  `name` varchar(50) NOT NULL,
+  `description` TEXT DEFAULT NULL, 
   `is_public` boolean NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ;
@@ -130,7 +132,8 @@ CREATE TABLE IF NOT EXISTS qraat.target (
 CREATE TABLE IF NOT EXISTS qraat.site (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `projectID` int unsigned NOT NULL,
-  `name` varchar(20) DEFAULT NULL,
+  `name` varchar(50) DEFAULT NULL,
+  `description` TEXT DEFAULT NULL, 
   `location` varchar(100) DEFAULT NULL,
   `latitude` decimal(10,6) DEFAULT NULL,
   `longitude` decimal(11,6) DEFAULT NULL,
