@@ -3,9 +3,6 @@
 -- There are some stuff at the bottom which will smash the automated data
 -- flow. 
 
-
-DROP DATABASE peanuts; 
-CREATE DATABASE peanuts;
 --
 --  Administration 
 --
@@ -13,7 +10,7 @@ CREATE DATABASE peanuts;
 -- Site data (public) -------------------------------------------------------------------
 
 -- only sites with receivers, admins are the only ones with write access
-CREATE TABLE IF NOT EXISTS peanuts.rx ( 
+CREATE TABLE IF NOT EXISTS qraat.rx ( 
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) DEFAULT NULL,
   `location` varchar(100) DEFAULT NULL,
@@ -30,7 +27,7 @@ CREATE TABLE IF NOT EXISTS peanuts.rx (
 
 -- Project data -------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS peanuts.project (
+CREATE TABLE IF NOT EXISTS qraat.project (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `ownerID` int unsigned NOT NULL COMMENT 'References UUID in web frontend, i.e. `django.auth_user.id`.', 
   `is_public` boolean NOT NULL,
@@ -39,37 +36,37 @@ CREATE TABLE IF NOT EXISTS peanuts.project (
 
 -- Users authorized to view project and associated data, specified by a 
 -- GUID in the web framework. I.e., `django.auth_group.id`.
-CREATE TABLE IF NOT EXISTS peanuts.auth_project_viewer (
+CREATE TABLE IF NOT EXISTS qraat.auth_project_viewer (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `groupID` int unsigned NOT NULL COMMENt 'References GUID in web frontend, i.e. `django.auth_group.id`.', 
   `projectID` int unsigned NOT NULL,
-  FOREIGN KEY (`projectID`) REFERENCES peanuts.project (`ID`), 
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ;
 
 -- Users authorized to edit project and view associated data.
-CREATE TABLE IF NOT EXISTS peanuts.auth_project_collaborator (
+CREATE TABLE IF NOT EXISTS qraat.auth_project_collaborator (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `groupID` int unsigned NOT NULL COMMENt 'References GUID in web frontend, i.e. `django.auth_group.id`.', 
   `projectID` int unsigned NOT NULL,
-  FOREIGN KEY (`projectID`) REFERENCES peanuts.project (`ID`), 
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ;
 
 
 -- Transmitter data (public) ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS peanuts.tx (
+CREATE TABLE IF NOT EXISTS qraat.tx (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
   `tx_infoID` int unsigned NOT NULL,
   `projectID` int unsigned NOT NULL COMMENT 'Project for which transmitter was originally created.',
   `frequency` double NOT NULL,
   `demod_type` enum ('pulse', 'cont', 'afsk'),
-  FOREIGN KEY (`projectID`) REFERENCES peanuts.project (`ID`), 
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB; 
 
-CREATE TABLE IF NOT EXISTS peanuts.tx_info (
+CREATE TABLE IF NOT EXISTS qraat.tx_info (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `manufacturer` varchar(50) DEFAULT NULL,
   `model` varchar(50) DEFAULT NULL,
@@ -78,17 +75,17 @@ CREATE TABLE IF NOT EXISTS peanuts.tx_info (
 
 -- NOTE In Python, use dictionary cursor type.
 -- NOTE Type conversion in Python. 
-CREATE TABLE IF NOT EXISTS peanuts.tx_parameters (
+CREATE TABLE IF NOT EXISTS qraat.tx_parameters (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
   `txID` int unsigned NOT NULL,
   `name` varchar(32) NOT NULL, 
   `value` varchar(64) NOT NULL, 
-  FOREIGN KEY (`txID`) REFERENCES peanuts.tx (`ID`),
+  FOREIGN KEY (`txID`) REFERENCES qraat.tx (`ID`),
   PRIMARY KEY (`ID`),
   KEY (`name`)
 ) ENGINE=InnoDB; 
 
--- CREATE TABLE IF NOT EXISTS peanuts.tx_pulse (
+-- CREATE TABLE IF NOT EXISTS qraat.tx_pulse (
 --   `txID` int unsigned NOT NULL COMMENT 'ID from tx table',
 --   `frequency` float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
 --   `pulse_width` float unsigned DEFAULT NULL COMMENT 'Pulse Width in milliseconds (ms)',
@@ -98,13 +95,13 @@ CREATE TABLE IF NOT EXISTS peanuts.tx_parameters (
 --   PRIMARY KEY (`txID`)
 -- ) ENGINE=InnoDB; 
 --
--- CREATE TABLE IF NOT EXISTS peanuts.tx_cont (
+-- CREATE TABLE IF NOT EXISTS qraat.tx_cont (
 --   `txID` int unsigned NOT NULL COMMENT 'ID from tx table',
 --   `frequency` float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
 --   PRIMARY KEY (`txID`)
 -- ) ENGINE=InnoDB;
 -- 
--- CREATE TABLE IF NOT EXISTS peanuts.tx_afsk (
+-- CREATE TABLE IF NOT EXISTS qraat.tx_afsk (
 --   `txID` int unsigned NOT NULL COMMENT 'ID from tx table',
 --   `frequency` float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
 --   `deviation` float unsigned DEFAULT NULL COMMENT 'FM Deviation in kHz',
@@ -119,18 +116,18 @@ CREATE TABLE IF NOT EXISTS peanuts.tx_parameters (
 -- Target, i.e. animal.
 -- TODO species, ID tag serial number/s, weight, length, location/time 
 -- captured (multiple entries), notes, etc.
-CREATE TABLE IF NOT EXISTS peanuts.target (
+CREATE TABLE IF NOT EXISTS qraat.target (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
   `name` varchar(50) NOT NULL,
   `description` TEXT DEFAULT NULL, 
   `projectID` int unsigned NOT NULL COMMENT 'Project for which target was originally created.',
-  FOREIGN KEY (`projectID`) REFERENCES peanuts.project (`ID`), 
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB; 
 
 -- Project specific sites, e.g. den locations, capture locations, 
 -- beacon transmitters. (Private to project.) 
-CREATE TABLE IF NOT EXISTS peanuts.site (
+CREATE TABLE IF NOT EXISTS qraat.site (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `projectID` int unsigned NOT NULL,
   `name` varchar(20) DEFAULT NULL,
@@ -142,7 +139,7 @@ CREATE TABLE IF NOT EXISTS peanuts.site (
   `utm_zone_number` tinyint(3) unsigned DEFAULT '10',
   `utm_zone_letter` char(1) DEFAULT 'S',
   `elevation` decimal(7,2) DEFAULT '0.00',
-  FOREIGN KEY (`projectID`) REFERENCES peanuts.project (`ID`),
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`),
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ;
 
@@ -153,7 +150,7 @@ CREATE TABLE IF NOT EXISTS peanuts.site (
 -- and since the DB engine for these tables is not transactional (i.e. does not respect 
 -- foreign constraints), a deploymentID should not be deleted if there exists associated data. 
 -- (Private to project.) 
-CREATE TABLE IF NOT EXISTS peanuts.deployment (
+CREATE TABLE IF NOT EXISTS qraat.deployment (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
   `name` varchar(50) NOT NULL,
   `description` TEXT DEFAULT NULL, 
@@ -162,14 +159,14 @@ CREATE TABLE IF NOT EXISTS peanuts.deployment (
   `projectID` int unsigned NOT NULL COMMENT 'Project to which deployment is associated.',
   `time_start` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
   `time_end` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
-  FOREIGN KEY (`txID`) REFERENCES peanuts.tx (`ID`), 
-  FOREIGN KEY (`targetID`) REFERENCES peanuts.target (`ID`), 
-  FOREIGN KEY (`projectID`) REFERENCES peanuts.project (`ID`), 
+  FOREIGN KEY (`txID`) REFERENCES qraat.tx (`ID`), 
+  FOREIGN KEY (`targetID`) REFERENCES qraat.target (`ID`), 
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ; 
 
 -- Tracking parameters. (Private to project.) 
-CREATE TABLE IF NOT EXISTS peanuts.track (
+CREATE TABLE IF NOT EXISTS qraat.track (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT, 
   `deploymentID` int unsigned NOT NULL, 
   `projectID` int unsigned NOT NULL COMMENT 'Project to which track is associated.',
@@ -177,8 +174,8 @@ CREATE TABLE IF NOT EXISTS peanuts.track (
   `speed_burst` double DEFAULT NULL, 
   `speed_sustained` double DEFAULT NULL, 
   `speed_limit` double NOT NULL, 
-  FOREIGN KEY (`deploymentID`) REFERENCES peanuts.deployment (`ID`), 
-  FOREIGN KEY (`projectID`) REFERENCES peanuts.project (`ID`), 
+  FOREIGN KEY (`deploymentID`) REFERENCES qraat.deployment (`ID`), 
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ; 
 
@@ -188,7 +185,7 @@ CREATE TABLE IF NOT EXISTS peanuts.track (
 --
 
 -- Pulse data ---------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS peanuts.est ( 
+CREATE TABLE IF NOT EXISTS qraat.est ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
   siteID int(11) DEFAULT NULL, 
   timestamp decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
@@ -257,7 +254,7 @@ CREATE TABLE IF NOT EXISTS peanuts.est (
   KEY frequency (frequency)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS peanuts.estscore (
+CREATE TABLE IF NOT EXISTS qraat.estscore (
   `estID` bigint(20) NOT NULL,
   `absscore` tinyint(4) NOT NULL,
   `relscore` double NOT NULL,
@@ -267,7 +264,7 @@ CREATE TABLE IF NOT EXISTS peanuts.estscore (
 
 -- Telemetry ----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS peanuts.telemetry ( 
+CREATE TABLE IF NOT EXISTS qraat.telemetry ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
   siteID bigint(20) NOT NULL, 
   datetime datetime DEFAULT NULL, 
@@ -281,7 +278,7 @@ CREATE TABLE IF NOT EXISTS peanuts.telemetry (
   PRIMARY KEY (ID) 
 ) ENGINE=MyISAM ; 
 
-CREATE TABLE IF NOT EXISTS peanuts.timecheck ( 
+CREATE TABLE IF NOT EXISTS qraat.timecheck ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
   siteID bigint(20) NOT NULL, 
   datetime datetime DEFAULT NULL, 
@@ -293,7 +290,7 @@ CREATE TABLE IF NOT EXISTS peanuts.timecheck (
 
 -- Calibration --------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS peanuts.calibration_information (
+CREATE TABLE IF NOT EXISTS qraat.calibration_information (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `start_timestamp` decimal(16,6) DEFAULT NULL,
   `stop_timestamp` decimal(16,6) DEFAULT NULL,
@@ -302,7 +299,7 @@ CREATE TABLE IF NOT EXISTS peanuts.calibration_information (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS peanuts.gps_calibration_data (
+CREATE TABLE IF NOT EXISTS qraat.gps_calibration_data (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `cal_infoID` int(11) DEFAULT NULL,
   `timestamp` int(11) DEFAULT NULL,
@@ -315,7 +312,7 @@ CREATE TABLE IF NOT EXISTS peanuts.gps_calibration_data (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS peanuts.true_position (
+CREATE TABLE IF NOT EXISTS qraat.true_position (
   `estID` bigint(20) NOT NULL,
   `cal_infoID` int(11) DEFAULT NULL,
   `easting` decimal(9,2) DEFAULT NULL,
@@ -324,7 +321,7 @@ CREATE TABLE IF NOT EXISTS peanuts.true_position (
   PRIMARY KEY (`estID`)
 ) ENGINE=MyISAM ; 
 
-CREATE TABLE IF NOT EXISTS peanuts.steering_vectors (
+CREATE TABLE IF NOT EXISTS qraat.steering_vectors (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `cal_infoID` int(11) DEFAULT NULL,
   `siteID` int(11) DEFAULT NULL,
@@ -343,7 +340,7 @@ CREATE TABLE IF NOT EXISTS peanuts.steering_vectors (
 
 -- Data ---------------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS peanuts.bearing (
+CREATE TABLE IF NOT EXISTS qraat.bearing (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `deploymentID` bigint(20) NOT NULL,
   `siteID` bigint(20) NOT NULL,
@@ -356,7 +353,7 @@ CREATE TABLE IF NOT EXISTS peanuts.bearing (
   KEY (`deploymentID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS peanuts.position (
+CREATE TABLE IF NOT EXISTS qraat.position (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `deploymentID` bigint(20) NOT NULL,
   `timestamp` decimal(16,6) NOT NULL,
@@ -373,7 +370,7 @@ CREATE TABLE IF NOT EXISTS peanuts.position (
   KEY (`deploymentID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS peanuts.track_pos (
+CREATE TABLE IF NOT EXISTS qraat.track_pos (
   `positionID` bigint(20) NOT NULL,
   `trackID` bigint(20) NOT NULL,
   `timestamp` decimal(16,6) NOT NULL, 
@@ -384,7 +381,7 @@ CREATE TABLE IF NOT EXISTS peanuts.track_pos (
 
 -- Processing ---------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS peanuts.provenance (
+CREATE TABLE IF NOT EXISTS qraat.provenance (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `obj_table` varchar(30) NOT NULL,
   `obj_id` bigint(20) NOT NULL,
@@ -393,7 +390,7 @@ CREATE TABLE IF NOT EXISTS peanuts.provenance (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS peanuts.`cursor` (
+CREATE TABLE IF NOT EXISTS qraat.`cursor` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `value` bigint(20) NOT NULL,
   `name` varchar(20) NOT NULL,
@@ -401,7 +398,7 @@ CREATE TABLE IF NOT EXISTS peanuts.`cursor` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS peanuts.`interval_cache` (
+CREATE TABLE IF NOT EXISTS qraat.`interval_cache` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `deploymentID` bigint(20) NOT NULL,
   `siteID` int(11) NOT NULL,
