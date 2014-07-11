@@ -11,7 +11,7 @@
 -- Site data (public) -------------------------------------------------------------------
 
 -- only sites with receivers, admins are the only ones with write access
-CREATE TABLE IF NOT EXISTS qraat.rx_site ( 
+CREATE TABLE IF NOT EXISTS qraat.rx ( 
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) DEFAULT NULL,
   `location` varchar(100) DEFAULT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS qraat.project (
 
 -- Users authorized to view project and associated data, specified by a 
 -- GUID in the web framework. I.e., `django.auth_group.id`.
-CREATE TABLE IF NOT EXISTS qraat.auth_proj_viewer (
+CREATE TABLE IF NOT EXISTS qraat.auth_project_viewer (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `groupID` int unsigned NOT NULL COMMENt 'References GUID in web frontend, i.e. `django.auth_group.id`.', 
   `projectID` int unsigned NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS qraat.auth_proj_viewer (
 ) ENGINE=InnoDB ;
 
 -- Users authorized to edit project and view associated data.
-CREATE TABLE IF NOT EXISTS qraat.auth_proj_collaborator (
+CREATE TABLE IF NOT EXISTS qraat.auth_project_collaborator (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `groupID` int unsigned NOT NULL COMMENt 'References GUID in web frontend, i.e. `django.auth_group.id`.', 
   `projectID` int unsigned NOT NULL,
@@ -54,8 +54,81 @@ CREATE TABLE IF NOT EXISTS qraat.auth_proj_collaborator (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ;
 
--- Project specific sites, e.g. den locations, capture locations, beacon transmitters
-CREATE TABLE IF NOT EXISTS qraat.proj_site (
+
+-- Transmitter data (public) ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS qraat.tx (
+  `ID` int unsigned NOT NULL AUTO_INCREMENT, 
+  `tx_infoID` int unsigned NOT NULL,
+  `projectID` int unsigned NOT NULL COMMENT 'Project for which transmitter was originally created.',
+  `frequency` double NOT NULL,
+  `demod_type` enum ('PULSE', 'CONT', 'AFSK'),
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB; 
+
+CREATE TABLE IF NOT EXISTS qraat.tx_info (
+  `ID` int unsigned NOT NULL AUTO_INCREMENT,
+  `manufacturer` varchar(50) DEFAULT NULL,
+  `model` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB; 
+
+-- NOTE In Python, use dictionary cursor type.
+-- NOTE Type conversion in Python. 
+CREATE TABLE IF NOT EXISTS qraat.tx_parameters (
+  `ID` int unsigned NOT NULL AUTO_INCREMENT, 
+  `txID` int unsigned NOT NULL,
+  `name` varchar(32) NOT NULL, 
+  `value` varchar(64) NOT NULL, 
+  FOREIGN KEY (`txID`) REFERENCES qraat.tx (`ID`),
+  PRIMARY KEY (`ID`),
+  KEY (`name`)
+) ENGINE=InnoDB; 
+
+--CREATE TABLE IF NOT EXISTS qraat.tx_pulse (
+--  `txID` int unsigned NOT NULL COMMENT 'ID from tx table',
+--  `frequency` float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
+--  `pulse_width` float unsigned DEFAULT NULL COMMENT 'Pulse Width in milliseconds (ms)',
+--  `pulse_rate` float unsigned DEFAULT NULL COMMENT 'Pulse Rate in pulses per minute (ppm)',
+--  `band3` smallint unsigned DEFAULT NULL COMMENT 'Nominal 3dB Bandwidth in Hertz (Hz), used in parameter filtering',
+--  `band10` smallint unsigned DEFAULT NULL COMMENT 'Nomianl 10dB Bandwidth in Hertz (Hz), used in parameter filtering',
+--  PRIMARY KEY (`txID`)
+--) ENGINE=InnoDB; 
+--
+--CREATE TABLE IF NOT EXISTS qraat.tx_cont (
+--  `txID` int unsigned NOT NULL COMMENT 'ID from tx table',
+--  `frequency` float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
+--  PRIMARY KEY (`txID`)
+--) ENGINE=InnoDB;
+--
+--CREATE TABLE IF NOT EXISTS qraat.tx_afsk (
+--  `txID` int unsigned NOT NULL COMMENT 'ID from tx table',
+--  `frequency` float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
+--  `deviation` float unsigned DEFAULT NULL COMMENT 'FM Deviation in kHz',
+--  `mark_frequency` float unsigned DEFAULT NULL COMMENT 'MARK audio frequency in Hz',
+--  `space_frequency` float unsigned DEFAULT NULL COMMENT 'SPACE audio frequency in Hz',
+--  PRIMARY KEY (`txID`)
+--) ENGINE=InnoDB;
+
+
+-- Target, site data (private) ----------------------------------------------------------
+
+-- Target, i.e. animal.
+-- TODO species, ID tag serial number/s, weight, length, location/time 
+-- captured (multiple entries), notes, etc.
+CREATE TABLE IF NOT EXISTS qraat.target (
+  `ID` int unsigned NOT NULL AUTO_INCREMENT, 
+  `name` varchar(50) NOT NULL,
+  `description` TEXT DEFAULT NULL, 
+  `projectID` int unsigned NOT NULL COMMENT 'Project for which target was originally created.',
+  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB; 
+
+-- Project specific sites, e.g. den locations, capture locations, 
+-- beacon transmitters. (Private to project.) 
+CREATE TABLE IF NOT EXISTS qraat.site (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `projectID` int unsigned NOT NULL,
   `name` varchar(20) DEFAULT NULL,
@@ -72,73 +145,12 @@ CREATE TABLE IF NOT EXISTS qraat.proj_site (
 ) ENGINE=InnoDB ;
 
 
--- Transmitter data (public) ------------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS qraat.tx (
-  `ID` int unsigned NOT NULL AUTO_INCREMENT, 
-  `tx_infoID` int unsigned NOT NULL,
-  `rmg_type` ENUM ('PULSE', 'CONT', 'AFSK'), -- If PULSE, then there exists an entry in tx_pulse 
-                                     -- where tx.ID = tx_pulse.txID. (Similar for CONT 
-                                     -- when this mechanism is introduced.)
-  `projectID` int unsigned NOT NULL COMMENT 'Project for which transmitter was originally created.',
-  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB; 
-
-CREATE TABLE IF NOT EXISTS qraat.tx_info (
-  `ID` int unsigned NOT NULL AUTO_INCREMENT,
-  `manufacturer` varchar(50) DEFAULT NULL,
-  `model` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB; 
-
-CREATE TABLE IF NOT EXISTS qraat.tx_pulse (
-  `txID` int unsigned NOT NULL COMMENT 'ID from tx table',
-  `frequency` float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
-  `pulse_width` float unsigned DEFAULT NULL COMMENT 'Pulse Width in milliseconds (ms)',
-  `pulse_rate` float unsigned DEFAULT NULL COMMENT 'Pulse Rate in pulses per minute (ppm)',
-  `band3` smallint unsigned DEFAULT NULL COMMENT 'Nominal 3dB Bandwidth in Hertz (Hz), used in parameter filtering',
-  `band10` smallint unsigned DEFAULT NULL COMMENT 'Nomianl 10dB Bandwidth in Hertz (Hz), used in parameter filtering',
-  PRIMARY KEY (`txID`)
-) ENGINE=InnoDB; 
-
-CREATE TABLE IF NOT EXISTS qraat.tx_cont (
-  `txID` int unsigned NOT NULL COMMENT 'ID from tx table',
-  `frequency` float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
-  PRIMARY KEY (`txID`)
-) ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS qraat.tx_afsk (
-  `txID` int unsigned NOT NULL COMMENT 'ID from tx table',
-  `frequency` float unsigned DEFAULT NULL COMMENT 'Frequency in MHz',
-  `deviation` float unsigned DEFAULT NULL COMMENT 'FM Deviation in kHz',
-  `mark_frequency` float unsigned DEFAULT NULL COMMENT 'MARK audio frequency in Hz',
-  `space_frequency` float unsigned DEFAULT NULL COMMENT 'SPACE audio frequency in Hz',
-  PRIMARY KEY (`txID`)
-) ENGINE=InnoDB;
-
-
--- Target data (public) -----------------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS qraat.target (
-  `ID` int unsigned NOT NULL AUTO_INCREMENT, 
-  `name` varchar(50) NOT NULL,
-  `description` TEXT DEFAULT NULL, 
-  `projectID` int unsigned NOT NULL COMMENT 'Project for which target was originally created.',
-  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB; 
-
---TODO add animal information table/s,
---     Fields: species, ID tag serial number/s, weight, length, location/time captured (multiple entries), notes, etc.
-                             
-
-
--- Deployment data ----------------------------------------------------------------------
+-- Deployment data (private) ------------------------------------------------------------
 
 -- Pulse, bearing, position, and track data are ultimately associated with a deployment, 
 -- and since the DB engine for these tables is not transactional (i.e. does not respect 
--- foreign constraints), a depID should not be deleted if there exists associated data. 
+-- foreign constraints), a deploymentID should not be deleted if there exists associated data. 
+-- (Private to project.) 
 CREATE TABLE IF NOT EXISTS qraat.deployment (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
   `name` varchar(50) NOT NULL,
@@ -146,23 +158,24 @@ CREATE TABLE IF NOT EXISTS qraat.deployment (
   `txID`  int unsigned NOT NULL, 
   `targetID`  int unsigned NOT NULL, 
   `projectID` int unsigned NOT NULL COMMENT 'Project to which deployment is associated.',
-  `t_start` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
-  `t_end` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
+  `time_start` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
+  `time_end` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
   FOREIGN KEY (`txID`) REFERENCES qraat.tx (`ID`), 
   FOREIGN KEY (`targetID`) REFERENCES qraat.target (`ID`), 
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB; 
 
+-- Tracking parameters. (Private to project.) 
 CREATE TABLE IF NOT EXISTS qraat.track (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT, 
-  `depID` bigint(20) NOT NULL, 
+  `deploymentID` bigint(20) NOT NULL, 
   `max_speed_family` ENUM('exp', 'linear', 'const'), 
   `speed_burst` double DEFAULT NULL, 
   `speed_sustained` double DEFAULT NULL, 
   `speed_limit` double NOT NULL, 
   PRIMARY KEY (`ID`),
-  FORIEGN KEY (`depID`) REFERENCES qraat.deployment (`ID`)
+  FORIEGN KEY (`deploymentID`) REFERENCES qraat.deployment (`ID`)
 ) ENGINE=InnoDB ; 
 
 
@@ -233,10 +246,10 @@ CREATE TABLE IF NOT EXISTS qraat.est (
   nc44i double DEFAULT NULL COMMENT 'Noise Covariance 44 - imaginary part', 
   fdsnr double DEFAULT NULL COMMENT 'Fourier Decomposition SNR (dB)', 
   edsnr double DEFAULT NULL COMMENT 'Eigenvalue Decomposition SNR (dB)',  
-  depID bigint(20) DEFAULT NULL, 
+  deploymentID bigint(20) DEFAULT NULL, 
   PRIMARY KEY (ID), 
   KEY timestamp (timestamp),
-  KEY depID (depID),
+  KEY deploymentID (deploymentID),
   KEY frequency (frequency)
 ) ENGINE=MyISAM ;
 
@@ -328,7 +341,7 @@ CREATE TABLE IF NOT EXISTS qraat.steering_vectors (
 
 CREATE TABLE IF NOT EXISTS qraat.bearing (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `depID` bigint(20) NOT NULL,
+  `deploymentID` bigint(20) NOT NULL,
   `siteID` bigint(20) NOT NULL,
   `timestamp` decimal(16,6) NOT NULL,
   `bearing` double NOT NULL COMMENT "Most likely bearing.",
@@ -336,12 +349,12 @@ CREATE TABLE IF NOT EXISTS qraat.bearing (
   `activity` double DEFAULT NULL COMMENT "Normalized activity metric.",
   PRIMARY KEY (`ID`),
   KEY (`timestamp`),
-  KEY (`depID`)
+  KEY (`deploymentID`)
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.position (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `depID` bigint(20) NOT NULL,
+  `deploymentID` bigint(20) NOT NULL,
   `timestamp` decimal(16,6) NOT NULL,
   `latitude` decimal(10,6) DEFAULT NULL,
   `longitude` decimal(11,6) DEFAULT NULL,
@@ -353,11 +366,11 @@ CREATE TABLE IF NOT EXISTS qraat.position (
   `activity` double DEFAULT NULL COMMENT "Averaged over bearing data from all sites.",
   PRIMARY KEY (`ID`),
   KEY (`timestamp`),
-  KEY (`depID`)
+  KEY (`deploymentID`)
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.track_pos (
-  `posID` bigint(20) NOT NULL,
+  `positionID` bigint(20) NOT NULL,
   `trackID` bigint(20) NOT NULL,
   `timestamp` decimal(16,6) NOT NULL, 
   PRIMARY KEY (`TrackID`, `timestamp`)
@@ -386,7 +399,7 @@ CREATE TABLE IF NOT EXISTS qraat.`cursor` (
 
 CREATE TABLE IF NOT EXISTS qraat.`interval_cache` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `depID` bigint(20) NOT NULL,
+  `deploymentID` bigint(20) NOT NULL,
   `siteID` int(11) NOT NULL,
   `start` decimal(16,6) NOT NULL COMMENT 'UNIX timestamp where this estimated signal interval becomes applicable',
   `valid_duration` double NOT NULL COMMENT 'Number of seconds after start that this estimated interval is valid for.',
