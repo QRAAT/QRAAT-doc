@@ -92,7 +92,6 @@ CREATE TABLE IF NOT EXISTS qraat.tx_deployment (
 CREATE TABLE IF NOT EXISTS qraat.est ( 
   ID bigint(20) NOT NULL AUTO_INCREMENT, 
   siteid int(11) DEFAULT NULL, 
-  datetime datetime DEFAULT NULL COMMENT 'Date/Time (UTC)', 
   timestamp decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
   frequency int(11) DEFAULT NULL COMMENT 'Tag Frequency (Hz)', 
   center int(11) DEFAULT NULL COMMENT 'Band Center Frequency (Hz)', 
@@ -152,12 +151,11 @@ CREATE TABLE IF NOT EXISTS qraat.est (
   nc44i double DEFAULT NULL COMMENT 'Noise Covariance 44 - imaginary part', 
   fdsnr double DEFAULT NULL COMMENT 'Fourier Decomposition SNR (dB)', 
   edsnr double DEFAULT NULL COMMENT 'Eigenvalue Decomposition SNR (dB)', 
-  timezone varchar(6) DEFAULT NULL, 
-  txid bigint(20) DEFAULT NULL, 
+  deploymentID bigint(20) DEFAULT NULL, 
   PRIMARY KEY (ID), 
   KEY datetime (datetime),
   KEY timestamp (timestamp),
-  KEY txid (txid),
+  KEY txid (deploymentID),
   KEY frequency (frequency)
 ) ENGINE=MyISAM ;
 
@@ -307,7 +305,7 @@ CREATE TABLE IF NOT EXISTS qraat.`cursor` (
 
 CREATE TABLE IF NOT EXISTS qraat.`interval_cache` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `txid` bigint(20) NOT NULL, -- TODO change this `depID`
+  `deploymentid` bigint(20) NOT NULL, 
   `siteid` int(11) NOT NULL,
   `start` decimal(16,6) NOT NULL COMMENT 'UNIX timestamp where this estimated signal interval becomes applicable',
   `valid_duration` double NOT NULL COMMENT 'Number of seconds after start that this estimated interval is valid for.',
