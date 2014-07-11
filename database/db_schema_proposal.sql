@@ -10,7 +10,7 @@
 -- Site data (public) -------------------------------------------------------------------
 
 -- only sites with receivers, admins are the only ones with write access
-CREATE TABLE IF NOT EXISTS qraat.rx ( 
+CREATE TABLE IF NOT EXISTS qraat.rx_site ( 
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) DEFAULT NULL,
   `location` varchar(100) DEFAULT NULL,
