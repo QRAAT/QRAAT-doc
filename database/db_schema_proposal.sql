@@ -60,24 +60,39 @@ CREATE TABLE IF NOT EXISTS qraat.auth_project_collaborator (
 
 CREATE TABLE IF NOT EXISTS qraat.tx (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
-  `tx_infoID` int unsigned NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `serial_no` varchar(50) NOT NULL, 
+  `tx_makeID` int unsigned NOT NULL,
   `projectID` int unsigned NOT NULL COMMENT 'Project for which transmitter was originally created.',
   `frequency` double NOT NULL,
-  `demod_type` enum ('pulse', 'cont', 'afsk'),
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB; 
 
-CREATE TABLE IF NOT EXISTS qraat.tx_info (
+CREATE TABLE IF NOT EXISTS qraat.tx_make (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `manufacturer` varchar(50) DEFAULT NULL,
   `model` varchar(50) DEFAULT NULL,
+  `demod_type` enum ('pulse', 'cont', 'afsk'),
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB; 
 
 -- NOTE In Python, use dictionary cursor type.
 -- NOTE Type conversion in Python. 
 CREATE TABLE IF NOT EXISTS qraat.tx_parameters (
+  `ID` int unsigned NOT NULL AUTO_INCREMENT, 
+  `txID` int unsigned NOT NULL,
+  `name` varchar(32) NOT NULL, 
+  `value` varchar(64) NOT NULL, 
+  FOREIGN KEY (`txID`) REFERENCES qraat.tx (`ID`),
+  PRIMARY KEY (`ID`),
+  KEY (`name`)
+) ENGINE=InnoDB; 
+
+-- Suggested defaults for `qraat.tx_parameters`
+-- NOTE In Python, use dictionary cursor type.
+-- NOTE Type conversion in Python. 
+CREATE TABLE IF NOT EXISTS qraat.tx_make_parameters (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
   `txID` int unsigned NOT NULL,
   `name` varchar(32) NOT NULL, 
@@ -157,11 +172,12 @@ CREATE TABLE IF NOT EXISTS qraat.deployment (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
   `name` varchar(50) NOT NULL,
   `description` TEXT DEFAULT NULL, 
+  `time_start` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
+  `time_end` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
   `txID`  int unsigned NOT NULL, 
   `targetID`  int unsigned NOT NULL, 
   `projectID` int unsigned NOT NULL COMMENT 'Project to which deployment is associated.',
-  `time_start` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
-  `time_end` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
+  `is_active` BOOLEAN DEFAULT False, 
   FOREIGN KEY (`txID`) REFERENCES qraat.tx (`ID`), 
   FOREIGN KEY (`targetID`) REFERENCES qraat.target (`ID`), 
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
