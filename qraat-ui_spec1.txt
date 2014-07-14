@@ -1,0 +1,174 @@
+QRAAT user interface v 1
+
+A first cut version of the QRAAT user interface. This specification is meant to 
+for a prototype web front end for managing the QRAAT system. Subsequent versions
+will be have more adminstrator control and restrict user functionality in an 
+intelleigent way. This version puts a lot of trust in users. Refer to 
+QRAAT-doc/database/db_schema_proposal.sql for database schema on hand. 
+
+
+Sessions & Users
+----------------
+
+Types:
+ 
+  visitor
+  user
+  owner
+  admin
+  viewer (group)
+  collaborator (group)  
+
+A QRAAT user has a an account set up in our system. A visitor is someone who 
+views our website without logging in. Sessions will be protected by using HTTPS
+in conjunction with our web framework.
+
+User authentication and access control will be handled in the web framework in a
+database independent of the main QRAAT database. Administrators will create 
+user accounts manually. Users will have the fields first_name, last_name, 
+email, and password. We will send new users temporary passwords. They should be
+able to change their password (by retyping the old one) at anytime [1]. 
+
+Inactive sessions are not allowed. When a user ends the session, i.e. closes
+the browser window, she must login again the next time she goes to the site. 
+
+
+Projects & Deployments
+----------------------
+
+A project can be created by any user, who is the sole owner of the project.
+Transmitters, targets, deployments, and sites of interest are permannently 
+associated to a project (`qraat.project.ID`). The owner maintains a group of 
+'viewers', who are allowed to view these metadata as well as tracking data 
+associated to deployments, and a group of 'collaborators'. The right to add, edit, 
+or delete project metadata is granted to the owner and collaborators. Finally,
+the owner can mark a project as public; in this case, the viewers group becomes 
+all users and visitors.
+
+Transmitters and targets can only be used in deployments within the same 
+project. The purpose of this is to maintain provenance for tracking data 
+associated to deployments. If project owners wish to exchange transmitter or
+target data, they must create new objects for their project.
+
+A deployment associates a target with a transmitter and is marked active by a 
+a flag `qraat.deployment.is_active`. This flag can be changed at any time. A 
+transmitter or target may only be used in one deployment at a time. In addition, 
+the transmitter's frequency may differ by 0.002 [2] from all transmitters in 
+active deployments. 
+
+  [Future version.] For purpose of managing transmitter bandwidth among many 
+  projects, we will implement a more sophisticated administrator role in which 
+  the admin assigns bandwidth to a given project for a given period of time,
+  e.g. Jan 2015 - Feb 2015. 
+
+
+Transmitters 
+------------
+
+Users may add new transmitters and targets to their own projects, subject to the
+constraints described above. Each transmitter has a frequency, name, serial 
+number, and make. The user must choose a transmitter make from the choices 
+provided in `qraat.tx_make`. This table contains transmitter manufacturuer and 
+models, and the domodulation type of the transmitter make ('pulse', 'cont', 
+'afsk'). The table `qraat.tx_parameters` contains algorithm parameters for the 
+transmitters' signal demodulation. We provide default values for various 
+transmiter models, but allow users to customize these parameters. 
+
+The user experience of entering transmitters will be something like this: 
+
+  Name:            Transmitter1
+  Serial No.* :    134849y63104f
+  Frequency (Mhz): 164.432 
+  Make:            [Drop down menu, select manufacturuer and model] -> ATS #M1520
+
+We must also input the transmitter parameters. Suppose tx_make_id is the ID 
+associated with "ATS #M1520". We bring up the default parameters for this 
+transmitter like so: 
+
+  a = {'param1' : ('val1', 'units1') ... 'paramN' : ('valN', 'unitsN'} <- 
+                                           `SELECT * 
+                                              FROM qraat.tx_make_paramters
+                                             WHERE tx_makeID = <tx_make_id>;`
+
+In HTML, make a table with cells corresponding to 'param1' ... 'paramN' whose 
+values initially are 'val1' ... 'valN'. For example:
+
+  pulse_wdith (ms): 20
+  pulse_rate (ppm): 30 
+  band3 (Hz):       150
+  band10 (Hz):      900
+  
+Once the user is finished customizing these values, clicking "apply changes"
+will create a new entry in `qraat.tx` and several new entries 
+`qraat.tx_parameters` where qraat.tx_parameters.txID is the same as the newly 
+created transmitter. 
+
+ 
+Targets
+-------
+
+These just have two fields (for now): name and description. There's no 
+restrictions on data entry here. 
+ 
+  [Future version.] Physical characteristics of target, such as height, weight,
+  age, sex, etc. 
+  
+
+Editing/removing metadata elements
+----------------------------------
+
+Actual data is restricted to read only for users. Tables in the schema containing
+data are `est`, `estscore`, `position`, `bearing`, and `track_pos`. Each of these 
+has an associated deployment, i.e., `qraat.*.deploymentID` references 
+`qraat.deployment.ID`. It is critical for system integrity that we don't allow 
+users to delete or modify deployments for which there is associated data. 
+
+We have chosen a data model in which metadata can't be deleted directly by a 
+user. This is meant to deal with the above criterion, as well as to prevent 
+untrusted UI from inadvertantly affecting others' metadata. If a user wishes to 
+delete a metadata element, the column `qraat.*.is_hidden` is marked as true. 
+This affectively hides the entry in the user interface without actually deleting 
+it. 
+
+  [Future version.] A backend system process will be written to clean up junk 
+  data, partially assisted (in some way) by an admin. 
+
+Many metadata parameters can be modified safely (i.e. calling UPDATE on a row),
+but there are some that must result in a new metadata element being created. For
+example, suppose a user creates a new transmitter for a new deployment. If 
+he accidently inputted the wrong frequency, the system could have already 
+collected data for the deployment. Even though this is likely junk, one of our
+design goals is to maintain provenance for all data collected. To deal with this,
+we'll require the user to input a new transmitter and deployment. (The deployment
+should be marked as hidden or inactive). 
+
+In general, there are a number of parameters related to data capture which are 
+unsafe to modify if involved in a deployment. These are qraat.tx.serial_no, 
+qraat.tx.frequency, qraat.tx.tx_makeID, and anything in qraat.tx_paramters where
+`txID` is the transmitter on hand. If the user wants to edit these and the 
+transmitter is associated with any deployment (active or inactive, hidden or 
+visible), then the UI should prompt them to insert a new transmitter.
+
+  [Future version.] It should be possible to make this experience seemless for 
+  users. In other words, if a user wants to modify a transmitter, a new 
+  transmitter and deployment are created and the old deployment is hidden from
+  view.
+
+
+Input field validation
+----------------------
+
+The user interface will ensure that entered values are of the correct format 
+and/or within a valid range. 
+
+  [Future version.] The database schema should be modified to specify correct 
+  formats / valid data ranges. 
+
+
+
+
+[1] [Future version.] We may require the user to wait a certain amount of time 
+    (say 5 minutes) between password resets. 
+
+[2] Need to make sure this is a valid assumption. However this is meant to be
+    "good enough" for now. 
