@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS qraat.tx_make_parameters (
   `name` varchar(32) NOT NULL, 
   `value` varchar(64) NOT NULL, 
   `units` varchar(32) DEFAULT NULL,
-  FOREIGN KEY (`txID`) REFERENCES qraat.tx (`ID`),
+  FOREIGN KEY (`tx_makeID`) REFERENCES qraat.tx_make (`ID`),
   PRIMARY KEY (`ID`),
   KEY (`name`)
 ) ENGINE=InnoDB; 
