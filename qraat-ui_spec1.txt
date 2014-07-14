@@ -43,18 +43,20 @@ associated to a project (`qraat.project.ID`). The owner maintains a group of
 associated to deployments, and a group of 'collaborators'. The right to add, edit, 
 or delete project metadata is granted to the owner and collaborators. Finally,
 the owner can mark a project as public; in this case, the viewers group becomes 
-all users and visitors.
+all users and visitors. (`qraat.project.is_public`.)
 
 Transmitters and targets can only be used in deployments within the same 
 project. The purpose of this is to maintain provenance for tracking data 
 associated to deployments. If project owners wish to exchange transmitter or
-target data, they must create new objects for their project.
+target metadata data, they must create new objects for their project.
 
 A deployment associates a target with a transmitter and is marked active by a 
 a flag `qraat.deployment.is_active`. This flag can be changed at any time. A 
-transmitter or target may only be used in one deployment at a time. In addition, 
-the transmitter's frequency may differ by 0.002 [2] from all transmitters in 
-active deployments. 
+transmitter or target may only be used in one deployment at a time. 
+
+  [Future version.] we'll implement a mechanism for making sure there are no 
+  collisions in the transmitter bandwidth space; for now, we'll trust users 
+  to make sure their frequencies aren't being used. 
 
   [Future version.] For purpose of managing transmitter bandwidth among many 
   projects, we will implement a more sophisticated administrator role in which 
@@ -72,7 +74,7 @@ provided in `qraat.tx_make`. This table contains transmitter manufacturuer and
 models, and the domodulation type of the transmitter make ('pulse', 'cont', 
 'afsk'). The table `qraat.tx_parameters` contains algorithm parameters for the 
 transmitters' signal demodulation. We provide default values for various 
-transmiter models, but allow users to customize these parameters. 
+transmiter models. 
 
 The user experience of entering transmitters will be something like this: 
 
@@ -81,27 +83,23 @@ The user experience of entering transmitters will be something like this:
   Frequency (Mhz): 164.432 
   Make:            [Drop down menu, select manufacturuer and model] -> ATS #M1520
 
-We must also input the transmitter parameters. Suppose tx_make_id is the ID 
-associated with "ATS #M1520". We bring up the default parameters for this 
-transmitter like so: 
+Table `qraat.tx_make` and `qraat.tx_make_parameters` are maintained by the
+admins. Once the user has finished entering these values and has selected a 
+make type, clicking "apply changes" will create a new entry in `qraat.tx` and 
+several new entries in `qraat.tx_parameters`. In particular, suppose we build
+a dictionary from `qraat.tx_make_parameters` like so: 
 
   a = {'param1' : ('val1', 'units1') ... 'paramN' : ('valN', 'unitsN'} <- 
                                            `SELECT * 
                                               FROM qraat.tx_make_paramters
                                              WHERE tx_makeID = <tx_make_id>;`
 
-In HTML, make a table with cells corresponding to 'param1' ... 'paramN' whose 
-values initially are 'val1' ... 'valN'. For example:
+Then for each (name, (value, units)) in a, we do 
 
-  pulse_wdith (ms): 20
-  pulse_rate (ppm): 30 
-  band3 (Hz):       150
-  band10 (Hz):      900
-  
-Once the user is finished customizing these values, clicking "apply changes"
-will create a new entry in `qraat.tx` and several new entries 
-`qraat.tx_parameters` where qraat.tx_parameters.txID is the same as the newly 
-created transmitter. 
+  `INSERT INTO qraat.tx_paramaters (txID, name, value, units) VALUE (<tx_id>,
+    <name>, <value>, <units>;`
+
+where tx_id corresponds to the transmitter just added. 
 
  
 Targets
@@ -113,6 +111,8 @@ restrictions on data entry here.
   [Future version.] Physical characteristics of target, such as height, weight,
   age, sex, etc. 
   
+  [Future version.] Default algorithm parameters for tracking. 
+
 
 Editing/removing metadata elements
 ----------------------------------
@@ -139,8 +139,8 @@ example, suppose a user creates a new transmitter for a new deployment. If
 he accidently inputted the wrong frequency, the system could have already 
 collected data for the deployment. Even though this is likely junk, one of our
 design goals is to maintain provenance for all data collected. To deal with this,
-we'll require the user to input a new transmitter and deployment. (The deployment
-should be marked as hidden or inactive). 
+we'll require the user to input a new transmitter and deployment. (The previous
+deployment should be marked as inactive). 
 
 In general, there are a number of parameters related to data capture which are 
 unsafe to modify if involved in a deployment. These are qraat.tx.serial_no, 
@@ -159,11 +159,38 @@ Input field validation
 ----------------------
 
 The user interface will ensure that entered values are of the correct format 
-and/or within a valid range. 
+and/or within a valid range. In order to prevent SQL injection attacks, we 
+must take special care when performing database queries on user-inputted data. 
+In Python, this is a matter of careful use of the cursor.execute() method. 
+for example: 
+
+  def handle_post_request(db_con, post_data):
+    # Handle session authenticaiton, make sure UUID has 
+    # write access on the current project ... 
+    cur = db_con.cursor()
+    cur.execute('''UPDATE qraat.project 
+                      SET description = %s
+                    WHERE ID = %s''', 
+          (post_data.description, post_data.proj_id))
+
+is OK. On the other hand: 
+
+  def handle_post_request(db_con, post_data):
+    # Handle session authenticaiton, make sure UUID has 
+    # write access on the current project ... 
+    cur = db_con.cursor()
+    cur.execute('''UPDATE qraat.project 
+                      SET description = '%s'
+                    WHERE ID = %s''' %  
+          (post_data.description, post_data.proj_id))
+
+is BAD! The string `post_data.description` can be formatted to inject SQL
+syntax into the string passed into execute(). If the data are passed into 
+execute() as a tuple, then execute() escapes the input strings such that 
+they're interpreted as such. 
 
   [Future version.] The database schema should be modified to specify correct 
   formats / valid data ranges. 
-
 
 
 
