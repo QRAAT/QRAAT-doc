@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS qraat.project (
   `name` varchar(50) NOT NULL,
   `description` TEXT DEFAULT NULL, 
   `is_public` boolean NOT NULL,
+  `is_hidden` BOOLEAN DEFAULT False, 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ;
 
@@ -65,6 +66,7 @@ CREATE TABLE IF NOT EXISTS qraat.tx (
   `tx_makeID` int unsigned NOT NULL,
   `projectID` int unsigned NOT NULL COMMENT 'Project for which transmitter was originally created.',
   `frequency` double NOT NULL,
+  `is_hidden` BOOLEAN DEFAULT False, 
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB; 
@@ -84,6 +86,7 @@ CREATE TABLE IF NOT EXISTS qraat.tx_parameters (
   `txID` int unsigned NOT NULL,
   `name` varchar(32) NOT NULL, 
   `value` varchar(64) NOT NULL, 
+  `units` varchar(32) DEFAULT NULL,
   FOREIGN KEY (`txID`) REFERENCES qraat.tx (`ID`),
   PRIMARY KEY (`ID`),
   KEY (`name`)
@@ -94,9 +97,10 @@ CREATE TABLE IF NOT EXISTS qraat.tx_parameters (
 -- NOTE Type conversion in Python. 
 CREATE TABLE IF NOT EXISTS qraat.tx_make_parameters (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
-  `txID` int unsigned NOT NULL,
+  `tx_makeID` int unsigned NOT NULL,
   `name` varchar(32) NOT NULL, 
   `value` varchar(64) NOT NULL, 
+  `units` varchar(32) DEFAULT NULL,
   FOREIGN KEY (`txID`) REFERENCES qraat.tx (`ID`),
   PRIMARY KEY (`ID`),
   KEY (`name`)
@@ -138,6 +142,7 @@ CREATE TABLE IF NOT EXISTS qraat.target (
   `name` varchar(50) NOT NULL,
   `description` TEXT DEFAULT NULL, 
   `projectID` int unsigned NOT NULL COMMENT 'Project for which target was originally created.',
+  `is_hidden` BOOLEAN DEFAULT False, 
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB; 
@@ -157,6 +162,7 @@ CREATE TABLE IF NOT EXISTS qraat.site (
   `utm_zone_number` tinyint(3) unsigned DEFAULT '10',
   `utm_zone_letter` char(1) DEFAULT 'S',
   `elevation` decimal(7,2) DEFAULT '0.00',
+  `is_hidden` BOOLEAN DEFAULT False, 
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`),
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ;
@@ -178,6 +184,7 @@ CREATE TABLE IF NOT EXISTS qraat.deployment (
   `targetID`  int unsigned NOT NULL, 
   `projectID` int unsigned NOT NULL COMMENT 'Project to which deployment is associated.',
   `is_active` BOOLEAN DEFAULT False, 
+  `is_hidden` BOOLEAN DEFAULT False, 
   FOREIGN KEY (`txID`) REFERENCES qraat.tx (`ID`), 
   FOREIGN KEY (`targetID`) REFERENCES qraat.target (`ID`), 
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
@@ -193,6 +200,7 @@ CREATE TABLE IF NOT EXISTS qraat.track (
   `speed_burst` double DEFAULT NULL, 
   `speed_sustained` double DEFAULT NULL, 
   `speed_limit` double NOT NULL, 
+  `is_hidden` BOOLEAN DEFAULT False, 
   FOREIGN KEY (`deploymentID`) REFERENCES qraat.deployment (`ID`), 
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
