@@ -34,4 +34,6 @@ INSERT INTO `qraat.tx_parameters` VALUES
 INSERT INTO `qraat.deployment` VALUES
    (); -- TODO 
 
+-- TODO set AUTO_INCREMENT to one more than the max serial ID for each table. 
+
 COMMIT; 
