@@ -10,7 +10,7 @@
 -- Site data (public) -------------------------------------------------------------------
 
 -- only sites with receivers, admins are the only ones with write access
-CREATE TABLE IF NOT EXISTS qraat.rx_site ( 
+CREATE TABLE IF NOT EXISTS qraat.site ( 
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) DEFAULT NULL,
   `location` varchar(100) DEFAULT NULL,
@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS qraat.target (
 
 -- Project specific sites, e.g. den locations, capture locations, 
 -- beacon transmitters. (Private to project.) 
-CREATE TABLE IF NOT EXISTS qraat.site (
+CREATE TABLE IF NOT EXISTS qraat.location (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `projectID` int unsigned NOT NULL,
   `name` varchar(50) DEFAULT NULL,
