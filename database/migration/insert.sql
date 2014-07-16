@@ -1,4 +1,3 @@
--- Create admin account, put UUID of user for '99999'. 
 DELETE FROM location; 
 DELETE FROM track;
 DELETE FROM deployment; 
@@ -34,6 +33,7 @@ INSERT INTO tx_make_parameters (tx_makeID, name, value, units) VALUES
   (4, 'pulse_width', '30', 'ms'), (4, 'pulse_rate', '40', 'ppm'), (4, 'band3', NULL, 'Hz'), (4, 'band10', NULL, 'Hz');
 ALTER TABLE tx_make_parameters AUTO_INCREMENT = 17;
 
+-- TODO Create admin account, put UUID of user for '99999'. 
 INSERT INTO `project` (ID, ownerID, name, description, is_public, is_hidden) VALUES 
    (1, 99999, 'QRAAT (dev)', 'Contains all transmitters and data up to July 2014.', False, False); 
 ALTER TABLE `project` AUTO_INCREMENT = 2;
