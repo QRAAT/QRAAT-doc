@@ -89,7 +89,7 @@ INSERT INTO tx (ID, name, serial_no, tx_makeID, projectID, frequency, is_hidden)
   (48, 'M164384', '(nil)', 3, 1, 164.384, 0),
   (49, 'M164393', '(nil)', 3, 1, 164.393, 0),
   (50, 'M164400', '(nil)', 3, 1, 164.4, 0),
-  (51, 'tuneable_txn', '(nil)', 1, 1, 164.5, 0),
+  (51, 'tuneable_tx', '(nil)', 1, 1, 164.5, 0),
   (52, 'F6394', '(nil)', 2, 1, 164.013, 0),
   (53, 'F6389', '(nil)', 2, 1, 164.023, 0),
   (54, 'F5792', '(nil)', 2, 1, 164.033, 0),
@@ -356,16 +356,16 @@ INSERT INTO `location` (ID, projectID, name, description, location, latitude, lo
 ALTER TABLE `location` AUTO_INCREMENT = 11;
 
 INSERT INTO `track` (ID, projectID, deploymentID, max_speed_family, speed_burst, speed_sustained, speed_limit, is_hidden) VALUES 
-   (0,1,51,'const',2.5,NULL,NULL,0),
-   (1,1,63,'exp',2,0.25,0.05,0),
-   (2,1,64,'exp',2,0.25,0.05,0),
-   (3,1,68,'exp',2,0.25,0.05,0),
-   (4,1,69,'exp',1,0.1,0.05,0),
-   (5,1,70,'exp',1,0.1,0.05,0),
-   (6,1,73,'exp',1,0.1,0.05,0),
-   (7,1,74,'exp',1,0.1,0.05,0),
-   (8,1,75,'exp',1,0.1,0.05,0),
-   (9,1,77,'exp',1,0.1,0.05,0);
-ALTER TABLE `track` AUTO_INCREMENT = 10;
+   (1,1,51,'const',2.5,NULL,NULL,0),
+   (2,1,63,'exp',2,0.25,0.05,0),
+   (3,1,64,'exp',2,0.25,0.05,0),
+   (4,1,68,'exp',2,0.25,0.05,0),
+   (5,1,69,'exp',1,0.1,0.05,0),
+   (6,1,70,'exp',1,0.1,0.05,0),
+   (7,1,73,'exp',1,0.1,0.05,0),
+   (8,1,74,'exp',1,0.1,0.05,0),
+   (9,1,75,'exp',1,0.1,0.05,0),
+   (10,1,77,'exp',1,0.1,0.05,0);
+ALTER TABLE `track` AUTO_INCREMENT = 11;
 
 COMMIT; 
