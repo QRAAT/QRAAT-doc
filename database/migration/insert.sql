@@ -1,8 +1,14 @@
 -- Create admin account, put UUID of user for '99999'. 
-DELETE FROM `site`; 
-DELETE FROM `location`; 
-DELETE FROM `project`; 
-DELETE FROM `track`;
+DELETE FROM location; 
+DELETE FROM track;
+DELETE FROM deployment; 
+DELETE FROM target; 
+DELETE FROM tx_parameters; 
+DELETE FROM tx; 
+DELETE FROM tx_make_parameters; 
+DELETE FROM tx_make; 
+DELETE FROM project; 
+DELETE FROM site; 
 
 INSERT INTO `site` (ID, name, location, latitude, longitude, easting, northing, utm_zone_number, utm_zone_letter, elevation) VALUES 
    (1,'site1','Field Station',38.483052,-122.149580,574172.77,4259755.45,10,'S',394.02),
@@ -13,11 +19,335 @@ INSERT INTO `site` (ID, name, location, latitude, longitude, easting, northing, 
    (6,'site21','Weaver Tower',38.492924,-122.142340,574794.06,4260856.82,10,'S',293.57),
    (8,'site39','SiteK',38.495187,-122.151417,574000.17,4261100.56,10,'S',199.29); 
 ALTER TABLE `site` AUTO_INCREMENT = 9;
-  
+
+INSERT INTO tx_make (ID, manufacturer, model, demod_type) VALUES
+  (1, 'Ben Kamen', 'Tuneable transmitter', 'pulse'),
+  (2, 'ATS', 'M1520', 'pulse'),
+  (3, 'ATS', 'M1450', 'pulse'),
+  (4, 'Holohil', 'MI-2M(12)', 'pulse'); 
+ALTER TABLE tx_make AUTO_INCREMENT = 5;
+
+INSERT INTO tx_make_parameters (tx_makeID, name, value, units) VALUES
+  (1, 'pulse_width', '20', 'ms'), (1, 'pulse_rate', '60', 'ppm'), (1, 'band3', NULL, 'Hz'), (1, 'band10', NULL, 'Hz'), 
+  (2, 'pulse_width', '15', 'ms'), (2, 'pulse_rate', '25', 'ppm'), (2, 'band3', '150', 'Hz'), (2, 'band10', '900', 'Hz'), 
+  (3, 'pulse_width', '15', 'ms'), (3, 'pulse_rate', '23', 'ppm'), (3, 'band3', '150', 'Hz'), (3, 'band10', '900', 'Hz'),
+  (4, 'pulse_width', '30', 'ms'), (4, 'pulse_rate', '40', 'ppm'), (4, 'band3', NULL, 'Hz'), (4, 'band10', NULL, 'Hz');
+ALTER TABLE tx_make_parameters AUTO_INCREMENT = 17;
+
 INSERT INTO `project` (ID, ownerID, name, description, is_public, is_hidden) VALUES 
    (1, 99999, 'QRAAT (dev)', 'Contains all transmitters and data up to July 2014.', False, False); 
 ALTER TABLE `project` AUTO_INCREMENT = 2;
 
+INSERT INTO tx (ID, name, serial_no, tx_makeID, projectID, frequency, is_hidden) VALUES
+  (1, 'M164010', '(nil)', 3, 1, 164.01, 0),
+  (2, 'M164017', '(nil)', 3, 1, 164.017, 0),
+  (3, 'M164024', '(nil)', 3, 1, 164.024, 0),
+  (4, 'M164033', '(nil)', 3, 1, 164.033, 0),
+  (5, 'M164041', '(nil)', 3, 1, 164.041, 0),
+  (6, 'M164048', '(nil)', 3, 1, 164.048, 0),
+  (7, 'M164056', '(nil)', 3, 1, 164.056, 0),
+  (8, 'M164065', '(nil)', 3, 1, 164.065, 0),
+  (9, 'M164073', '(nil)', 3, 1, 164.073, 0),
+  (10, 'M164081', '(nil)', 3, 1, 164.081, 0),
+  (11, 'M164089', '(nil)', 3, 1, 164.089, 0),
+  (12, 'M164097', '(nil)', 3, 1, 164.097, 0),
+  (13, 'M164105', '(nil)', 3, 1, 164.105, 0),
+  (14, 'M164113', '(nil)', 3, 1, 164.113, 0),
+  (15, 'M164121', '(nil)', 3, 1, 164.121, 0),
+  (16, 'M164130', '(nil)', 3, 1, 164.13, 0),
+  (17, 'M164138', '(nil)', 3, 1, 164.138, 0),
+  (18, 'M164145', '(nil)', 3, 1, 164.145, 0),
+  (19, 'M164153', '(nil)', 3, 1, 164.153, 0),
+  (20, 'M164162', '(nil)', 3, 1, 164.162, 0),
+  (21, 'M164170', '(nil)', 3, 1, 164.17, 0),
+  (22, 'M164177', '(nil)', 3, 1, 164.177, 0),
+  (23, 'M164185', '(nil)', 3, 1, 164.185, 0),
+  (24, 'M164194', '(nil)', 3, 1, 164.194, 0),
+  (25, 'M164201', '(nil)', 3, 1, 164.201, 0),
+  (26, 'M164210', '(nil)', 3, 1, 164.21, 0),
+  (27, 'M164217', '(nil)', 3, 1, 164.217, 0),
+  (28, 'M164225', '(nil)', 3, 1, 164.225, 0),
+  (29, 'M164233', '(nil)', 3, 1, 164.233, 0),
+  (30, 'M164241', '(nil)', 3, 1, 164.241, 0),
+  (31, 'M164248', '(nil)', 3, 1, 164.248, 0),
+  (32, 'M164256', '(nil)', 3, 1, 164.256, 0),
+  (33, 'M164265', '(nil)', 3, 1, 164.265, 0),
+  (34, 'M164273', '(nil)', 3, 1, 164.273, 0),
+  (35, 'M164280', '(nil)', 3, 1, 164.28, 0),
+  (36, 'M164289', '(nil)', 3, 1, 164.289, 0),
+  (37, 'M164297', '(nil)', 3, 1, 164.297, 0),
+  (38, 'M164305', '(nil)', 3, 1, 164.305, 0),
+  (39, 'M164313', '(nil)', 3, 1, 164.313, 0),
+  (40, 'M164321', '(nil)', 3, 1, 164.321, 0),
+  (41, 'M164328', '(nil)', 3, 1, 164.328, 0),
+  (42, 'M164336', '(nil)', 3, 1, 164.336, 0),
+  (43, 'M164344', '(nil)', 3, 1, 164.344, 0),
+  (44, 'M164352', '(nil)', 3, 1, 164.352, 0),
+  (45, 'M164361', '(nil)', 3, 1, 164.361, 0),
+  (46, 'M164369', '(nil)', 3, 1, 164.369, 0),
+  (47, 'M164377', '(nil)', 3, 1, 164.377, 0),
+  (48, 'M164384', '(nil)', 3, 1, 164.384, 0),
+  (49, 'M164393', '(nil)', 3, 1, 164.393, 0),
+  (50, 'M164400', '(nil)', 3, 1, 164.4, 0),
+  (51, 'tuneable_txn', '(nil)', 1, 1, 164.5, 0),
+  (52, 'F6394', '(nil)', 2, 1, 164.013, 0),
+  (53, 'F6389', '(nil)', 2, 1, 164.023, 0),
+  (54, 'F5792', '(nil)', 2, 1, 164.033, 0),
+  (55, 'M6364', '(nil)', 2, 1, 164.042, 0),
+  (56, 'M6322', '(nil)', 2, 1, 164.053, 0),
+  (57, 'F6375', '(nil)', 2, 1, 164.061, 0),
+  (58, 'F5210', '(nil)', 2, 1, 164.071, 0),
+  (59, 'M5754', '(nil)', 2, 1, 164.083, 0),
+  (60, 'Beacon', '(nil)', 1, 1, 164, 0),
+  (61, 'woodrat1', '(nil)', 2, 1, 164.092, 0),
+  (62, 'woodrat2', '(nil)', 2, 1, 164.103, 0),
+  (63, '190785', '(nil)', 4, 1, 163.847, 0),
+  (64, '190786', '(nil)', 4, 1, 163.874, 0),
+  (65, '190787', '(nil)', 4, 1, 163.908, 0),
+  (66, '190788', '(nil)', 4, 1, 163.921, 0),
+  (67, '190789', '(nil)', 4, 1, 163.974, 0),
+  (68, '190790', '(nil)', 4, 1, 163.997, 0),
+  (69, 'M164407', '(nil)', 3, 1, 164.407, 0),
+  (70, 'M164416', '(nil)', 3, 1, 164.416, 0),
+  (71, 'M164432', '(nil)', 3, 1, 164.432, 0),
+  (72, 'M164440', '(nil)', 3, 1, 164.44, 0),
+  (73, 'M164448', '(nil)', 3, 1, 164.448, 0),
+  (74, 'M164456', '(nil)', 3, 1, 164.456, 0),
+  (75, 'M164464', '(nil)', 3, 1, 164.464, 0),
+  (76, 'M164472', '(nil)', 3, 1, 164.472, 0),
+  (77, 'M164480', '(nil)', 3, 1, 164.48, 0),
+  (78, 'M164488', '(nil)', 3, 1, 164.488, 0),
+  (79, 'M164496', '(nil)', 3, 1, 164.496, 0),
+  (80, 'M164504', '(nil)', 3, 1, 164.504, 0),
+  (81, 'M164512', '(nil)', 3, 1, 164.512, 0),
+  (82, 'M164520', '(nil)', 3, 1, 164.52, 0),
+  (83, 'M164528', '(nil)', 3, 1, 164.528, 0),
+  (84, 'M164545', '(nil)', 3, 1, 164.545, 0),
+  (85, 'M164553', '(nil)', 3, 1, 164.553, 0),
+  (86, 'M164560', '(nil)', 3, 1, 164.56, 0),
+  (87, 'M164568', '(nil)', 3, 1, 164.568, 0),
+  (88, 'M164576', '(nil)', 3, 1, 164.576, 0),
+  (89, 'M164584', '(nil)', 3, 1, 164.584, 0),
+  (90, 'M164593', '(nil)', 3, 1, 164.593, 0),
+  (91, 'M164601', '(nil)', 3, 1, 164.601, 0),
+  (92, 'M164807', '(nil)', 3, 1, 164.807, 0),
+  (93, 'M164816', '(nil)', 3, 1, 164.816, 0),
+  (94, '(nil)', '(nil)', 2, 1, 164.008, 0), 
+  (95, '(nil)', '(nil)', 2, 1, 164.016, 0), 
+  (96, '(nil)', '(nil)', 2, 1, 164.024, 0), 
+  (97, 'JF6379', '(nil)', 2, 1, 164.032, 0),
+  (98, '(nil)', '(nil)', 2, 1, 164.04, 0), 
+  (99, 'JF6381', '(nil)', 2, 1, 164.048, 0),
+  (100, 'AF6377', '(nil)', 2, 1, 164.056, 0),
+  (101, '(nil)', '(nil)', 2, 1, 164.072, 0), 
+  (102, 'AF6382', '(nil)', 2, 1, 164.08, 0),
+  (103, 'AM6384', '(nil)', 2, 1, 164.088, 0),
+  (104, '(nil)', '(nil)', 2, 1, 164.12, 0), 
+  (105, 'JM6378', '(nil)', 2, 1, 164.128, 0),
+  (106, 'AF6376', '(nil)', 2, 1, 164.136, 0),
+  (107, 'AM6380', '(nil)', 2, 1, 164.144, 0),
+  (108, '(nil)', '(nil)', 2, 1, 164.152, 0), 
+  (109, 'AM6383', '(nil)', 2, 1, 164.16, 0),
+  (110, '(nil)', '(nil)', 2, 1, 164.168, 0), 
+  (111, '(nil)', '(nil)', 2, 1, 164.176, 0), 
+  (112, '(nil)', '(nil)', 2, 1, 164.184, 0),
+  (113, '(nil)', '(nil)', 2, 1, 164.192, 0);
+ALTER TABLE tx AUTO_INCREMENT = 114;
+
+INSERT INTO tx_parameters (txID, name, value, units) VALUES
+  (1, 'pulse_width', '15', 'ms'), (1, 'pulse_rate', '23', 'ppm'), (1, 'band3', '150', 'Hz'), (1, 'band10', '900', 'Hz'),
+  (2, 'pulse_width', '15', 'ms'), (2, 'pulse_rate', '23', 'ppm'), (2, 'band3', '150', 'Hz'), (2, 'band10', '900', 'Hz'),
+  (3, 'pulse_width', '15', 'ms'), (3, 'pulse_rate', '23', 'ppm'), (3, 'band3', '150', 'Hz'), (3, 'band10', '900', 'Hz'),
+  (4, 'pulse_width', '15', 'ms'), (4, 'pulse_rate', '23', 'ppm'), (4, 'band3', '150', 'Hz'), (4, 'band10', '900', 'Hz'),
+  (5, 'pulse_width', '15', 'ms'), (5, 'pulse_rate', '23', 'ppm'), (5, 'band3', '150', 'Hz'), (5, 'band10', '900', 'Hz'),
+  (6, 'pulse_width', '15', 'ms'), (6, 'pulse_rate', '23', 'ppm'), (6, 'band3', '150', 'Hz'), (6, 'band10', '900', 'Hz'),
+  (7, 'pulse_width', '15', 'ms'), (7, 'pulse_rate', '23', 'ppm'), (7, 'band3', '150', 'Hz'), (7, 'band10', '900', 'Hz'),
+  (8, 'pulse_width', '15', 'ms'), (8, 'pulse_rate', '23', 'ppm'), (8, 'band3', '150', 'Hz'), (8, 'band10', '900', 'Hz'),
+  (9, 'pulse_width', '15', 'ms'), (9, 'pulse_rate', '23', 'ppm'), (9, 'band3', '150', 'Hz'), (9, 'band10', '900', 'Hz'),
+  (10, 'pulse_width', '15', 'ms'), (10, 'pulse_rate', '23', 'ppm'), (10, 'band3', '150', 'Hz'), (10, 'band10', '900', 'Hz'),
+  (11, 'pulse_width', '15', 'ms'), (11, 'pulse_rate', '23', 'ppm'), (11, 'band3', '150', 'Hz'), (11, 'band10', '900', 'Hz'),
+  (12, 'pulse_width', '15', 'ms'), (12, 'pulse_rate', '23', 'ppm'), (12, 'band3', '150', 'Hz'), (12, 'band10', '900', 'Hz'),
+  (13, 'pulse_width', '15', 'ms'), (13, 'pulse_rate', '23', 'ppm'), (13, 'band3', '150', 'Hz'), (13, 'band10', '900', 'Hz'),
+  (14, 'pulse_width', '15', 'ms'), (14, 'pulse_rate', '23', 'ppm'), (14, 'band3', '150', 'Hz'), (14, 'band10', '900', 'Hz'),
+  (15, 'pulse_width', '15', 'ms'), (15, 'pulse_rate', '23', 'ppm'), (15, 'band3', '150', 'Hz'), (15, 'band10', '900', 'Hz'),
+  (16, 'pulse_width', '15', 'ms'), (16, 'pulse_rate', '23', 'ppm'), (16, 'band3', '150', 'Hz'), (16, 'band10', '900', 'Hz'),
+  (17, 'pulse_width', '15', 'ms'), (17, 'pulse_rate', '23', 'ppm'), (17, 'band3', '150', 'Hz'), (17, 'band10', '900', 'Hz'),
+  (18, 'pulse_width', '15', 'ms'), (18, 'pulse_rate', '23', 'ppm'), (18, 'band3', '150', 'Hz'), (18, 'band10', '900', 'Hz'),
+  (19, 'pulse_width', '15', 'ms'), (19, 'pulse_rate', '23', 'ppm'), (19, 'band3', '150', 'Hz'), (19, 'band10', '900', 'Hz'),
+  (20, 'pulse_width', '15', 'ms'), (20, 'pulse_rate', '23', 'ppm'), (20, 'band3', '150', 'Hz'), (20, 'band10', '900', 'Hz'),
+  (21, 'pulse_width', '15', 'ms'), (21, 'pulse_rate', '23', 'ppm'), (21, 'band3', '150', 'Hz'), (21, 'band10', '900', 'Hz'),
+  (22, 'pulse_width', '15', 'ms'), (22, 'pulse_rate', '23', 'ppm'), (22, 'band3', '150', 'Hz'), (22, 'band10', '900', 'Hz'),
+  (23, 'pulse_width', '15', 'ms'), (23, 'pulse_rate', '23', 'ppm'), (23, 'band3', '150', 'Hz'), (23, 'band10', '900', 'Hz'),
+  (24, 'pulse_width', '15', 'ms'), (24, 'pulse_rate', '23', 'ppm'), (24, 'band3', '150', 'Hz'), (24, 'band10', '900', 'Hz'),
+  (25, 'pulse_width', '15', 'ms'), (25, 'pulse_rate', '23', 'ppm'), (25, 'band3', '150', 'Hz'), (25, 'band10', '900', 'Hz'),
+  (26, 'pulse_width', '15', 'ms'), (26, 'pulse_rate', '23', 'ppm'), (26, 'band3', '150', 'Hz'), (26, 'band10', '900', 'Hz'),
+  (27, 'pulse_width', '15', 'ms'), (27, 'pulse_rate', '23', 'ppm'), (27, 'band3', '150', 'Hz'), (27, 'band10', '900', 'Hz'),
+  (28, 'pulse_width', '15', 'ms'), (28, 'pulse_rate', '23', 'ppm'), (28, 'band3', '150', 'Hz'), (28, 'band10', '900', 'Hz'),
+  (29, 'pulse_width', '15', 'ms'), (29, 'pulse_rate', '23', 'ppm'), (29, 'band3', '150', 'Hz'), (29, 'band10', '900', 'Hz'),
+  (30, 'pulse_width', '15', 'ms'), (30, 'pulse_rate', '23', 'ppm'), (30, 'band3', '150', 'Hz'), (30, 'band10', '900', 'Hz'),
+  (31, 'pulse_width', '15', 'ms'), (31, 'pulse_rate', '23', 'ppm'), (31, 'band3', '150', 'Hz'), (31, 'band10', '900', 'Hz'),
+  (32, 'pulse_width', '15', 'ms'), (32, 'pulse_rate', '23', 'ppm'), (32, 'band3', '150', 'Hz'), (32, 'band10', '900', 'Hz'),
+  (33, 'pulse_width', '15', 'ms'), (33, 'pulse_rate', '23', 'ppm'), (33, 'band3', '150', 'Hz'), (33, 'band10', '900', 'Hz'),
+  (34, 'pulse_width', '15', 'ms'), (34, 'pulse_rate', '23', 'ppm'), (34, 'band3', '150', 'Hz'), (34, 'band10', '900', 'Hz'),
+  (35, 'pulse_width', '15', 'ms'), (35, 'pulse_rate', '23', 'ppm'), (35, 'band3', '150', 'Hz'), (35, 'band10', '900', 'Hz'),
+  (36, 'pulse_width', '15', 'ms'), (36, 'pulse_rate', '23', 'ppm'), (36, 'band3', '150', 'Hz'), (36, 'band10', '900', 'Hz'),
+  (37, 'pulse_width', '15', 'ms'), (37, 'pulse_rate', '23', 'ppm'), (37, 'band3', '150', 'Hz'), (37, 'band10', '900', 'Hz'),
+  (38, 'pulse_width', '15', 'ms'), (38, 'pulse_rate', '23', 'ppm'), (38, 'band3', '150', 'Hz'), (38, 'band10', '900', 'Hz'),
+  (39, 'pulse_width', '15', 'ms'), (39, 'pulse_rate', '23', 'ppm'), (39, 'band3', '150', 'Hz'), (39, 'band10', '900', 'Hz'),
+  (40, 'pulse_width', '15', 'ms'), (40, 'pulse_rate', '23', 'ppm'), (40, 'band3', '150', 'Hz'), (40, 'band10', '900', 'Hz'),
+  (41, 'pulse_width', '15', 'ms'), (41, 'pulse_rate', '23', 'ppm'), (41, 'band3', '150', 'Hz'), (41, 'band10', '900', 'Hz'),
+  (42, 'pulse_width', '15', 'ms'), (42, 'pulse_rate', '23', 'ppm'), (42, 'band3', '150', 'Hz'), (42, 'band10', '900', 'Hz'),
+  (43, 'pulse_width', '15', 'ms'), (43, 'pulse_rate', '23', 'ppm'), (43, 'band3', '150', 'Hz'), (43, 'band10', '900', 'Hz'),
+  (44, 'pulse_width', '15', 'ms'), (44, 'pulse_rate', '23', 'ppm'), (44, 'band3', '150', 'Hz'), (44, 'band10', '900', 'Hz'),
+  (45, 'pulse_width', '15', 'ms'), (45, 'pulse_rate', '23', 'ppm'), (45, 'band3', '150', 'Hz'), (45, 'band10', '900', 'Hz'),
+  (46, 'pulse_width', '15', 'ms'), (46, 'pulse_rate', '23', 'ppm'), (46, 'band3', '150', 'Hz'), (46, 'band10', '900', 'Hz'),
+  (47, 'pulse_width', '15', 'ms'), (47, 'pulse_rate', '23', 'ppm'), (47, 'band3', '150', 'Hz'), (47, 'band10', '900', 'Hz'),
+  (48, 'pulse_width', '15', 'ms'), (48, 'pulse_rate', '23', 'ppm'), (48, 'band3', '150', 'Hz'), (48, 'band10', '900', 'Hz'),
+  (49, 'pulse_width', '15', 'ms'), (49, 'pulse_rate', '23', 'ppm'), (49, 'band3', '150', 'Hz'), (49, 'band10', '900', 'Hz'),
+  (50, 'pulse_width', '15', 'ms'), (50, 'pulse_rate', '23', 'ppm'), (50, 'band3', '150', 'Hz'), (50, 'band10', '900', 'Hz'),
+  (51, 'pulse_width', '20', 'ms'), (51, 'pulse_rate', '60', 'ppm'), (51, 'band3', NULL, 'Hz'), (51, 'band10', NULL, 'Hz'),
+  (52, 'pulse_width', '19', 'ms'), (52, 'pulse_rate', '23', 'ppm'), (52, 'band3', '150', 'Hz'), (52, 'band10', '900', 'Hz'),
+  (53, 'pulse_width', '19', 'ms'), (53, 'pulse_rate', '23', 'ppm'), (53, 'band3', '150', 'Hz'), (53, 'band10', '900', 'Hz'),
+  (54, 'pulse_width', '19', 'ms'), (54, 'pulse_rate', '23', 'ppm'), (54, 'band3', '150', 'Hz'), (54, 'band10', '900', 'Hz'),
+  (55, 'pulse_width', '19', 'ms'), (55, 'pulse_rate', '23', 'ppm'), (55, 'band3', '150', 'Hz'), (55, 'band10', '900', 'Hz'),
+  (56, 'pulse_width', '19', 'ms'), (56, 'pulse_rate', '23', 'ppm'), (56, 'band3', '150', 'Hz'), (56, 'band10', '900', 'Hz'),
+  (57, 'pulse_width', '19', 'ms'), (57, 'pulse_rate', '23', 'ppm'), (57, 'band3', '150', 'Hz'), (57, 'band10', '900', 'Hz'),
+  (58, 'pulse_width', '19', 'ms'), (58, 'pulse_rate', '23', 'ppm'), (58, 'band3', '150', 'Hz'), (58, 'band10', '900', 'Hz'),
+  (59, 'pulse_width', '19', 'ms'), (59, 'pulse_rate', '23', 'ppm'), (59, 'band3', '150', 'Hz'), (59, 'band10', '900', 'Hz'),
+  (60, 'pulse_width', '20', 'ms'), (60, 'pulse_rate', '60', 'ppm'), (60, 'band3', NULL, 'Hz'), (60, 'band10', NULL, 'Hz'),
+  (61, 'pulse_width', '19', 'ms'), (61, 'pulse_rate', '23', 'ppm'), (61, 'band3', '150', 'Hz'), (61, 'band10', '900', 'Hz'),
+  (62, 'pulse_width', '19', 'ms'), (62, 'pulse_rate', '23', 'ppm'), (62, 'band3', '150', 'Hz'), (62, 'band10', '900', 'Hz'),
+  (63, 'pulse_width', '30', 'ms'), (63, 'pulse_rate', '39.6', 'ppm'), (63, 'band3', NULL, 'Hz'), (63, 'band10', NULL, 'Hz'),
+  (64, 'pulse_width', '30', 'ms'), (64, 'pulse_rate', '39.6', 'ppm'), (64, 'band3', NULL, 'Hz'), (64, 'band10', NULL, 'Hz'),
+  (65, 'pulse_width', '30', 'ms'), (65, 'pulse_rate', '39', 'ppm'), (65, 'band3', NULL, 'Hz'), (65, 'band10', NULL, 'Hz'),
+  (66, 'pulse_width', '30', 'ms'), (66, 'pulse_rate', '39.6', 'ppm'), (66, 'band3', NULL, 'Hz'), (66, 'band10', NULL, 'Hz'),
+  (67, 'pulse_width', '30', 'ms'), (67, 'pulse_rate', '40.2', 'ppm'), (67, 'band3', NULL, 'Hz'), (67, 'band10', NULL, 'Hz'),
+  (68, 'pulse_width', '30', 'ms'), (68, 'pulse_rate', '39.6', 'ppm'), (68, 'band3', NULL, 'Hz'), (68, 'band10', NULL, 'Hz'),
+  (69, 'pulse_width', '17', 'ms'), (69, 'pulse_rate', '17', 'ppm'), (69, 'band3', '150', 'Hz'), (69, 'band10', '900', 'Hz'),
+  (70, 'pulse_width', '17', 'ms'), (70, 'pulse_rate', '17', 'ppm'), (70, 'band3', '150', 'Hz'), (70, 'band10', '900', 'Hz'),
+  (71, 'pulse_width', '17', 'ms'), (71, 'pulse_rate', '17', 'ppm'), (71, 'band3', '150', 'Hz'), (71, 'band10', '900', 'Hz'),
+  (72, 'pulse_width', '17', 'ms'), (72, 'pulse_rate', '17', 'ppm'), (72, 'band3', '150', 'Hz'), (72, 'band10', '900', 'Hz'),
+  (73, 'pulse_width', '17', 'ms'), (73, 'pulse_rate', '17', 'ppm'), (73, 'band3', '150', 'Hz'), (73, 'band10', '900', 'Hz'),
+  (74, 'pulse_width', '17', 'ms'), (74, 'pulse_rate', '17', 'ppm'), (74, 'band3', '150', 'Hz'), (74, 'band10', '900', 'Hz'),
+  (75, 'pulse_width', '17', 'ms'), (75, 'pulse_rate', '17', 'ppm'), (75, 'band3', '150', 'Hz'), (75, 'band10', '900', 'Hz'),
+  (76, 'pulse_width', '17', 'ms'), (76, 'pulse_rate', '17', 'ppm'), (76, 'band3', '150', 'Hz'), (76, 'band10', '900', 'Hz'),
+  (77, 'pulse_width', '17', 'ms'), (77, 'pulse_rate', '17', 'ppm'), (77, 'band3', '150', 'Hz'), (77, 'band10', '900', 'Hz'),
+  (78, 'pulse_width', '17', 'ms'), (78, 'pulse_rate', '17', 'ppm'), (78, 'band3', '150', 'Hz'), (78, 'band10', '900', 'Hz'),
+  (79, 'pulse_width', '17', 'ms'), (79, 'pulse_rate', '17', 'ppm'), (79, 'band3', '150', 'Hz'), (79, 'band10', '900', 'Hz'),
+  (80, 'pulse_width', '17', 'ms'), (80, 'pulse_rate', '17', 'ppm'), (80, 'band3', '150', 'Hz'), (80, 'band10', '900', 'Hz'),
+  (81, 'pulse_width', '17', 'ms'), (81, 'pulse_rate', '17', 'ppm'), (81, 'band3', '150', 'Hz'), (81, 'band10', '900', 'Hz'),
+  (82, 'pulse_width', '17', 'ms'), (82, 'pulse_rate', '17', 'ppm'), (82, 'band3', '150', 'Hz'), (82, 'band10', '900', 'Hz'),
+  (83, 'pulse_width', '17', 'ms'), (83, 'pulse_rate', '17', 'ppm'), (83, 'band3', '150', 'Hz'), (83, 'band10', '900', 'Hz'),
+  (84, 'pulse_width', '17', 'ms'), (84, 'pulse_rate', '17', 'ppm'), (84, 'band3', '150', 'Hz'), (84, 'band10', '900', 'Hz'),
+  (85, 'pulse_width', '17', 'ms'), (85, 'pulse_rate', '17', 'ppm'), (85, 'band3', '150', 'Hz'), (85, 'band10', '900', 'Hz'),
+  (86, 'pulse_width', '17', 'ms'), (86, 'pulse_rate', '17', 'ppm'), (86, 'band3', '150', 'Hz'), (86, 'band10', '900', 'Hz'),
+  (87, 'pulse_width', '17', 'ms'), (87, 'pulse_rate', '17', 'ppm'), (87, 'band3', '150', 'Hz'), (87, 'band10', '900', 'Hz'),
+  (88, 'pulse_width', '17', 'ms'), (88, 'pulse_rate', '17', 'ppm'), (88, 'band3', '150', 'Hz'), (88, 'band10', '900', 'Hz'),
+  (89, 'pulse_width', '17', 'ms'), (89, 'pulse_rate', '17', 'ppm'), (89, 'band3', '150', 'Hz'), (89, 'band10', '900', 'Hz'),
+  (90, 'pulse_width', '17', 'ms'), (90, 'pulse_rate', '17', 'ppm'), (90, 'band3', '150', 'Hz'), (90, 'band10', '900', 'Hz'),
+  (91, 'pulse_width', '17', 'ms'), (91, 'pulse_rate', '17', 'ppm'), (91, 'band3', '150', 'Hz'), (91, 'band10', '900', 'Hz'),
+  (92, 'pulse_width', '17', 'ms'), (92, 'pulse_rate', '17', 'ppm'), (92, 'band3', '150', 'Hz'), (92, 'band10', '900', 'Hz'),
+  (93, 'pulse_width', '17', 'ms'), (93, 'pulse_rate', '17', 'ppm'), (93, 'band3', '150', 'Hz'), (93, 'band10', '900', 'Hz'),
+  (94, 'pulse_width', '15', 'ms'), (94, 'pulse_rate', '25', 'ppm'), (94, 'band3', '150', 'Hz'), (94, 'band10', '900', 'Hz'),
+  (95, 'pulse_width', '15', 'ms'), (95, 'pulse_rate', '25', 'ppm'), (95, 'band3', '150', 'Hz'), (95, 'band10', '900', 'Hz'),
+  (96, 'pulse_width', '15', 'ms'), (96, 'pulse_rate', '25', 'ppm'), (96, 'band3', '150', 'Hz'), (96, 'band10', '900', 'Hz'),
+  (97, 'pulse_width', '15', 'ms'), (97, 'pulse_rate', '25', 'ppm'), (97, 'band3', '150', 'Hz'), (97, 'band10', '900', 'Hz'),
+  (98, 'pulse_width', '15', 'ms'), (98, 'pulse_rate', '25', 'ppm'), (98, 'band3', '150', 'Hz'), (98, 'band10', '900', 'Hz'),
+  (99, 'pulse_width', '15', 'ms'), (99, 'pulse_rate', '25', 'ppm'), (99, 'band3', '150', 'Hz'), (99, 'band10', '900', 'Hz'),
+  (100, 'pulse_width', '15', 'ms'), (100, 'pulse_rate', '25', 'ppm'), (100, 'band3', '150', 'Hz'), (100, 'band10', '900', 'Hz'),
+  (101, 'pulse_width', '15', 'ms'), (101, 'pulse_rate', '25', 'ppm'), (101, 'band3', '150', 'Hz'), (101, 'band10', '900', 'Hz'),
+  (102, 'pulse_width', '15', 'ms'), (102, 'pulse_rate', '25', 'ppm'), (102, 'band3', '150', 'Hz'), (102, 'band10', '900', 'Hz'),
+  (103, 'pulse_width', '15', 'ms'), (103, 'pulse_rate', '25', 'ppm'), (103, 'band3', '150', 'Hz'), (103, 'band10', '900', 'Hz'),
+  (104, 'pulse_width', '15', 'ms'), (104, 'pulse_rate', '25', 'ppm'), (104, 'band3', '150', 'Hz'), (104, 'band10', '900', 'Hz'),
+  (105, 'pulse_width', '15', 'ms'), (105, 'pulse_rate', '25', 'ppm'), (105, 'band3', '150', 'Hz'), (105, 'band10', '900', 'Hz'),
+  (106, 'pulse_width', '15', 'ms'), (106, 'pulse_rate', '25', 'ppm'), (106, 'band3', '150', 'Hz'), (106, 'band10', '900', 'Hz'),
+  (107, 'pulse_width', '15', 'ms'), (107, 'pulse_rate', '25', 'ppm'), (107, 'band3', '150', 'Hz'), (107, 'band10', '900', 'Hz'),
+  (108, 'pulse_width', '15', 'ms'), (108, 'pulse_rate', '25', 'ppm'), (108, 'band3', '150', 'Hz'), (108, 'band10', '900', 'Hz'),
+  (109, 'pulse_width', '15', 'ms'), (109, 'pulse_rate', '25', 'ppm'), (109, 'band3', '150', 'Hz'), (109, 'band10', '900', 'Hz'),
+  (110, 'pulse_width', '15', 'ms'), (110, 'pulse_rate', '25', 'ppm'), (110, 'band3', '150', 'Hz'), (110, 'band10', '900', 'Hz'),
+  (111, 'pulse_width', '15', 'ms'), (111, 'pulse_rate', '25', 'ppm'), (111, 'band3', '150', 'Hz'), (111, 'band10', '900', 'Hz'),
+  (112, 'pulse_width', '15', 'ms'), (112, 'pulse_rate', '25', 'ppm'), (112, 'band3', '150', 'Hz'), (112, 'band10', '900', 'Hz'),
+  (113, 'pulse_width', '15', 'ms'), (113, 'pulse_rate', '25', 'ppm'), (113, 'band3', '150', 'Hz'), (113, 'band10', '900', 'Hz');
+ALTER TABLE tx AUTO_INCREMENT = 453;
+
+
+INSERT INTO target (ID, name, description, projectID, is_hidden) VALUES
+  (1, '(nil)', 'Some transmitters have no associated targets.', 1, 0),
+  (2, 'A', 'Martin', 1, 0),
+  (3, 'B', NULL, 1, 0),
+  (4, 'C', NULL, 1, 0),
+  (5, 'D', NULL, 1, 0),
+  (6, 'E', NULL, 1, 0),
+  (7, 'F', NULL, 1, 0),
+  (8, 'F6394', NULL, 1, 0),
+  (9, 'F6389', NULL, 1, 0),
+  (10, 'F5792', NULL, 1, 0),
+  (11, 'M6364', NULL, 1, 0),
+  (13, 'M6322', NULL, 1, 0),
+  (14, 'F5210', NULL, 1, 0),
+  (15, 'M5754', NULL, 1, 0),
+  (16, 'woodrat1', NULL, 1, 0),
+  (17, 'woodrat2', NULL, 1, 0),
+  (21, 'M164407', NULL, 1, 0),
+  (22, 'M164416', NULL, 1, 0),
+  (23, 'M164448', NULL, 1, 0),
+  (24, 'M164456', NULL, 1, 0),
+  (25, 'M164464', NULL, 1, 0),
+  (26, 'M164472', NULL, 1, 0),
+  (27, 'M164480', NULL, 1, 0),
+  (28, 'QR9 male', NULL, 1, 0),
+  (29, 'QR10 female', NULL, 1, 0),
+  (30, 'QR1 male', NULL, 1, 0),
+  (31, 'JF6379', NULL, 1, 0),
+  (32, 'JF6381', NULL, 1, 0),
+  (33, 'AF6377', NULL, 1, 0),
+  (34, 'AF6382', NULL, 1, 0),
+  (35, 'AM6384', NULL, 1, 0),
+  (36, 'JM6378', NULL, 1, 0),
+  (37, 'AF6376', NULL, 1, 0),
+  (38, 'AM6380', NULL, 1, 0),
+  (39, 'AM6383', NULL, 1, 0);
+ALTER TABLE `target` AUTO_INCREMENT = 40;  
+
+INSERT INTO deployment (ID, name, description, time_start, time_end, txID, targetID, projectID, is_active, is_hidden) VALUES
+  (1, '(nil)', NULL, 1372489200, NULL, 1, 2, 1, 0, 0),
+  (2, '(nil)', NULL, 1372575600, NULL, 2, 3, 1, 0, 0),
+  (3, '(nil)', NULL, 1372489200, NULL, 3, 4, 1, 0, 0),
+  (6, '(nil)', NULL, 1373266800, 1375686000, 6, 5, 1, 0, 0),
+  (9, '(nil)', NULL, 1373612400, 1375772400, 9, 6, 1, 0, 0),
+  (12, '(nil)', NULL, 1374044400, 1375513200, 12, 7, 1, 0, 0),
+  (51, '(nil)', NULL, 1376420400, 1376442000, 51, 1, 1, 0, 0),
+  (52, '(nil)', NULL, 1380697200, NULL, 52, 8, 1, 0, 0),
+  (53, '(nil)', NULL, 1380697200, NULL, 53, 9, 1, 0, 0),
+  (54, '(nil)', NULL, 1380697200, 1399842000, 54, 10, 1, 0, 0),
+  (55, '(nil)', NULL, 1380697200, 1397372400, 55, 11, 1, 0, 0),
+  (56, '(nil)', NULL, 1380697200, 1397372400, 56, 13, 1, 0, 0),
+  (58, '(nil)', NULL, 1380697200, NULL, 58, 14, 1, 0, 0),
+  (59, '(nil)', NULL, 1380697200, NULL, 59, 15, 1, 0, 0),
+  (60, '(nil)', NULL, 1383012000, 1384527600, 60, 1, 1, 0, 0),
+  (61, '(nil)', NULL, 1391241600, 1396767600, 61, 16, 1, 0, 0), -- combined deployment dates
+  (62, '(nil)', NULL, 1391241600, 1396767600, 62, 17, 1, 0, 0), -- combined deployment dates
+  (69, '(nil)', NULL, 1401433200, 1403895600, 69, 21, 1, 0, 0),
+  (70, '(nil)', NULL, 1401433200, 1403545200, 70, 22, 1, 0, 0),
+  (73, '(nil)', NULL, 1401433200, 1403031600, 73, 23, 1, 0, 0),
+  (74, '(nil)', NULL, 1401433200, 1402945200, 74, 24, 1, 0, 0),
+  (75, '(nil)', NULL, 1401692400, 1403118000, 75, 25, 1, 0, 0),
+  (76, '(nil)', NULL, 1403893800, NULL, 76, 26, 1, 1, 0),
+  (77, '(nil)', NULL, 1401433200, 1403895600, 77, 27, 1, 0, 0),
+  (63, '(nil)', NULL, 1400331600, NULL, 63, 28, 1, 1, 0),
+  (64, '(nil)', NULL, 1400331600, NULL, 64, 29, 1, 1, 0),
+  (68, '(nil)', NULL, 1400418000, NULL, 68, 30, 1, 1, 0),
+  (97, '(nil)', NULL, 1403960400, NULL, 97, 31, 1, 1, 0),
+  (99, '(nil)', NULL, 1403960400, NULL, 99, 32, 1, 1, 0),
+  (100, '(nil)', NULL, 1403960400, NULL, 100, 33, 1, 1, 0),
+  (102, '(nil)', NULL, 1403960400, NULL, 102, 34, 1, 1, 0),
+  (103, '(nil)', NULL, 1403960400, NULL, 103, 35, 1, 1, 0),
+  (105, '(nil)', NULL, 1403960400, NULL, 105, 36, 1, 1, 0),
+  (106, '(nil)', NULL, 1403960400, NULL, 106, 37, 1, 1, 0),
+  (107, '(nil)', NULL, 1403960400, NULL, 107, 38, 1, 1, 0),
+  (109, '(nil)', NULL, 1403960400, NULL, 109, 39, 1, 1, 0);
+ALTER TABLE `deployment` AUTO_INCREMENT = 110;  
+ 
 INSERT INTO `location` (ID, projectID, name, description, location, latitude, longitude, easting, northing, 
                             utm_zone_number, utm_zone_letter, elevation, is_hidden) VALUES 
    (7, 1, 'server', NULL, 'Field Station',38.483052,-122.149580,574172.77,4259755.45,10,'S',394.02,0),
@@ -25,7 +355,7 @@ INSERT INTO `location` (ID, projectID, name, description, location, latitude, lo
    (10, 1, 'center', NULL, 'Center for position estimation',0.000000,0.000000,574500.00,4260500.00,10,'S',0.00,0);
 ALTER TABLE `location` AUTO_INCREMENT = 11;
 
-INSERT INTO `track` (ID, deploymentID, projectID, max_speed_family, speed_burst, speed_sustained, speed_limit, is_hidden) VALUES 
+INSERT INTO `track` (ID, projectID, deploymentID, max_speed_family, speed_burst, speed_sustained, speed_limit, is_hidden) VALUES 
    (0,1,51,'const',2.5,NULL,NULL,0),
    (1,1,63,'exp',2,0.25,0.05,0),
    (2,1,64,'exp',2,0.25,0.05,0),
@@ -37,27 +367,5 @@ INSERT INTO `track` (ID, deploymentID, projectID, max_speed_family, speed_burst,
    (8,1,75,'exp',1,0.1,0.05,0),
    (9,1,77,'exp',1,0.1,0.05,0);
 ALTER TABLE `track` AUTO_INCREMENT = 10;
-
-
--- INSERT INTO `qraat.tx_make` VALUES 
---    (); -- TODO 
--- 
--- INSERT INTO `qraat.tx_make_parameters` VALUES 
---    (); -- TODO 
--- 
--- INSERT INTO `qraat.target` VALUES
---    (); -- TODO 
--- 
--- INSERT INTO `qraat.tx` VALUES
---    (); -- TODO 
--- 
--- INSERT INTO `qraat.tx_parameters` VALUES
---    (); -- TODO  
--- 
--- INSERT INTO `qraat.deployment` VALUES
---    (); -- TODO 
-
--- TODO set AUTO_INCREMENT to one more than the max serial ID for each table. 
-
 
 COMMIT; 
