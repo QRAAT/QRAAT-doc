@@ -356,7 +356,7 @@ INSERT INTO `location` (ID, projectID, name, description, location, latitude, lo
 ALTER TABLE `location` AUTO_INCREMENT = 11;
 
 INSERT INTO `track` (ID, projectID, deploymentID, max_speed_family, speed_burst, speed_sustained, speed_limit, is_hidden) VALUES 
-   (1,1,51,'const',2.5,NULL,NULL,0),
+   (1,1,51,'const',NULL,NULL,2.5,0),
    (2,1,63,'exp',2,0.25,0.05,0),
    (3,1,64,'exp',2,0.25,0.05,0),
    (4,1,68,'exp',2,0.25,0.05,0),
