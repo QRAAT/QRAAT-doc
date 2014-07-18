@@ -61,7 +61,10 @@ CREATE TABLE IF NOT EXISTS qraat.auth_project_collaborator (
 
 CREATE TABLE IF NOT EXISTS qraat.tx (
   `ID` int unsigned NOT NULL AUTO_INCREMENT, 
-  `name` varchar(50) NOT NULL,
+  `name` varchar(50) NOT NULL, -- TODO Currently the system uses the name of the transmitter
+                               -- for proecessing .det files into the database. This element 
+                               -- should not be editable by the user. (Should create new 
+                               -- transmitter.)
   `serial_no` varchar(50) NOT NULL, 
   `tx_makeID` int unsigned NOT NULL,
   `projectID` int unsigned NOT NULL COMMENT 'Project for which transmitter was originally created.',

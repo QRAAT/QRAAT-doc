@@ -153,7 +153,6 @@ CREATE TABLE IF NOT EXISTS qraat.est (
   edsnr double DEFAULT NULL COMMENT 'Eigenvalue Decomposition SNR (dB)', 
   deploymentID bigint(20) DEFAULT NULL, 
   PRIMARY KEY (ID), 
-  KEY datetime (datetime),
   KEY timestamp (timestamp),
   KEY txid (deploymentID),
   KEY frequency (frequency)
