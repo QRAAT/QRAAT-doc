@@ -1,7 +1,4 @@
-
--- WARNING!! When altering the DB schema, don't run this script directly. 
--- There are some stuff at the bottom which will smash the automated data
--- flow. 
+SET GLOBAL innodb_file_per_table=1;
 
 --
 --  Administration 
