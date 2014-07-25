@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS qraat.auth_project_viewer (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `groupID` int unsigned NOT NULL COMMENt 'References GUID in web frontend, i.e. `django.auth_group.id`.', 
   `projectID` int unsigned NOT NULL,
+  UNIQUE (`groupID`, `projectID`), 
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ;
@@ -49,6 +50,7 @@ CREATE TABLE IF NOT EXISTS qraat.auth_project_collaborator (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `groupID` int unsigned NOT NULL COMMENt 'References GUID in web frontend, i.e. `django.auth_group.id`.', 
   `projectID` int unsigned NOT NULL,
+  UNIQUE (`groupID`, `projectID`), 
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ;
