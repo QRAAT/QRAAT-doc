@@ -16,8 +16,7 @@ T_END=$(date --date="20140202 1900" +%s)
 mysql -u reader -B -e "SELECT * FROM qraat.Calibration_Information" > Calibration_Information.txt
 mysql -u reader -B -e "SELECT * FROM qraat.GPS_Calibration_Data" > GPS_Calibration_Data.txt
 mysql -u reader -B -e "SELECT * FROM qraat.True_Position" > True_Position.txt
-k
-mysql -u reader -B -e "SELECT * FROM qraat.steering_sectors" > Steering_Vectors.txt
+mysql -u reader -B -e "SELECT * FROM qraat.steering_vectors" > steering_vectors.txt
 mysql -u reader -B -e "SELECT * FROM qraat.site" > site.txt
 mysql -u reader -B -e "SELECT * FROM qraat.project" > project.txt
 mysql -u reader -B -e "SELECT * FROM qraat.auth_project_viewer" > auth_project_viewer.txt
