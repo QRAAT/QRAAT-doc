@@ -431,7 +431,7 @@ CREATE TABLE IF NOT EXISTS qraat.`interval_cache` (
   `siteID` int(11) NOT NULL,
   `start` decimal(16,6) NOT NULL COMMENT 'UNIX timestamp where this estimated signal interval becomes applicable',
   `valid_duration` double NOT NULL COMMENT 'Number of seconds after start that this estimated interval is valid for.',
-  `period` double NOT NULL COMMENT 'Interval value in seconds',
+  `period` double NOT NULL COMMENT 'Pulse Interval value in seconds',
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
