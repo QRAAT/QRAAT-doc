@@ -436,7 +436,7 @@ CREATE TABLE IF NOT EXISTS qraat.`interval_cache` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- Configuration information for database archive script
-CREATE TABLE `Archive_Config` (
+CREATE TABLE `archive_config` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `tablename` varchar(100) DEFAULT NULL COMMENT 'The name of the table to be archived',
   `archive` tinyint(1) DEFAULT '0' COMMENT 'Set to 1 to archive this table, 0 to ignore this table',
@@ -446,7 +446,7 @@ CREATE TABLE `Archive_Config` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- Log for database archiving script
-CREATE TABLE `Archive_Log` (
+CREATE TABLE `archive_log` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `timestamp` bigint(20) NOT NULL COMMENT 'Time at which the table (chunk) was archived',
   `filename` varchar(100) DEFAULT NULL COMMENT 'Filename for the table (chunk)',
