@@ -26,6 +26,8 @@ GRANT SELECT ON qraat.* TO web_reader@'localhost';
 CREATE USER web_writer@'localhost' IDENTIFIED BY 'somesecurepassword';
 GRANT SELECT, INSERT, UPDATE ON django.* TO web_writer@'localhost';
 GRANT SELECT ON qraat.* TO web_writer@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qraat.auth_project_collaborator TO web_writer@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qraat.auth_project_viewer TO web_writer@'localhost';
 GRANT SELECT, INSERT, UPDATE ON qraat.deployment TO web_writer@'localhost';
 GRANT SELECT, INSERT, UPDATE ON qraat.location TO web_writer@'localhost';
 GRANT SELECT, INSERT, UPDATE ON qraat.project TO web_writer@'localhost';
