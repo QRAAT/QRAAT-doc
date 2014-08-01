@@ -12,3 +12,27 @@ GRANT INSERT, UPDATE, DELETE ON qraat.* TO 'writer'@'localhost';
 -- the `[mysql]` line: 
 --  user=reader
 --  password=fella
+
+
+--front-end database users
+CREATE DATABASE IF NOT EXISTS django;
+CREATE USER admin IDENTIFIED BY 'somesecurepassword';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER ON django.* TO admin@'localhost';
+
+CREATE USER web_reader IDENTIFIED BY 'somesecurepassword';
+GRANT SELECT ON django.* TO web_reader@'localhost';
+GRANT SELECT ON qraat.* TO web_reader@'localhost';
+
+CREATE USER web_writer IDENTIFIED BY 'somesecurepassword';
+GRANT SELECT, INSERT, UPDATE ON django.* TO web_writer@'localhost';
+GRANT SELECT ON qraat.* TO web_writer@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qraat.deployment TO web_writer@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qraat.location TO web_writer@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qraat.project TO web_writer@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qraat.target TO web_writer@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qraat.track TO web_writer@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qraat.tx TO web_writer@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qraat.tx_make TO web_writer@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qraat.tx_make_parameters TO web_writer@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qraat.tx_parameters TO web_writer@'localhost';
+
