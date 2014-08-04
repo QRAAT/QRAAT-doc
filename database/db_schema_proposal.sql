@@ -431,8 +431,32 @@ CREATE TABLE IF NOT EXISTS qraat.`interval_cache` (
   `siteID` int(11) NOT NULL,
   `start` decimal(16,6) NOT NULL COMMENT 'UNIX timestamp where this estimated signal interval becomes applicable',
   `valid_duration` double NOT NULL COMMENT 'Number of seconds after start that this estimated interval is valid for.',
-  `period` double NOT NULL COMMENT 'Interval value in seconds',
+  `period` double NOT NULL COMMENT 'Pulse Interval value in seconds',
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
--- TODO add backup/archiving metadata table/s
+-- Configuration information for database archive script
+CREATE TABLE `archive_config` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `tablename` varchar(100) DEFAULT NULL COMMENT 'The name of the table to be archived',
+  `archive` tinyint(1) DEFAULT '0' COMMENT 'Set to 1 to archive this table, 0 to ignore this table',
+  `lastid` bigint(20) DEFAULT NULL COMMENT 'Set to the ID of the last archived record',
+  `chunk` int(11) DEFAULT NULL COMMENT 'Maximum size of a chunk, in records, 0 to disable chunking',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
+
+-- Log for database archiving script
+CREATE TABLE `archive_log` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `timestamp` bigint(20) NOT NULL COMMENT 'Time at which the table (chunk) was archived',
+  `filename` varchar(100) DEFAULT NULL COMMENT 'Filename for the table (chunk)',
+  `tablename` varchar(30) DEFAULT NULL COMMENT 'Name of the archived table',
+  `startid` bigint(20) DEFAULT NULL COMMENT 'First ID of the records written to the file',
+  `finishid` bigint(20) DEFAULT NULL COMMENT 'Last ID of the records written to the file',
+  `mindt` datetime DEFAULT NULL COMMENT 'Earliest datetime of all records in chunk, if datetime exists',
+  `maxdt` datetime DEFAULT NULL COMMENT 'Latest datetime of all records in chunk, if datetime exists',
+  `mints` decimal(16,6) DEFAULT NULL COMMENT 'Earliest timestamp of all records in chunk, if timestamp exists',
+  `maxts` decimal(16,6) DEFAULT NULL COMMENT 'Latest timestamp of all records in chunk, if timestamp exists',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
+

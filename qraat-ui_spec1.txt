@@ -36,7 +36,7 @@ the browser window, she must login again the next time she goes to the site.
 Projects & Deployments
 ----------------------
 
-A project can be created by any user, who is the sole owner of the project.
+A project can be created by any user, who then becomes the sole owner of the project.
 Transmitters, targets, deployments, and sites of interest are permannently 
 associated to a project (`qraat.project.ID`). The owner maintains a group of 
 'viewers', who are allowed to view these metadata as well as tracking data 
