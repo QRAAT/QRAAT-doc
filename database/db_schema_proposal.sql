@@ -288,6 +288,17 @@ CREATE TABLE IF NOT EXISTS qraat.estscore (
   PRIMARY KEY (`estID`)
 ) ENGINE=MyISAM ;
 
+CREATE TABLE IF NOT EXISTS qraat.afsk (
+  ID bigint NOT NULL AUTO_INCREMENT,
+  deploymentID bigint DEFAULT NULL,
+  siteID int(11) DEFAULT NULL,
+  start_timestamp decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
+  stop_timestamp decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)', 
+  message varchar(50) DEFAULT NULL,
+  binary_data varbinary(63) DEFAULT NULL,
+  error BOOLEAN DEFAULT True,
+  PRIMARY KEY (ID)
+) ENGINE=MyISAM ; 
 
 -- Telemetry ----------------------------------------------------------------------------
 
