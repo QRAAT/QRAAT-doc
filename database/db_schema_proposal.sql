@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS qraat.est (
 
 CREATE TABLE IF NOT EXISTS qraat.estscore (
   `estID` bigint(20) NOT NULL,
-  `absscore` tinyint(4) NOT NULL,
+  `absscore` unsigned int NOT NULL,
   `relscore` double NOT NULL,
   PRIMARY KEY (`estID`)
 ) ENGINE=MyISAM ;
