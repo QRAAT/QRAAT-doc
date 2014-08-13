@@ -283,8 +283,9 @@ CREATE TABLE IF NOT EXISTS qraat.est (
 
 CREATE TABLE IF NOT EXISTS qraat.estscore (
   `estID` bigint(20) NOT NULL,
-  `absscore` tinyint(4) NOT NULL,
-  `relscore` double NOT NULL,
+  `score` INTEGER NOT NULL COMMENT 'Number of coroborating pulses or flagged as bad (negative).',
+  `max_score` INTEGER NOT NULL COMMENT "Maximum score over pulse score neighborhood.",
+  `theoretical_score` INTEGER NOT NULL COMMENT 'Optimal score over score interval.',
   PRIMARY KEY (`estID`)
 ) ENGINE=MyISAM ;
 
