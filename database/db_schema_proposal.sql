@@ -331,29 +331,27 @@ CREATE TABLE IF NOT EXISTS qraat.timecheck (
 
 CREATE TABLE IF NOT EXISTS qraat.calibration_information (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `start_timestamp` decimal(16,6) DEFAULT NULL,
-  `stop_timestamp` decimal(16,6) DEFAULT NULL,
-  `description` varchar(1000) DEFAULT NULL,
-  `txID` bigint(20) DEFAULT NULL,
+  `description` text,
+  `deploymentID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
-CREATE TABLE IF NOT EXISTS qraat.gps_calibration_data (
+CREATE TABLE IF NOT EXISTS qraat.gps_data (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `cal_infoID` int(11) DEFAULT NULL,
+  `deploymentID` bigint(20) DEFAULT NULL,
   `timestamp` int(11) DEFAULT NULL,
   `latitude` decimal(10,6) DEFAULT NULL,
   `longitude` decimal(11,6) DEFAULT NULL,
   `elevation` decimal(7,2) DEFAULT NULL,
   `easting` decimal(9,2) DEFAULT NULL,
   `northing` decimal(10,2) DEFAULT NULL,
-  `zone` char(3) DEFAULT NULL,
+  `utm_zone_number` tinyint(3) unsigned DEFAULT NULL,
+  `utm_zone_letter` char(1) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM ;
 
 CREATE TABLE IF NOT EXISTS qraat.true_position (
   `estID` bigint(20) NOT NULL,
-  `cal_infoID` int(11) DEFAULT NULL,
   `easting` decimal(9,2) DEFAULT NULL,
   `northing` decimal(10,2) DEFAULT NULL,
   `bearing` decimal(5,2) DEFAULT NULL,
