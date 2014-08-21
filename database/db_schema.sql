@@ -230,7 +230,7 @@ CREATE TABLE IF NOT EXISTS qraat.`estscore` (
 CREATE TABLE IF NOT EXISTS qraat.`telemetry` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `siteid` bigint(20) NOT NULL,
-  `timestamp` bigint(20) DEFAULT NULL,
+  `timestamp` decimal(16,6) DEFAULT NULL,
   `datetime` datetime DEFAULT NULL,
   `timezone` varchar(6) DEFAULT NULL,
   `intemp` decimal(4,2) DEFAULT NULL,
@@ -245,7 +245,7 @@ CREATE TABLE IF NOT EXISTS qraat.`telemetry` (
 CREATE TABLE IF NOT EXISTS qraat.`timecheck` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `siteid` bigint(20) NOT NULL,
-  `timestamp` bigint(20) DEFAULT NULL,
+  `timestamp` decimal(16,6) DEFAULT NULL,
   `datetime` datetime DEFAULT NULL,
   `timezone` varchar(6) DEFAULT NULL,
   `time_offset` decimal(10,3) DEFAULT NULL,
@@ -259,7 +259,7 @@ CREATE TABLE IF NOT EXISTS qraat.`detcount` (
   `timezone` varchar(6) DEFAULT NULL,
   `server` int(11) DEFAULT NULL,
   `site` int(11) DEFAULT NULL,
-  `timestamp` bigint(20) DEFAULT NULL,
+  `timestamp` decimal(16,6) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
@@ -270,7 +270,7 @@ CREATE TABLE IF NOT EXISTS qraat.`estcount` (
   `timezone` varchar(6) DEFAULT NULL,
   `server` int(11) DEFAULT NULL,
   `site` int(11) DEFAULT NULL,
-  `timestamp` bigint(20) DEFAULT NULL,
+  `timestamp` decimal(16,6) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
@@ -281,7 +281,7 @@ CREATE TABLE IF NOT EXISTS qraat.`procount` (
   `timezone` varchar(6) DEFAULT NULL,
   `estserver` int(11) DEFAULT NULL,
   `festserver` int(11) DEFAULT NULL,
-  `timestamp` bigint(20) DEFAULT NULL,
+  `timestamp` decimal(16,6) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
