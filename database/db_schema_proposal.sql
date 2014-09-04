@@ -1,3 +1,4 @@
+USE qraat; 
 SET GLOBAL innodb_file_per_table=1;
 
 --
@@ -117,6 +118,10 @@ CREATE TABLE IF NOT EXISTS qraat.target (
   `name` varchar(50) NOT NULL,
   `description` TEXT DEFAULT NULL, 
   `projectID` int unsigned NOT NULL COMMENT 'Project for which target was originally created.',
+  `max_speed_family` ENUM('exp', 'linear', 'const'), 
+  `speed_burst` double DEFAULT NULL, 
+  `speed_sustained` double DEFAULT NULL, 
+  `speed_limit` double NOT NULL, 
   `is_hidden` BOOLEAN DEFAULT False, 
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
@@ -162,21 +167,6 @@ CREATE TABLE IF NOT EXISTS qraat.deployment (
   `is_hidden` BOOLEAN DEFAULT False, 
   FOREIGN KEY (`txID`) REFERENCES qraat.tx (`ID`), 
   FOREIGN KEY (`targetID`) REFERENCES qraat.target (`ID`), 
-  FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB ; 
-
--- Tracking parameters. (Private to project.) 
-CREATE TABLE IF NOT EXISTS qraat.track (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT, 
-  `deploymentID` int unsigned NOT NULL, 
-  `projectID` int unsigned NOT NULL COMMENT 'Project to which track is associated.',
-  `max_speed_family` ENUM('exp', 'linear', 'const'), 
-  `speed_burst` double DEFAULT NULL, 
-  `speed_sustained` double DEFAULT NULL, 
-  `speed_limit` double NOT NULL, 
-  `is_hidden` BOOLEAN DEFAULT False, 
-  FOREIGN KEY (`deploymentID`) REFERENCES qraat.deployment (`ID`), 
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB ; 
@@ -384,9 +374,9 @@ CREATE TABLE IF NOT EXISTS qraat.position (
 
 CREATE TABLE IF NOT EXISTS qraat.track_pos (
   `positionID` bigint(20) NOT NULL,
-  `trackID` bigint(20) NOT NULL,
+  `deploymentID` bigint(20) NOT NULL,
   `timestamp` decimal(16,6) NOT NULL, 
-  PRIMARY KEY (`TrackID`, `timestamp`)
+  PRIMARY KEY (`deploymentID`, `timestamp`)
 ) ENGINE=MyISAM ;
 
 

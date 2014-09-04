@@ -1,5 +1,6 @@
+USE qraat; 
+
 DELETE FROM location; 
-DELETE FROM track;
 DELETE FROM deployment; 
 DELETE FROM target; 
 DELETE FROM tx_parameters; 
@@ -270,43 +271,43 @@ INSERT INTO tx_parameters (txID, name, value, units) VALUES
   (113, 'pulse_width', '15', 'ms'), (113, 'pulse_rate', '25', 'ppm'), (113, 'band3', '150', 'Hz'), (113, 'band10', '900', 'Hz');
 ALTER TABLE tx AUTO_INCREMENT = 453;
 
-
-INSERT INTO target (ID, name, description, projectID, is_hidden) VALUES
-  (1, '(nil)', 'Some transmitters have no associated targets.', 1, 0),
-  (2, 'A', 'Martin', 1, 0),
-  (3, 'B', NULL, 1, 0),
-  (4, 'C', NULL, 1, 0),
-  (5, 'D', NULL, 1, 0),
-  (6, 'E', NULL, 1, 0),
-  (7, 'F', NULL, 1, 0),
-  (8, 'F6394', NULL, 1, 0),
-  (9, 'F6389', NULL, 1, 0),
-  (10, 'F5792', NULL, 1, 0),
-  (11, 'M6364', NULL, 1, 0),
-  (13, 'M6322', NULL, 1, 0),
-  (14, 'F5210', NULL, 1, 0),
-  (15, 'M5754', NULL, 1, 0),
-  (16, 'woodrat1', NULL, 1, 0),
-  (17, 'woodrat2', NULL, 1, 0),
-  (21, 'M164407', NULL, 1, 0),
-  (22, 'M164416', NULL, 1, 0),
-  (23, 'M164448', NULL, 1, 0),
-  (24, 'M164456', NULL, 1, 0),
-  (25, 'M164464', NULL, 1, 0),
-  (26, 'M164472', NULL, 1, 0),
-  (27, 'M164480', NULL, 1, 0),
-  (28, 'QR9 male', NULL, 1, 0),
-  (29, 'QR10 female', NULL, 1, 0),
-  (30, 'QR1 male', NULL, 1, 0),
-  (31, 'JF6379', NULL, 1, 0),
-  (32, 'JF6381', NULL, 1, 0),
-  (33, 'AF6377', NULL, 1, 0),
-  (34, 'AF6382', NULL, 1, 0),
-  (35, 'AM6384', NULL, 1, 0),
-  (36, 'JM6378', NULL, 1, 0),
-  (37, 'AF6376', NULL, 1, 0),
-  (38, 'AM6380', NULL, 1, 0),
-  (39, 'AM6383', NULL, 1, 0);
+INSERT INTO target (ID, name, description, projectID, is_hidden, max_speed_family, 
+                    speed_burst, speed_sustained, speed_limit) VALUES
+  (1, '(nil)', 'Some transmitters have no associated targets.', 1, 0, 'const', NULL, NULL, 2.5),
+  (2, 'A', 'Martin', 1, 0, 'exp', 1, 0.1, 0.05),
+  (3, 'B', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (4, 'C', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (5, 'D', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (6, 'E', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (7, 'F', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (8, 'F6394', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (9, 'F6389', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (10, 'F5792', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (11, 'M6364', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (13, 'M6322', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (14, 'F5210', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (15, 'M5754', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (16, 'woodrat1', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (17, 'woodrat2', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (21, 'M164407', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (22, 'M164416', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (23, 'M164448', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (24, 'M164456', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (25, 'M164464', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (26, 'M164472', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (27, 'M164480', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (28, 'QR9 male', NULL, 1, 0, 'exp', 2, 0.25, 0.05),
+  (29, 'QR10 female', NULL, 1, 0, 'exp', 2, 0.25, 0.05),
+  (30, 'QR1 male', NULL, 1, 0, 'exp', 2, 0.25, 0.05),
+  (31, 'JF6379', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (32, 'JF6381', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (33, 'AF6377', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (34, 'AF6382', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (35, 'AM6384', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (36, 'JM6378', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (37, 'AF6376', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (38, 'AM6380', NULL, 1, 0, 'exp', 1, 0.1, 0.05),
+  (39, 'AM6383', NULL, 1, 0, 'exp', 1, 0.1, 0.05);
 ALTER TABLE `target` AUTO_INCREMENT = 40;  
 
 INSERT INTO deployment (ID, name, description, time_start, time_end, txID, targetID, projectID, is_active, is_hidden) VALUES
@@ -355,17 +356,5 @@ INSERT INTO `location` (ID, projectID, name, description, location, latitude, lo
    (10, 1, 'center', NULL, 'Center for position estimation',0.000000,0.000000,574500.00,4260500.00,10,'S',0.00,0);
 ALTER TABLE `location` AUTO_INCREMENT = 11;
 
-INSERT INTO `track` (ID, projectID, deploymentID, max_speed_family, speed_burst, speed_sustained, speed_limit, is_hidden) VALUES 
-   (1,1,51,'const',NULL,NULL,2.5,0),
-   (2,1,63,'exp',2,0.25,0.05,0),
-   (3,1,64,'exp',2,0.25,0.05,0),
-   (4,1,68,'exp',2,0.25,0.05,0),
-   (5,1,69,'exp',1,0.1,0.05,0),
-   (6,1,70,'exp',1,0.1,0.05,0),
-   (7,1,73,'exp',1,0.1,0.05,0),
-   (8,1,74,'exp',1,0.1,0.05,0),
-   (9,1,75,'exp',1,0.1,0.05,0),
-   (10,1,77,'exp',1,0.1,0.05,0);
-ALTER TABLE `track` AUTO_INCREMENT = 11;
 
 COMMIT; 
