@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS qraat.project (
 -- GUID in the web framework. I.e., `django.auth_group.id`.
 CREATE TABLE IF NOT EXISTS qraat.auth_project_viewer (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
-  `groupID` int unsigned NOT NULL COMMENt 'References GUID in web frontend, i.e. `django.auth_group.id`.', 
+  `groupID` int unsigned NOT NULL COMMENT 'References GUID in web frontend, i.e. `django.auth_group.id`.', 
   `projectID` int unsigned NOT NULL,
   UNIQUE (`groupID`, `projectID`), 
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS qraat.auth_project_viewer (
 -- Users authorized to edit project and view associated data.
 CREATE TABLE IF NOT EXISTS qraat.auth_project_collaborator (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
-  `groupID` int unsigned NOT NULL COMMENt 'References GUID in web frontend, i.e. `django.auth_group.id`.', 
+  `groupID` int unsigned NOT NULL COMMENT 'References GUID in web frontend, i.e. `django.auth_group.id`.', 
   `projectID` int unsigned NOT NULL,
   UNIQUE (`groupID`, `projectID`), 
   FOREIGN KEY (`projectID`) REFERENCES qraat.project (`ID`), 
@@ -87,7 +87,6 @@ CREATE TABLE IF NOT EXISTS qraat.tx_parameters (
   `txID` int unsigned NOT NULL,
   `name` varchar(32) NOT NULL, 
   `value` varchar(64) NOT NULL, 
-  `units` varchar(32) DEFAULT NULL,
   FOREIGN KEY (`txID`) REFERENCES qraat.tx (`ID`),
   PRIMARY KEY (`ID`),
   KEY (`name`)
@@ -101,7 +100,6 @@ CREATE TABLE IF NOT EXISTS qraat.tx_make_parameters (
   `tx_makeID` int unsigned NOT NULL,
   `name` varchar(32) NOT NULL, 
   `value` varchar(64) NOT NULL, 
-  `units` varchar(32) DEFAULT NULL,
   FOREIGN KEY (`tx_makeID`) REFERENCES qraat.tx_make (`ID`),
   PRIMARY KEY (`ID`),
   KEY (`name`)
