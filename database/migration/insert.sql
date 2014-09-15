@@ -364,5 +364,24 @@ INSERT INTO `location` (ID, projectID, name, description, location, latitude, lo
    (10, 1, 'center', NULL, 'Center for position estimation',0.000000,0.000000,574500.00,4260500.00,10,'S',0.00,0);
 ALTER TABLE `location` AUTO_INCREMENT = 11;
 
+INSERT INTO `auth_project_collaborator` (ID, groupID, projectID) VALUES
+  (1,2,3),
+  (2,6,2),
+  (3,8,3),
+  (4,10,4),
+  (5,16,5),
+  (6,17,6),
+  (7,18,7);
+ALTER TABLE `auth_project_collaborator` AUTO_INCREMENT = 8;
+
+INSERT INTO `auth_project_viewer` (ID, groupID, projectID) VALUES
+  (1,4,1),
+  (2,5,2),
+  (3,7,3),
+  (4,9,4),
+  (5,19,5),
+  (6,20,6),
+  (7,21,7);
+ALTER TABLE `auth_project_viewer` AUTO_INCREMENT = 8;
 
 COMMIT; 
