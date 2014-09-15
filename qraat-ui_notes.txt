@@ -1,0 +1,7 @@
+qraatview/templates/qraat_ui/index.html 
+
+  Javascript functions setCenter() and initialize() have hardcoded (lat, lon) 
+  values for reserve center. This value is defined in `qraat.location` (`name`
+  = 'center').
+
+
