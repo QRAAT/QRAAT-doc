@@ -1,5 +1,7 @@
 USE qraat; 
 
+DELETE FROM auth_project_viewer; 
+DELETE FROM auth_project_collaborator; 
 DELETE FROM location; 
 DELETE FROM deployment; 
 DELETE FROM target; 
@@ -383,5 +385,3 @@ INSERT INTO `auth_project_viewer` (ID, groupID, projectID) VALUES
   (6,20,6),
   (7,21,7);
 ALTER TABLE `auth_project_viewer` AUTO_INCREMENT = 8;
-
-COMMIT; 
