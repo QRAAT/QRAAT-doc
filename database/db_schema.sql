@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS qraat.`deployment` (
 
 --EST
 CREATE TABLE IF NOT EXISTS qraat.`est` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `siteid` int(11) DEFAULT NULL,
   `timestamp` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)',
   `frequency` int(11) DEFAULT NULL COMMENT 'Tag Frequency (Hz)',
