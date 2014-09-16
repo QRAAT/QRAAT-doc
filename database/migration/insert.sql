@@ -1,3 +1,7 @@
+-- FIXME: DO NOT run this script as is. auth_project_viewer and 
+-- auth_project_collaborator need to be updated, and we need to 
+-- save the django tables they link to as well.
+
 USE qraat; 
 
 DELETE FROM auth_project_viewer; 
