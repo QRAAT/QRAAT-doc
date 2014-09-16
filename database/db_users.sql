@@ -17,7 +17,7 @@ GRANT INSERT, UPDATE, DELETE ON qraat.* TO 'writer'@'localhost';
 --front-end database users
 --CREATE DATABASE IF NOT EXISTS django;
 --CREATE USER django_admin@'localhost' IDENTIFIED BY 'somesecurepassword';
-GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER ON django.* TO django_admin@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE, INDEX, CREATE, DROP, ALTER ON django.* TO django_admin@'localhost';
 
 --CREATE USER web_reader@'localhost' IDENTIFIED BY 'somesecurepassword';
 GRANT SELECT ON django.* TO web_reader@'localhost';
