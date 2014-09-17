@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS qraat.`auth_project_viewer` (
   `projectID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `projectID` (`projectID`),
+  UNIQUE (`groupID`, `projectID`), 
   CONSTRAINT `auth_project_viewer_ibfk_1` FOREIGN KEY (`projectID`) REFERENCES `project` (`ID`)
 ) ENGINE=InnoDB;
 
@@ -45,6 +46,7 @@ CREATE TABLE IF NOT EXISTS qraat.`auth_project_collaborator` (
   `projectID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `projectID` (`projectID`),
+  UNIQUE (`groupID`, `projectID`), 
   CONSTRAINT `auth_project_collaborator_ibfk_1` FOREIGN KEY (`projectID`) REFERENCES `project` (`ID`)
 ) ENGINE=InnoDB;
 
