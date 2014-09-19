@@ -4,7 +4,7 @@
 
 SET GLOBAL innodb_file_per_table=1;
 
---Site
+-- Site
 CREATE TABLE IF NOT EXISTS qraat.`site` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) DEFAULT NULL,
@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS qraat.`site` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB;
 
---Project
+
+-- Project
 CREATE TABLE IF NOT EXISTS qraat.`project` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ownerID` int(10) unsigned NOT NULL COMMENT 'References UUID in web frontend, i.e. `django.auth_user.id`.',
@@ -50,7 +51,8 @@ CREATE TABLE IF NOT EXISTS qraat.`auth_project_collaborator` (
   CONSTRAINT `auth_project_collaborator_ibfk_1` FOREIGN KEY (`projectID`) REFERENCES `project` (`ID`)
 ) ENGINE=InnoDB;
 
---Transmitter
+
+-- Transmitter
 CREATE TABLE IF NOT EXISTS qraat.`tx` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -96,19 +98,25 @@ CREATE TABLE IF NOT EXISTS qraat.`tx_make_parameters` (
   CONSTRAINT `tx_make_parameters_ibfk_1` FOREIGN KEY (`tx_makeID`) REFERENCES `tx_make` (`ID`)
 ) ENGINE=InnoDB;
 
---Target
+
+-- Target
 CREATE TABLE IF NOT EXISTS qraat.`target` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `description` text,
   `projectID` int(10) unsigned NOT NULL COMMENT 'Project for which target was originally created.',
   `is_hidden` tinyint(1) DEFAULT '0',
+  `max_speed_family` ENUM('exp', 'linear', 'const'), 
+  `speed_burst` double DEFAULT NULL, 
+  `speed_sustained` double DEFAULT NULL, 
+  `speed_limit` double NOT NULL, 
   PRIMARY KEY (`ID`),
   KEY `projectID` (`projectID`),
   CONSTRAINT `target_ibfk_1` FOREIGN KEY (`projectID`) REFERENCES `project` (`ID`)
 ) ENGINE=InnoDB;
 
---Project Locations
+
+-- Project Locations
 CREATE TABLE IF NOT EXISTS qraat.`location` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `projectID` int(10) unsigned NOT NULL,
@@ -128,7 +136,8 @@ CREATE TABLE IF NOT EXISTS qraat.`location` (
   CONSTRAINT `location_ibfk_1` FOREIGN KEY (`projectID`) REFERENCES `project` (`ID`)
 ) ENGINE=InnoDB;
 
---Deployment
+
+-- Deployment
 CREATE TABLE IF NOT EXISTS qraat.`deployment` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -149,7 +158,8 @@ CREATE TABLE IF NOT EXISTS qraat.`deployment` (
   CONSTRAINT `deployment_ibfk_3` FOREIGN KEY (`projectID`) REFERENCES `project` (`ID`)
 ) ENGINE=InnoDB;
 
---EST
+
+-- EST
 CREATE TABLE IF NOT EXISTS qraat.`est` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `siteid` int(11) DEFAULT NULL,
@@ -228,7 +238,18 @@ CREATE TABLE IF NOT EXISTS qraat.`estscore` (
   PRIMARY KEY (`estID`)
 ) ENGINE=MyISAM;
 
---Telemetry
+CREATE TABLE IF NOT EXISTS qraat.`estinterval` (
+  `deploymentID` int(10) unsigned NOT NULL,
+  `siteID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `timestamp` decimal(16,6) NOT NULL COMMENT 'Start of interval.',
+  `duration` double NOT NULL COMMENT 'Duration of the interval in seconds.',
+  `pulse_rate` double NOT NULL COMMENT 'Estimated pulse rate of the transmitter in seconds.',
+  PRIMARY KEY (`deploymentID`,`siteID`),
+  KEY `timestamp` (`timestamp`)
+) ENGINE=MyISAM;
+
+
+-- Telemetry
 CREATE TABLE IF NOT EXISTS qraat.`telemetry` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `siteid` bigint(20) NOT NULL,
@@ -287,7 +308,8 @@ CREATE TABLE IF NOT EXISTS qraat.`procount` (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
---Calibration
+
+-- Calibration
 CREATE TABLE IF NOT EXISTS qraat.`calibration_information` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `description` text,
@@ -333,7 +355,8 @@ CREATE TABLE IF NOT EXISTS qraat.`steering_vectors` (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
---Position
+
+-- Position
 CREATE TABLE IF NOT EXISTS qraat.`bearing` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `deploymentID` bigint(20) DEFAULT NULL,
@@ -364,7 +387,8 @@ CREATE TABLE IF NOT EXISTS qraat.`position` (
   KEY `txID` (`deploymentID`)
 ) ENGINE=MyISAM;
 
---Tracks
+
+-- Tracks
 CREATE TABLE IF NOT EXISTS qraat.`track_pos` (
   `positionID` bigint(20) DEFAULT NULL,
   `trackID` bigint(20) NOT NULL,
@@ -374,21 +398,6 @@ CREATE TABLE IF NOT EXISTS qraat.`track_pos` (
   KEY `trackID` (`trackID`,`timestamp`)
 ) ENGINE=MyISAM;
 
-CREATE TABLE IF NOT EXISTS qraat.`track` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `deploymentID` int(10) unsigned NOT NULL,
-  `projectID` int(10) unsigned NOT NULL COMMENT 'Project to which track is associated.',
-  `max_speed_family` enum('exp','linear','const') DEFAULT NULL,
-  `speed_burst` double DEFAULT NULL,
-  `speed_sustained` double DEFAULT NULL,
-  `speed_limit` double NOT NULL,
-  `is_hidden` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`ID`),
-  KEY `deploymentID` (`deploymentID`),
-  KEY `projectID` (`projectID`),
-  CONSTRAINT `track_ibfk_1` FOREIGN KEY (`deploymentID`) REFERENCES `deployment` (`ID`),
-  CONSTRAINT `track_ibfk_2` FOREIGN KEY (`projectID`) REFERENCES `project` (`ID`)
-) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS qraat.`provenance` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -399,7 +408,8 @@ CREATE TABLE IF NOT EXISTS qraat.`provenance` (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
---Processing
+
+-- Processing
 CREATE TABLE IF NOT EXISTS qraat.`cursor` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `value` bigint(20) NOT NULL,
@@ -409,7 +419,7 @@ CREATE TABLE IF NOT EXISTS qraat.`cursor` (
 ) ENGINE=MyISAM;
 
 
---Archiving
+-- Archiving
 CREATE TABLE IF NOT EXISTS qraat.`Archive_Log` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `timestamp` bigint(20) NOT NULL,
@@ -432,4 +442,3 @@ CREATE TABLE IF NOT EXISTS qraat.`Archive_Config` (
   `chunk` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
-
