@@ -240,12 +240,11 @@ CREATE TABLE IF NOT EXISTS qraat.`estscore` (
 
 CREATE TABLE IF NOT EXISTS qraat.`estinterval` (
   `deploymentID` int(10) unsigned NOT NULL,
-  `siteID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `siteID` int(10) unsigned NOT NULL,
   `timestamp` decimal(16,6) NOT NULL COMMENT 'Start of interval.',
   `duration` double NOT NULL COMMENT 'Duration of the interval in seconds.',
-  `pulse_rate` double NOT NULL COMMENT 'Estimated pulse rate of the transmitter in seconds.',
-  PRIMARY KEY (`deploymentID`,`siteID`),
-  KEY `timestamp` (`timestamp`)
+  `pulse_rate` double DEFAULT NULL COMMENT 'Estimated pulse rate of the transmitter in seconds.',
+  PRIMARY KEY (`deploymentID`,`siteID`, `timestamp`)
 ) ENGINE=MyISAM;
 
 
