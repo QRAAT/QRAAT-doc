@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS qraat.`auth_project_viewer` (
   `projectID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `projectID` (`projectID`),
-  UNIQUE (`groupID`, `projectID`), 
+  UNIQUE KEY (`groupID`, `projectID`), 
   CONSTRAINT `auth_project_viewer_ibfk_1` FOREIGN KEY (`projectID`) REFERENCES `project` (`ID`)
 ) ENGINE=InnoDB;
 
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS qraat.`auth_project_collaborator` (
   `projectID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `projectID` (`projectID`),
-  UNIQUE (`groupID`, `projectID`), 
+  UNIQUE KEY (`groupID`, `projectID`), 
   CONSTRAINT `auth_project_collaborator_ibfk_1` FOREIGN KEY (`projectID`) REFERENCES `project` (`ID`)
 ) ENGINE=InnoDB;
 
@@ -79,7 +79,6 @@ CREATE TABLE IF NOT EXISTS qraat.`tx_parameters` (
   `txID` int(10) unsigned NOT NULL,
   `name` varchar(32) NOT NULL,
   `value` varchar(64) NOT NULL,
-  `units` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `txID` (`txID`),
   KEY `name` (`name`),
@@ -91,7 +90,6 @@ CREATE TABLE IF NOT EXISTS qraat.`tx_make_parameters` (
   `tx_makeID` int(10) unsigned NOT NULL,
   `name` varchar(32) NOT NULL,
   `value` varchar(64) NOT NULL,
-  `units` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `tx_makeID` (`tx_makeID`),
   KEY `name` (`name`),
@@ -162,7 +160,7 @@ CREATE TABLE IF NOT EXISTS qraat.`deployment` (
 -- EST
 CREATE TABLE IF NOT EXISTS qraat.`est` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `siteid` int(11) DEFAULT NULL,
+  `siteID` int(10) unsigned DEFAULT NULL,
   `timestamp` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)',
   `frequency` int(11) DEFAULT NULL COMMENT 'Tag Frequency (Hz)',
   `center` int(11) DEFAULT NULL COMMENT 'Band Center Frequency (Hz)',
@@ -222,16 +220,15 @@ CREATE TABLE IF NOT EXISTS qraat.`est` (
   `nc44i` double DEFAULT NULL COMMENT 'Noise Covariance 44 - imaginary part',
   `fdsnr` double DEFAULT NULL COMMENT 'Fourier Decomposition SNR (dB)',
   `edsnr` double DEFAULT NULL COMMENT 'Eigenvalue Decomposition SNR (dB)',
-  `deploymentID` bigint(20) DEFAULT NULL,
+  `deploymentID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `timestamp` (`timestamp`),
-  KEY `txid` (`deploymentID`),
-  KEY `frequency` (`frequency`),
-  KEY `siteid` (`siteid`)
+  KEY `siteid` (`siteID`)
+  KEY `deploymentID` (`deploymentID`)
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS qraat.`estscore` (
-  `estID` bigint(20) NOT NULL,
+  `estID` bigint(20) unsigned NOT NULL DEFAULT '0',
   `score` int(11) NOT NULL COMMENT 'Number of coroborating pulses or flagged as bad (negative).',
   `max_score` int(11) NOT NULL COMMENT 'Maximum score over pulse score neighborhood.',
   `theoretical_score` int(11) NOT NULL COMMENT 'Optimal score over score interval.',
@@ -239,6 +236,7 @@ CREATE TABLE IF NOT EXISTS qraat.`estscore` (
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS qraat.`estinterval` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `deploymentID` int(10) unsigned NOT NULL,
   `siteID` int(10) unsigned NOT NULL,
   `timestamp` decimal(16,6) NOT NULL COMMENT 'Start of interval.',
@@ -250,8 +248,8 @@ CREATE TABLE IF NOT EXISTS qraat.`estinterval` (
 
 -- Telemetry
 CREATE TABLE IF NOT EXISTS qraat.`telemetry` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `siteid` bigint(20) NOT NULL,
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `siteID` int(10) unsigned NOT NULL,
   `timestamp` decimal(16,6) DEFAULT NULL,
   `datetime` datetime DEFAULT NULL,
   `timezone` varchar(6) DEFAULT NULL,
@@ -265,8 +263,8 @@ CREATE TABLE IF NOT EXISTS qraat.`telemetry` (
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS qraat.`timecheck` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `siteid` bigint(20) NOT NULL,
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `siteID` bigint(10) unsigned NOT NULL,
   `timestamp` decimal(16,6) DEFAULT NULL,
   `datetime` datetime DEFAULT NULL,
   `timezone` varchar(6) DEFAULT NULL,
@@ -275,8 +273,8 @@ CREATE TABLE IF NOT EXISTS qraat.`timecheck` (
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS qraat.`detcount` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `siteid` bigint(20) NOT NULL,
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `siteID` int(10) unsigned NOT NULL,
   `datetime` datetime DEFAULT NULL,
   `timezone` varchar(6) DEFAULT NULL,
   `server` int(11) DEFAULT NULL,
@@ -286,8 +284,8 @@ CREATE TABLE IF NOT EXISTS qraat.`detcount` (
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS qraat.`estcount` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `siteid` bigint(20) NOT NULL,
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `siteID` int(10) unsigned NOT NULL,
   `datetime` datetime DEFAULT NULL,
   `timezone` varchar(6) DEFAULT NULL,
   `server` int(11) DEFAULT NULL,
@@ -297,8 +295,8 @@ CREATE TABLE IF NOT EXISTS qraat.`estcount` (
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS qraat.`procount` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `siteid` bigint(20) NOT NULL,
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `siteID` int(10) unsigned NOT NULL,
   `datetime` datetime DEFAULT NULL,
   `timezone` varchar(6) DEFAULT NULL,
   `estserver` int(11) DEFAULT NULL,
@@ -310,28 +308,28 @@ CREATE TABLE IF NOT EXISTS qraat.`procount` (
 
 -- Calibration
 CREATE TABLE IF NOT EXISTS qraat.`calibration_information` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `description` text,
-  `deploymentID` bigint(20) DEFAULT NULL,
+  `deploymentID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS qraat.`gps_data` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `deploymentID` bigint(20) DEFAULT NULL,
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `deploymentID` int(10) unsigned DEFAULT NULL,
   `timestamp` int(11) DEFAULT NULL,
   `latitude` decimal(10,6) DEFAULT NULL,
   `longitude` decimal(11,6) DEFAULT NULL,
   `elevation` decimal(7,2) DEFAULT NULL,
   `easting` decimal(9,2) DEFAULT NULL,
   `northing` decimal(10,2) DEFAULT NULL,
-  `utm_zone_number` tinyint(3) unsigned DEFAULT NULL,
-  `utm_zone_letter` char(1) DEFAULT NULL,
+  `utm_zone_number` tinyint(3) unsigned DEFAULT '10',
+  `utm_zone_letter` char(1) DEFAULT 'S',
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS qraat.`true_position` (
-  `estID` bigint(20) NOT NULL,
+  `estID` bigint(20) unsigned NOT NULL,
   `easting` decimal(9,2) DEFAULT NULL,
   `northing` decimal(10,2) DEFAULT NULL,
   `bearing` decimal(5,2) DEFAULT NULL,
@@ -339,10 +337,10 @@ CREATE TABLE IF NOT EXISTS qraat.`true_position` (
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS qraat.`steering_vectors` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `Cal_InfoID` int(11) DEFAULT NULL,
-  `SiteID` int(11) DEFAULT NULL,
-  `Bearing` decimal(5,2) DEFAULT NULL,
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `cal_infoID` int(10) unsigned DEFAULT NULL,
+  `siteID` int(10) unsigned DEFAULT NULL,
+  `bearing` decimal(5,2) DEFAULT NULL,
   `sv1r` double DEFAULT NULL,
   `sv1i` double DEFAULT NULL,
   `sv2r` double DEFAULT NULL,
@@ -357,61 +355,61 @@ CREATE TABLE IF NOT EXISTS qraat.`steering_vectors` (
 
 -- Position
 CREATE TABLE IF NOT EXISTS qraat.`bearing` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `deploymentID` bigint(20) DEFAULT NULL,
-  `siteID` bigint(20) NOT NULL,
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `deploymentID` int(10) unsigned DEFAULT NULL,
+  `siteID` int(10) unsigned NOT NULL,
   `timestamp` decimal(16,6) NOT NULL,
   `bearing` double NOT NULL COMMENT 'Most likely bearing.',
   `likelihood` double NOT NULL COMMENT 'Maximum Likelihood over bearing distribution.',
   `activity` double DEFAULT NULL COMMENT 'Normalized activity metric.',
   PRIMARY KEY (`ID`),
   KEY `timestamp` (`timestamp`),
-  KEY `txID` (`deploymentID`)
+  KEY `deploymentID` (`deploymentID`)
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS qraat.`position` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `deploymentID` bigint(20) DEFAULT NULL,
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `deploymentID` int(10) unsigned DEFAULT NULL,
   `timestamp` decimal(16,6) NOT NULL,
   `latitude` decimal(10,6) DEFAULT NULL,
   `longitude` decimal(11,6) DEFAULT NULL,
   `easting` decimal(9,2) NOT NULL COMMENT 'Most likely position (UTM east).',
   `northing` decimal(10,2) NOT NULL COMMENT 'Most likely position (UTM north).',
-  `utm_zone_number` tinyint(3) DEFAULT NULL,
+  `utm_zone_number` tinyint(3) unsigned DEFAULT '10',
   `utm_zone_letter` varchar(1) DEFAULT 'S' COMMENT 'Most likely position (UTM zone letter).',
   `likelihood` double NOT NULL COMMENT 'Maximum likelihood value over search space.',
   `activity` double DEFAULT NULL COMMENT 'Averaged over bearing data from all sites.',
   PRIMARY KEY (`ID`),
   KEY `timestamp` (`timestamp`),
-  KEY `txID` (`deploymentID`)
+  KEY `deploymentID` (`deploymentID`)
 ) ENGINE=MyISAM;
 
 
 -- Tracks
 CREATE TABLE IF NOT EXISTS qraat.`track_pos` (
-  `positionID` bigint(20) DEFAULT NULL,
-  `trackID` bigint(20) NOT NULL,
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `positionID` bigint(20) unsigned DEFAULT NULL,
+  `deploymentID` int(10) unsigned NOT NULL DEFAULT '0',
   `timestamp` decimal(16,6) NOT NULL,
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`ID`),
-  KEY `trackID` (`trackID`,`timestamp`)
+  KEY `deploymentID` (`deploymentID`,`timestamp`)
 ) ENGINE=MyISAM;
 
 
 CREATE TABLE IF NOT EXISTS qraat.`provenance` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `obj_table` varchar(30) NOT NULL,
-  `obj_id` bigint(20) NOT NULL,
+  `obj_id` bigint(20) unsigned NOT NULL,
   `dep_table` varchar(30) NOT NULL,
-  `dep_id` bigint(20) NOT NULL,
+  `dep_id` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
 
 -- Processing
-CREATE TABLE IF NOT EXISTS qraat.`cursor` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `value` bigint(20) NOT NULL,
+CREATE TABLE IF NOT EXISTS qraat.`processing_cursor` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `value` bigint(20) unsigned NOT NULL,
   `name` varchar(20) NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `name` (`name`)
@@ -419,13 +417,13 @@ CREATE TABLE IF NOT EXISTS qraat.`cursor` (
 
 
 -- Archiving
-CREATE TABLE IF NOT EXISTS qraat.`Archive_Log` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `timestamp` bigint(20) NOT NULL,
-  `filename` varchar(100) DEFAULT NULL,
-  `tablename` varchar(30) DEFAULT NULL,
-  `startid` bigint(20) DEFAULT NULL,
-  `finishid` bigint(20) DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS qraat.`archive_log` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `timestamp` decimal(16,6) NOT NULL,
+  `filename` varchar(100) NOT NULL,
+  `tablename` varchar(30) NOT NULL,
+  `startid` bigint(20) unsigned NOT NULL,
+  `finishid` bigint(20) unsigned NOT NULL,
   `mindt` datetime DEFAULT NULL,
   `maxdt` datetime DEFAULT NULL,
   `mints` decimal(16,6) DEFAULT NULL,
@@ -433,11 +431,11 @@ CREATE TABLE IF NOT EXISTS qraat.`Archive_Log` (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
-CREATE TABLE IF NOT EXISTS qraat.`Archive_Config` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS qraat.`archive_config` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `tablename` varchar(100) DEFAULT NULL,
   `archive` tinyint(1) DEFAULT '0',
-  `lastid` bigint(20) DEFAULT NULL,
+  `lastid` bigint(20) unsigned DEFAULT NULL,
   `chunk` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
