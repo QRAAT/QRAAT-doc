@@ -96,6 +96,17 @@ CREATE TABLE IF NOT EXISTS qraat.`tx_make_parameters` (
   CONSTRAINT `tx_make_parameters_ibfk_1` FOREIGN KEY (`tx_makeID`) REFERENCES `tx_make` (`ID`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `afsk` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `deploymentID` int(10) unsigned DEFAULT NULL,
+  `siteID` int(10) unsigned DEFAULT NULL,
+  `start_timestamp` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)',
+  `stop_timestamp` decimal(16,6) DEFAULT NULL COMMENT 'Unix Timestamp (s.us)',
+  `message` varchar(50) DEFAULT NULL,
+  `binary_data` varbinary(63) DEFAULT NULL,
+  `error` tinyint(1) DEFAULT '1',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM ;
 
 -- Target
 CREATE TABLE IF NOT EXISTS qraat.`target` (
