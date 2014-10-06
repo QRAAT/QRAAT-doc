@@ -375,7 +375,7 @@ CREATE TABLE IF NOT EXISTS qraat.`position` (
   `longitude` decimal(11,6) DEFAULT NULL,
   `easting` decimal(9,2) NOT NULL COMMENT 'Most likely position (UTM east).',
   `northing` decimal(10,2) NOT NULL COMMENT 'Most likely position (UTM north).',
-  `utm_zone_number` tinyint(3) unsigned DEFAULT '10',
+  `utm_zone_number` tinyint(3) unsigned DEFAULT 10 COMMENT 'Most likely position (UTM zone).',
   `utm_zone_letter` varchar(1) DEFAULT 'S' COMMENT 'Most likely position (UTM zone letter).',
   `likelihood` double NOT NULL COMMENT 'Maximum likelihood value over search space.',
   `activity` double DEFAULT NULL COMMENT 'Averaged over bearing data from all sites.',
@@ -419,23 +419,23 @@ CREATE TABLE IF NOT EXISTS qraat.`processing_cursor` (
 -- Archiving
 CREATE TABLE IF NOT EXISTS qraat.`archive_log` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `timestamp` decimal(16,6) NOT NULL,
-  `filename` varchar(100) NOT NULL,
-  `tablename` varchar(30) NOT NULL,
-  `startid` bigint(20) unsigned NOT NULL,
-  `finishid` bigint(20) unsigned NOT NULL,
-  `mindt` datetime DEFAULT NULL,
-  `maxdt` datetime DEFAULT NULL,
-  `mints` decimal(16,6) DEFAULT NULL,
-  `maxts` decimal(16,6) DEFAULT NULL,
+  `timestamp` decimal(16,6) NOT NULL COMMENT 'Time at which the table (chunk) was archived',
+  `filename` varchar(100) NOT NULL COMMENT 'Filename for the table (chunk),
+  `tablename` varchar(30) NOT NULL COMMENT 'Name of the archived table',
+  `startid` bigint(20) unsigned NOT NULL COMMENT 'First ID of the records written to the file',
+  `finishid` bigint(20) unsigned NOT NULL COMMENT 'Last ID of the records written to the file',
+  `mindt` datetime DEFAULT NULL COMMENT 'Earliest datetime of all records in chunk, if datetime exists',
+  `maxdt` datetime DEFAULT NULL COMMENT 'Latest datetime of all records in chunk, if datetime exists',
+  `mints` decimal(16,6) DEFAULT NULL COMMENT 'Earliest timestamp of all records in chunk, if timestamp exists',
+  `maxts` decimal(16,6) DEFAULT NULL COMMENT 'Latest timestamp of all records in chunk, if timestamp exists',
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS qraat.`archive_config` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `tablename` varchar(100) DEFAULT NULL,
-  `archive` tinyint(1) DEFAULT '0',
-  `lastid` bigint(20) unsigned DEFAULT NULL,
-  `chunk` int(11) DEFAULT NULL,
+  `tablename` varchar(100) DEFAULT NULL COMMENT 'The name of the table to be archived',
+  `archive` tinyint(1) DEFAULT '0' COMMENT 'Set to 1 to archive this table, 0 to ignore this table',
+  `lastid` bigint(20) unsigned DEFAULT NULL COMMENT 'Set to the ID of the last archived record',
+  `chunk` int(11) DEFAULT NULL COMMENT 'Maximum size of a chunk, in records, 0 to disable chunking',
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
