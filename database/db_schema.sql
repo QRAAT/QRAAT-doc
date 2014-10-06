@@ -431,7 +431,7 @@ CREATE TABLE IF NOT EXISTS qraat.`processing_cursor` (
 CREATE TABLE IF NOT EXISTS qraat.`archive_log` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `timestamp` decimal(16,6) NOT NULL COMMENT 'Time at which the table (chunk) was archived',
-  `filename` varchar(100) NOT NULL COMMENT 'Filename for the table (chunk),
+  `filename` varchar(100) NOT NULL COMMENT 'Filename for the table (chunk)',
   `tablename` varchar(30) NOT NULL COMMENT 'Name of the archived table',
   `startid` bigint(20) unsigned NOT NULL COMMENT 'First ID of the records written to the file',
   `finishid` bigint(20) unsigned NOT NULL COMMENT 'Last ID of the records written to the file',
