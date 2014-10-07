@@ -41,13 +41,13 @@ INSERT INTO tx_make_parameters (tx_makeID, name, value) VALUES
 ALTER TABLE tx_make_parameters AUTO_INCREMENT = 17;
 
 INSERT INTO `project` (ID, ownerID, name, description, is_public, is_hidden) VALUES 
-  (1, 5, 'QRAAT', 'Project for general system use', False, False),
-  (2, 5, 'QRAAT Calibration', 'Project for deployments involved with calibration.', False, False),
-  (3, 6, 'Mice 2013', 'Mice on trapping grid, summer 2013', False, False),
-  (4, 7, 'Woodrats Fall 2013', 'Woodrats tagged under site 2 from fall 2013 to spring 2014', False, False),
-  (5, 7, 'Foxes', 'Foxes tagged May 2014', False, False),
-  (6, 6, 'Mice 2014', 'Mice on trapping grid, summer 2014.', False, False),
-  (7, 7, 'Woodrats Summer 2014', 'Woodrats on trapping grid, summer 2014.', False, False); 
+  (1, 2, 'QRAAT', 'Project for general system use', False, False),
+  (2, 2, 'QRAAT Calibration', 'Project for deployments involved with calibration.', False, False),
+  (3, 4, 'Mice 2013', 'Mice on trapping grid, summer 2013', False, False),
+  (4, 5, 'Woodrats Fall 2013', 'Woodrats tagged under site 2 from fall 2013 to spring 2014', False, False),
+  (5, 5, 'Foxes', 'Foxes tagged May 2014', False, False),
+  (6, 4, 'Mice 2014', 'Mice on trapping grid, summer 2014.', False, False),
+  (7, 5, 'Woodrats Summer 2014', 'Woodrats on trapping grid, summer 2014.', False, False); 
 ALTER TABLE `project` AUTO_INCREMENT = 8;
 
 INSERT INTO tx (ID, name, serial_no, tx_makeID, projectID, frequency, is_hidden) VALUES
@@ -371,21 +371,21 @@ INSERT INTO `location` (ID, projectID, name, description, location, latitude, lo
 ALTER TABLE `location` AUTO_INCREMENT = 11;
 
 INSERT INTO `auth_project_collaborator` (ID, groupID, projectID) VALUES
-  (1,2,3),
-  (2,6,2),
-  (3,8,3),
-  (4,10,4),
-  (5,16,5),
-  (6,17,6),
-  (7,18,7);
-ALTER TABLE `auth_project_collaborator` AUTO_INCREMENT = 8;
+  (9,2,1),
+  (10,4,2),
+  (11,6,3),
+  (12,8,4),
+  (13,10,5),
+  (14,12,6),
+  (15,14,7);
+ALTER TABLE `auth_project_collaborator` AUTO_INCREMENT = 16;
 
 INSERT INTO `auth_project_viewer` (ID, groupID, projectID) VALUES
-  (1,4,1),
-  (2,5,2),
-  (3,7,3),
-  (4,9,4),
-  (5,19,5),
-  (6,20,6),
-  (7,21,7);
-ALTER TABLE `auth_project_viewer` AUTO_INCREMENT = 8;
+  (8,1,1),
+  (9,3,2),
+  (11,5,4),
+  (10,7,3),
+  (12,9,5),
+  (13,11,6),
+  (14,13,7);
+ALTER TABLE `auth_project_viewer` AUTO_INCREMENT = 15;
