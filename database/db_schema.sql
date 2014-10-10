@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS qraat.`tx_make_parameters` (
   CONSTRAINT `tx_make_parameters_ibfk_1` FOREIGN KEY (`tx_makeID`) REFERENCES `tx_make` (`ID`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE qraat.`afsk` (
+CREATE TABLE IF NOT EXISTS qraat.`afsk` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `deploymentID` int(10) unsigned DEFAULT NULL,
   `siteID` int(10) unsigned DEFAULT NULL,
