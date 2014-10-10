@@ -373,7 +373,6 @@ ALTER TABLE `location` AUTO_INCREMENT = 11;
 INSERT INTO `auth_project_collaborator` (ID, groupID, projectID) VALUES
   (1,2,3),
   (2,6,2),
-  (3,8,3),
   (4,10,4),
   (5,16,5),
   (6,17,6),
