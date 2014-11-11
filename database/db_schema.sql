@@ -252,7 +252,8 @@ CREATE TABLE IF NOT EXISTS qraat.`estinterval` (
   `siteID` int(10) unsigned NOT NULL,
   `timestamp` decimal(16,6) NOT NULL COMMENT 'Start of interval.',
   `duration` double NOT NULL COMMENT 'Duration of the interval in seconds.',
-  `pulse_rate` double DEFAULT NULL COMMENT 'Estimated pulse rate of the transmitter in seconds.',
+  `pulse_interval` double DEFAULT NULL COMMENT 'Estimated pulse rate of the transmitter in seconds (mode).',
+  `pulse_variation` double DEFAULT NULL COMMENT 'Measurement of varition of the pulse rate (second moment).',
   PRIMARY KEY (`ID`),
   KEY (`deploymentID`,`siteID`, `timestamp`)
 ) ENGINE=MyISAM;
