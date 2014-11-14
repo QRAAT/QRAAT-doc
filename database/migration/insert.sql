@@ -280,7 +280,7 @@ INSERT INTO tx_parameters (txID, name, value) VALUES
   (111, 'pulse_width', '15'), (111, 'pulse_rate', '25'), (111, 'band3', '150'), (111, 'band10', '900'),
   (112, 'pulse_width', '15'), (112, 'pulse_rate', '25'), (112, 'band3', '150'), (112, 'band10', '900'),
   (113, 'pulse_width', '15'), (113, 'pulse_rate', '25'), (113, 'band3', '150'), (113, 'band10', '900');
-ALTER TABLE tx AUTO_INCREMENT = 453;
+ALTER TABLE tx_parameters AUTO_INCREMENT = 453;
 
 INSERT INTO `target` (ID, name, description, projectID, max_speed_family, 
                       speed_burst, speed_sustained, speed_limit, is_hidden) VALUES 
