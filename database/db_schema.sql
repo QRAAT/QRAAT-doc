@@ -327,7 +327,7 @@ CREATE TABLE IF NOT EXISTS qraat.`calibration_information` (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
-CREATE TABLE IF NOT EXISTS qraat.`gps_calibration_data` (
+CREATE TABLE IF NOT EXISTS qraat.`gps_data` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `deploymentID` int(10) unsigned DEFAULT NULL,
   `timestamp` int(11) DEFAULT NULL,
