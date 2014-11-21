@@ -1,6 +1,6 @@
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXIST `auth_project_collaborator` (
+CREATE TABLE IF NOT EXISTS `auth_project_collaborator` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `groupID` int(10) unsigned NOT NULL COMMENT 'References GUID in web frontend, i.e. `django.auth_group.id`.',
   `projectID` int(10) unsigned NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXIST `auth_project_collaborator` (
 INSERT INTO `auth_project_collaborator` VALUES (9,2,1),(10,4,2),(11,6,3),(12,8,4),(13,10,5),(14,12,6),(15,14,7);
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXIST `auth_project_viewer` (
+CREATE TABLE IF NOT EXISTS `auth_project_viewer` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `groupID` int(10) unsigned NOT NULL COMMENT 'References GUID in web frontend, i.e. `django.auth_group.id`.',
   `projectID` int(10) unsigned NOT NULL,
