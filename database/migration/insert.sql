@@ -37,7 +37,7 @@ INSERT INTO tx_make_parameters (tx_makeID, name, value) VALUES
   (1, 'pulse_width', '20'), (1, 'pulse_rate', '60'), (1, 'band3', NULL), (1, 'band10', NULL), 
   (2, 'pulse_width', '15'), (2, 'pulse_rate', '25'), (2, 'band3', '150'), (2, 'band10', '900'), 
   (3, 'pulse_width', '15'), (3, 'pulse_rate', '23'), (3, 'band3', '150'), (3, 'band10', '900'),
-  (4, 'pulse_width', '30'), (4, 'pulse_rate', '40'), (4, 'band3', NULL), (4, 'band10', NULL);
+  (4, 'pulse_width', '30'), (4, 'pulse_rate', '40'), (4, 'band3', '150'), (4, 'band10', '900');
 ALTER TABLE tx_make_parameters AUTO_INCREMENT = 17;
 
 INSERT INTO `project` (ID, ownerID, name, description, is_public, is_hidden) VALUES 
@@ -229,12 +229,12 @@ INSERT INTO tx_parameters (txID, name, value) VALUES
   (60, 'pulse_width', '20'), (60, 'pulse_rate', '60'), (60, 'band3', NULL), (60, 'band10', NULL),
   (61, 'pulse_width', '19'), (61, 'pulse_rate', '23'), (61, 'band3', '150'), (61, 'band10', '900'),
   (62, 'pulse_width', '19'), (62, 'pulse_rate', '23'), (62, 'band3', '150'), (62, 'band10', '900'),
-  (63, 'pulse_width', '30'), (63, 'pulse_rate', '39.6'), (63, 'band3', NULL), (63, 'band10', NULL),
-  (64, 'pulse_width', '30'), (64, 'pulse_rate', '39.6'), (64, 'band3', NULL), (64, 'band10', NULL),
-  (65, 'pulse_width', '30'), (65, 'pulse_rate', '39'), (65, 'band3', NULL), (65, 'band10', NULL),
-  (66, 'pulse_width', '30'), (66, 'pulse_rate', '39.6'), (66, 'band3', NULL), (66, 'band10', NULL),
-  (67, 'pulse_width', '30'), (67, 'pulse_rate', '40.2'), (67, 'band3', NULL), (67, 'band10', NULL),
-  (68, 'pulse_width', '30'), (68, 'pulse_rate', '39.6'), (68, 'band3', NULL), (68, 'band10', NULL),
+  (63, 'pulse_width', '30'), (63, 'pulse_rate', '39.6'), (63, 'band3', '150'), (63, 'band10', '900'),
+  (64, 'pulse_width', '30'), (64, 'pulse_rate', '39.6'), (64, 'band3', '150'), (64, 'band10', '900'),
+  (65, 'pulse_width', '30'), (65, 'pulse_rate', '39'), (65, 'band3', '150'), (65, 'band10', '900'),
+  (66, 'pulse_width', '30'), (66, 'pulse_rate', '39.6'), (66, 'band3', '150'), (66, 'band10', '900'),
+  (67, 'pulse_width', '30'), (67, 'pulse_rate', '40.2'), (67, 'band3', '150'), (67, 'band10', '900'),
+  (68, 'pulse_width', '30'), (68, 'pulse_rate', '39.6'), (68, 'band3', '150'), (68, 'band10', '900'),
   (69, 'pulse_width', '17'), (69, 'pulse_rate', '17'), (69, 'band3', '150'), (69, 'band10', '900'),
   (70, 'pulse_width', '17'), (70, 'pulse_rate', '17'), (70, 'band3', '150'), (70, 'band10', '900'),
   (71, 'pulse_width', '17'), (71, 'pulse_rate', '17'), (71, 'band3', '150'), (71, 'band10', '900'),
@@ -280,7 +280,7 @@ INSERT INTO tx_parameters (txID, name, value) VALUES
   (111, 'pulse_width', '15'), (111, 'pulse_rate', '25'), (111, 'band3', '150'), (111, 'band10', '900'),
   (112, 'pulse_width', '15'), (112, 'pulse_rate', '25'), (112, 'band3', '150'), (112, 'band10', '900'),
   (113, 'pulse_width', '15'), (113, 'pulse_rate', '25'), (113, 'band3', '150'), (113, 'band10', '900');
-ALTER TABLE tx AUTO_INCREMENT = 453;
+ALTER TABLE tx_parameters AUTO_INCREMENT = 453;
 
 INSERT INTO `target` (ID, name, description, projectID, max_speed_family, 
                       speed_burst, speed_sustained, speed_limit, is_hidden) VALUES 

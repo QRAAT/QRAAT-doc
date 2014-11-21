@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS qraat.`tx_make_parameters` (
   CONSTRAINT `tx_make_parameters_ibfk_1` FOREIGN KEY (`tx_makeID`) REFERENCES `tx_make` (`ID`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE qraat.`afsk` (
+CREATE TABLE IF NOT EXISTS qraat.`afsk` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `deploymentID` int(10) unsigned DEFAULT NULL,
   `siteID` int(10) unsigned DEFAULT NULL,
@@ -252,8 +252,8 @@ CREATE TABLE IF NOT EXISTS qraat.`estinterval` (
   `siteID` int(10) unsigned NOT NULL,
   `timestamp` decimal(16,6) NOT NULL COMMENT 'Start of interval.',
   `duration` double NOT NULL COMMENT 'Duration of the interval in seconds.',
-  `pulse_interval` double DEFAULT NULL COMMENT 'Estimated pulse interval of the transmitter in seconds.',
-  `pulse_variation` double DEFAULT NULL COMMENT 'Variation (second moment) of pulse_interval.',
+  `pulse_interval` double DEFAULT NULL COMMENT 'Estimated pulse rate of the transmitter in seconds (mode).',
+  `pulse_variation` double DEFAULT NULL COMMENT 'Measurement of varition of the pulse rate (second moment).',
   PRIMARY KEY (`ID`),
   KEY (`deploymentID`,`siteID`, `timestamp`)
 ) ENGINE=MyISAM;
