@@ -9,7 +9,7 @@ DELETE FROM qraat.tx_make_parameters;
 DELETE FROM qraat.tx_make; 
 DELETE FROM qraat.project; 
 DELETE FROM qraat.site; 
-DELETE FROM qraat.calibration_data;
+DELETE FROM qraat.calibration_information;
 DELETE FROM qraat.gps_data;
 DELETE FROM qraat.true_position;
 DELETE FROM qraat.steering_vectors;
