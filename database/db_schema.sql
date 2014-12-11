@@ -427,6 +427,20 @@ CREATE TABLE IF NOT EXISTS qraat.`processing_cursor` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM;
 
+CREATE TABLE IF NOT EXISTS qraat.`processing_statistics` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `timestamp` int(10) unsigned NOT NULL,
+  `duration` double unsigned,
+  `process` varchar(100) NOT NULL,
+  `beginning_timestamp` decimal(16,6) DEFAULT NULL,
+  `ending_timestamp` decimal(16,6) DEFAULT NULL,
+  `beginning_index` bigint(20) unsigned DEFAULT NULL,
+  `ending_index` bigint(20) unsigned DEFAULT NULL,
+  `number_records_input` int(10) unsigned DEFAULT NULL,
+  `number_records_output` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM;
+
 
 -- Archiving
 CREATE TABLE IF NOT EXISTS qraat.`archive_log` (
