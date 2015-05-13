@@ -1,0 +1,3 @@
+name,secret,key
+google_maps_js_api,no,<google_maps_js_api_key>
+django_base,yes,<django_database_key>

@@ -1,0 +1,88 @@
+Replace everything in <> with value to use in your setup.
+If there's more info to be added it's denoted with !!!TODO
+
+install mysql server
+!!!TODO more detailed instructions
+
+install django
+!!!TODO more detailed instructions
+
+install prereqs.
+numpy
+swig
+mysqldb
+cmake
+git
+dateutil?
+!!!TODO complete list
+
+clone repositories
+$ git clone http://github.com/QRAAT/QRAAT
+    This will make directory QRAAT with git repo inside
+$ git clone http://github.com/QRAAT/QRAAT-doc
+    This will make directory QRAAT-doc with git repo inside
+
+install QRAAT base
+$ QRAAT/build_qraat install base
+
+make metadata directory (this is at /rmg_server on the servers)
+$ mkdir -p <metadata_directory>
+
+copy rmg_env to metadata directory to configure for your local setup
+$ cp QRAAT/node/scripts/rmg_env <metadata_directory/my_rmg_env
+
+edit my_rmg_env
+change line "export RMG_SERVER_METADATA_DIR="$RMG_SERVER_DIR"" to
+export RMG_SERVER_METADATA_DIR=<metadata_directory>
+
+create databases and users
+$ mysql -u root -p
+> CREATE DATABASE qraat;
+> CREATE DATABASE django;
+> CREATE USER web_reader identified by '<web_reader_password>'
+> CREATE USER web_writer identified by '<web_writer_password>'
+> CREATE USER django_admin identified by '<django_admin_password>'
+
+copy metadata files
+$ cp QRAAT-doc/database/dev/db_auth <metadata_directory>/db_auth
+$ cp QRAAT-doc/database/dev/ui_keys <metadata_directory>/ui_keys
+
+edit both files replacing <passwords> with the correct ones for your system
+!!!TODO where do ui_keys come from
+
+create mysql tables and add data
+!!!This will delete any data currently in these database tables!!!
+$ mysql -u root -p < QRAAT-doc/database/dev/db_qraat_schema.sql
+!!!TODO drop tables before qraat table creation a la django schema
+$ mysql -u root -p < QRAAT-doc/database/dev/django_schema_and_data.sql
+$ mysql -u root -p < QRAAT-doc/database/dev/project_data.sql
+$ mysql -u root -p < QRAAT-doc/database/dev/qraat_auth_data.sql
+$ mysql -u root -p < QRAAT-doc/database/dev/qraat_data.sql
+!!!TODO qraat_data.sql
+
+grant mysql user permissions
+$ mysql -u root -p < db_user_grants.sql
+
+->To run the website locally after installation start here
+
+source bash environment variables
+$ source <metadata_directory>/my_rmg_env
+  or "source rmg_env" if your metadata_directory is /rmg_server
+You may want to put this in your bash-profile since it needs to run before running the website or other system scripts.  Alternatively we can add it to manage.py in an intelligent manner
+
+run website
+$ cd QRAAT/www
+$ python manage.py runserver
+
+website is at 127.0.0.1:8000 by default
+
+If you are using the same django database key there are two webusers set up
+name: admin password: admin
+name: demo password: demo
+Otherwise, you'll need to create an admin user by hand in the database
+!!!TODO create users dynamically using the given db key
+
+
+!!!TODO turn debug on for developement; properly seperate developement and deployment django settings
+
+
