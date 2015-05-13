@@ -52,11 +52,8 @@ edit both files replacing <passwords> with the correct ones for your system
 
 create mysql tables and add data
 !!!This will delete any data currently in these database tables!!!
-$ mysql -u root -p < QRAAT-doc/database/dev/db_qraat_schema.sql
-!!!TODO drop tables before qraat table creation a la django schema
+$ mysql -u root -p < QRAAT-doc/database/dev/qraat_schema_and_project_data.sql
 $ mysql -u root -p < QRAAT-doc/database/dev/django_schema_and_data.sql
-$ mysql -u root -p < QRAAT-doc/database/dev/project_data.sql
-$ mysql -u root -p < QRAAT-doc/database/dev/qraat_auth_data.sql
 $ mysql -u root -p < QRAAT-doc/database/dev/qraat_data.sql
 !!!TODO qraat_data.sql
 
