@@ -1,14 +1,14 @@
---front-end database users
+-- front-end database users
 
---django admin controls django database
+-- django admin controls django database
 GRANT SELECT, INSERT, UPDATE, DELETE, INDEX, CREATE, DROP, ALTER ON django.* TO django_admin@'localhost';
 
 
---web_reader has read-only access to both databases
+-- web_reader has read-only access to both databases
 GRANT SELECT ON django.* TO web_reader@'localhost';
 GRANT SELECT ON qraat.* TO web_reader@'localhost';
 
---web_writer can write to project metadata tables
+-- web_writer can write to project metadata tables
 GRANT SELECT, INSERT, UPDATE ON django.* TO web_writer@'localhost';
 GRANT SELECT ON qraat.* TO web_writer@'localhost';
 GRANT SELECT, INSERT, UPDATE ON qraat.auth_project_collaborator TO web_writer@'localhost';
