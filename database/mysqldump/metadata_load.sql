@@ -1,3 +1,4 @@
+-- e.g. ``mysql -u root -p --local-infile <metadata_load.sql``
 load data local infile 'site.txt' into table qraat.site ignore 1 lines;
 load data local infile 'project.txt' into table qraat.project ignore 1 lines;
 load data local infile 'auth_project_viewer.txt' into table qraat.auth_project_viewer ignore 1 lines;
