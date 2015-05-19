@@ -1,0 +1,17 @@
+mysql -B -e "SELECT * FROM qraat.site" > site.txt
+mysql -B -e "SELECT * FROM qraat.project" > project.txt
+mysql -B -e "SELECT * FROM qraat.auth_project_viewer" > auth_project_viewer.txt
+mysql -B -e "SELECT * FROM qraat.auth_project_collaborator" > auth_project_collaborator.txt
+mysql -B -e "SELECT * FROM qraat.tx" > tx.txt
+mysql -B -e "SELECT * FROM qraat.tx_make" > tx_make.txt
+mysql -B -e "SELECT * FROM qraat.tx_parameters" > tx_parameters.txt
+mysql -B -e "SELECT * FROM qraat.tx_make_parameters" > tx_make_parameters.txt
+mysql -B -e "SELECT * FROM qraat.afsk" > afsk.txt
+mysql -B -e "SELECT * FROM qraat.target" > target.txt
+mysql -B -e "SELECT * FROM qraat.location" > location.txt
+mysql -B -e "SELECT * FROM qraat.deployment" > deployment.txt
+mysql -B -e "SELECT * FROM qraat.calibration_information" > calibration_information.txt
+mysql -B -e "SELECT * FROM qraat.gps_data" > gps_data.txt
+mysql -B -e "SELECT * FROM qraat.true_position" > true_position.txt
+mysql -B -e "SELECT * FROM qraat.steering_vectors" > steering_vectors.txt
+mysql -B -e "SELECT * FROM qraat.site" > site.txt
