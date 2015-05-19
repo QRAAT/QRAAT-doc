@@ -396,6 +396,26 @@ CREATE TABLE IF NOT EXISTS qraat.`position` (
   KEY `deploymentID` (`deploymentID`)
 ) ENGINE=MyISAM;
 
+CREATE TABLE IF NOT EXISTS qraat.`covariance` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `positionID` bigint(20) unsigned DEFAULT NULL,
+  `cov11` double NOT NULL,
+  `cov12` double NOT NULL,
+  `cov21` double NOT NULL,
+  `cov22` double NOT NULL, 
+  `lambda1` double NOT NULL COMMENT 'Large eigenvalue of covariance matrix.', 
+  `lambda2` double NOT NULL COMMENT 'Small eigenvalue of covariance matrix.', 
+  `alpha` double NOT NULL COMMENT 'Orientation of major axis of ellipse.', 
+  `w99` double DEFAULT NULL COMMENT 'Mahalonobis distance, 99.7%-confidence.',
+  `w95` double DEFAULT NULL COMMENT 'Mahalonobis distance, 95%-confidence.',
+  `w90` double DEFAULT NULL COMMENT 'Mahalonobis distance, 90%-confidence.',
+  `w80` double DEFAULT NULL COMMENT 'Mahalonobis distance, 80%-confidence.',
+  `w68` double DEFAULT NULL COMMENT 'Mahalonobis distance, 68%-confidence.',
+  `method` enum('boot','boot2') DEFAULT 'boot',
+  PRIMARY KEY (`ID`),
+  KEY `positionID` (`positionID`)
+) ENGINE=MyISAM;
+
 
 -- Tracks
 CREATE TABLE IF NOT EXISTS qraat.`track_pos` (
