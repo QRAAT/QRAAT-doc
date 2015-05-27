@@ -1,0 +1,69 @@
+
+
+Replication Notes
+
+Introduction
+
+There are two qraat databases, one on the RMG server at the field station and another one on the frontend web server. The purpose of replication is to transfer data between database tables on the RMG server and the web server. The RMG server has a mysql database that holds data products such as positions and tracks that are calculated from transmitter pulses. The web server has the same mysql database but it does not calculate the data products, instead it fetches data from the RMG server for display. Conversely, the web server database contains administrative data in tables such as the list of transmitters and deployments and these must be transferred to the RMG server to configure the system. The synchronization of database tables is called replication.
+
+Percona
+
+Replication of the qraat databases is implemented using a 3rd party tool called pt-table-sync from Percona and does not use any of the mysql built-in replication features. The Percona community edition tool is free and open source and does not require mysql replication to be active. The Percona tool is called periodically through cron via a wrapper script called rmg_rep_test.
+
+Configuration
+
+The pt-table-sync tool connects with both source and destination databases using a specific mysql account 'replicator'@'localhost', thereby allowing its table access privileges to be tailored to replication tasks only. Note that the mysql account must also be given 'replication client' privileges.
+
+CREATE USER 'replicator'@'localhost' IDENTIFIED BY PASSWORD '*B361CE0EB6280F4ABD5D5CE9DE1228B2FD736F42'
+GRANT SELECT, INSERT, UPDATE ON `qraat`.* TO 'replicator'@'localhost'
+GRANT REPLICATION CLIENT ON *.* TO 'replicator'@'localhost'
+
+The mysql account 'replicator' is enabled only for localhost logins and not network logins, because mysql only provides password based authentication and does not have a public key authentication mechanism. The replication process accesses the mysql server using an ssh tunnel that is established between the web server and the RMG server, using the login 'replicator'.
+
+The replicator login account is configured to only allow port forwarding to the mysql server and its shell is disabled.
+
+sudo adduser --shell /bin/false --disabled-password --ingroup qraat replicator
+cd ~replicator
+mkdir .ssh
+chmod 700 .ssh
+cat <<EOF >.ssh/authorized_keys
+PermitOpen localhost:3306
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDDSDz60KU007+7zYgfeJD8NwqFBK782BouU3lYPTlLYEJAgOpI9gwO9YTp72rpy60Eff+SSxXKq04QH9nHRum5JEBA+x6mK6BY9x6/k5qR8raX7Tmq7AiKDkExDdFtrdqIPFa4rJG/xO7GVkBg8dkOnFTGZoABJCFa4TjG1sDEi2HvZuCvU/VMKcpOrY9bWm/c1yYoGJ7qMlzwI/h3ulC5bPsAMzKucR7BU6mSDdUA1D3K7QTC5bw9q114hYq1y3jUvB4FD7yeVuWz76JVoGBsutDIBhCFlE4GXwGicbnxsSqfvqyayRcE3Jtidxh1QCo5Ak251CB7VS9bVr5kmlrB qraat@qraat-server
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDbcJPqc11vbsSd3gxWXV2YA6nWIvCwBmDSuqAQZofSZun5Xu7NXN1dVVEhcpUdKX9l+pkJeGhwOWIhIWOSPzffF1vJyQu7RiXHkZ+UGzEKkI0VAngcfuBrjJ9YQr1mky4jOVAlLcIv2qjxxBNoPHpF5Ns2YIWFu4v+F17ctVAY9SS45gAZmdIbWrdmy3FpvTzKFC62IGARogVm6D8D3P5ZFFv3SFSBTd+AIqHpQ2UZHdLPgF6NnMgIpULO++AjHlB2dt5prX13OswgtS2wPv2tpFL+UHPL04UmmuvYsqIksK35Ht2tAigQfSvr5leZ7A2/2IDRAKnSCIxAlUp9l+OT qraat@Ubuntu1404LTS
+EOF
+
+The sshd is configured to allow public key authentication and password logins are disabled.
+
+sudo vi /etc/ssh/sshd_config
+	ChallengeResponseAuthentication no
+	PubkeyAuthentication yes
+	PasswordAuthentication no
+	UsePAM no
+
+Pt-table-sync
+
+The replication tool uses command line parameters to identify the source and destination tables:
+
+pt-table-sync {options} DSN [DSN]
+
+where the normal options are --verbose and --execute and each DSN is composed of 'h=host,P=port,D=database,u=user,p=password,t=table'
+
+For example, in our case to copy data from the position table of the RMG server to the frontend web server, without using tunneling, use:
+
+pt-table-sync --verbose --execute 'h=qraat.ucdavis.edu,P=3306,D=qraat,u=replicator,p=....,t=position' 'h=localhost,P=3306,D=qraat,u=replicator,p=....,t=position'
+
+Tunneling
+
+The ssh tunnel is established between the web server and the RMG server using:
+
+ssh -N -L 13306:localhost:3306 replicator@qraat.ucdavis.edu
+
+This tunnels connections to port 13306 on the web server to port 3306 on the RMG server, using the RMG server system login user 'replicator' only to establish a connection. The ssh connection must remain established until the replication process has started and is closed by terminating the ssh command. In the script rmg_rep_test the ssh command is run as a background process and killed when no longer required.
+
+To use the replication tool with tunneling, replace the source host and port values for the remote RMG server with 127.0.0.1 and 13306:
+
+pt-table-sync --verbose --execute 'h=127.0.0.1,P=13306,D=qraat,u=replicator,p=....,t=position' 'h=localhost,P=3306,D=qraat,u=replicator,p=....,t=position'
+
+This causes pt-table-sync to connect to the web server's local address 127.0.0.1 and port 13306. The traffic is tunneled over the ssh connection to the RMG server where it locally connects to the mysql server. Note that it is important to use the local network address 127.0.0.1 on the web server rather than 'localhost' as the mysql database connector interprets 'localhost' to mean the web server's socket file which is not subject to tunneling.
+
+The replication process attempts to synchronize the tables entirely, using update, delete and insert statements. If there are too many modifications required, the query will time out and be killed by the mysql server. The destination table must then first be built manually from database archive files using the tool rmg_loadtable.
