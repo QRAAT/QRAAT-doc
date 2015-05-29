@@ -2,6 +2,7 @@
 use qraat; 
 delete from position;
 delete from bearing;
+delete from covariance;
 delete from provenance;
 delete from track_pos; 
 delete from estinterval;
