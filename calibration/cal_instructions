@@ -1,0 +1,85 @@
+Setup tuneable transmitter
+  putty - load tx_transmitter
+  check settings - TODO
+  save settings (menu 0, 'S')
+  check with hand-held receiver
+
+Setup GPS (instructions for yellow Garmin)
+  settings->tracks
+  Track Log = Record, Show On Map
+  Record Method = Time
+  Recording Interval = 00:00:01
+
+  settings->Reset->Clear Current Track->yes
+  (has enough room for ~1.5 hours)
+
+  make sure it has a location/satellite lock before you start out, i.e. leave outside for awhile
+
+Add deployment (direct database method)
+  login to mysql with a user that has insert privileges
+  add transmitter, tx_parameters, deployment to projectID=2 (ref. depID=110)
+  ex.
+    insert into tx (name, serial_no, tx_makeID, projectID, frequency) values ('tuneable_tx', '', 1, 2, 166.000);
+    insert into tx_parameters (txID, name, value) values (125, 'pulse_width', 20), (125, 'pulse_rate', 60), (125, 'band3', 150), (125, 'band10', 900);
+    insert into deployment (name, description, time_start, txID, targetID, projectID) values ('Cal 7', 'Calibration run for two new mouse sites', 1432934824, 125, 1, 2);
+
+Create txlist file
+  set is_active for given deployment to 1
+  ex.
+    update deployment set is_active=1 where ID=110;
+  $ rmg exporttx --file caltx.csv
+  set is_active back to 0
+  ex.
+   update deployment set is_active=0 where ID=110;
+  remove other transmitters from caltx.csv
+
+Stop normal operation (this may require more than this depending on the current state of the sites)
+  $ rmg auto_off all
+  $ rmg up all
+
+Load caltx.csv
+  $ rmg updatetx --file caltx.csv all
+
+Start recording cal
+  $ rmg start all
+
+Check status
+  $ rmg status all
+
+
+Do cal run
+(might want to check rmg_fetch.log and rmg_process.log after a short bit to make sure nothing bad is happening)
+
+
+Stop recording cal
+  $ rmg up all
+
+Reload current txlist (assuming they're all on the same list, subject to change)
+  $ rmg updatetx all
+
+Restart system
+  $ rmg start all
+
+Restart scheduler
+  $ rmg auto_on all
+
+Copy gpx file from Garmin
+  gpx/Current/Current.gpx
+  rename something discriptive, e.g. cal_20150529.gpx
+
+Insert gps data into database
+  $ rmg_insert_gps -f gpxfilename --dep-id deploymentID
+  ex.
+    rmg_insert_gps -f cal_20150529.gpx --dep-id 110
+
+Interpolate gps data for est times
+  $ rmg_true_position --dep-id deploymentID
+  ex.
+    rmg_true_position --dep-id 110
+
+Calculate and insert steering vectors
+  $ rmg_steering_vector --cal-id calID --site-id siteID
+  ex.
+    rmg_steering_vector --cal-id 7 --site-id 1
+
+
