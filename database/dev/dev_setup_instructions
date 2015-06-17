@@ -4,7 +4,7 @@ If there's more info to be added it's denoted with !!!TODO
 install mysql server
 !!!TODO more detailed instructions
 
-install django
+install django (version 1.6.5?)
 !!!TODO more detailed instructions
 
 install prereqs.
@@ -14,6 +14,8 @@ mysqldb
 cmake
 git
 dateutil?
+utm
+pytz?
 !!!TODO complete list
 
 clone repositories
@@ -52,13 +54,13 @@ edit both files replacing <passwords> with the correct ones for your system
 
 create mysql tables and add data
 !!!This will delete any data currently in these database tables!!!
-$ mysql -u root -p < QRAAT-doc/database/dev/qraat_schema_and_project_data.sql
-$ mysql -u root -p < QRAAT-doc/database/dev/django_schema_and_data.sql
-$ mysql -u root -p < QRAAT-doc/database/dev/qraat_data.sql
+$ mysql -u root -p qraat < QRAAT-doc/database/dev/qraat_schema_and_project_data.sql
+$ mysql -u root -p django < QRAAT-doc/database/dev/django_schema_and_data.sql
+$ mysql -u root -p qraat < QRAAT-doc/database/dev/qraat_data.sql
 !!!TODO qraat_data.sql
 
 grant mysql user permissions
-$ mysql -u root -p < db_user_grants.sql
+$ mysql -u root -p < QRAAT-doc/database/dev/db_user_grants.sql
 
 ->To run the website locally after installation start here
 

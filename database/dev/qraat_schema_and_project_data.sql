@@ -657,7 +657,7 @@ CREATE TABLE `project` (
 
 LOCK TABLES `project` WRITE;
 /*!40000 ALTER TABLE `project` DISABLE KEYS */;
-INSERT INTO `project` VALUES (1,2,'QRAAT','Project for general system use',0,0),(2,2,'QRAAT Calibration','Project for deployments involved with calibration.',0,0),(5,5,'Foxes','Foxes tagged May 2014',0,0);
+INSERT INTO `project` VALUES (1,12,'QRAAT','Project for general system use',0,0),(2,12,'QRAAT Calibration','Project for deployments involved with calibration.',0,0),(5,12,'Foxes','Foxes tagged May 2014',0,0);
 /*!40000 ALTER TABLE `project` ENABLE KEYS */;
 UNLOCK TABLES;
 
