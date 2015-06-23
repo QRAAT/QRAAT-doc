@@ -486,3 +486,18 @@ CREATE TABLE IF NOT EXISTS qraat.`archive_config` (
   `chunk` int(11) DEFAULT NULL COMMENT 'Maximum size of a chunk, in records, 0 to disable chunking',
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
+
+-- Configuration information for MoveBank export jobs. See Gene.
+CREATE TABLE IF NOT EXISTS qraat.`movebank_export`(
+	`ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+	`deploymentID` int(10) unsigned NOT NULL,
+	`trackID` int(10) unsigned NOT NULL,
+	`time_last_export` decimal(16,6) NOT NULL,
+	`interval` int(10) unsigned NOT NULL,
+	`studyID` varchar(20) NOT NULL,
+	`formatID` varchar(20) NOT NULL,	
+	`enable` tinyint(1) NOT NULL,
+	PRIMARY KEY (`ID`),
+	KEY `deploymentID` (`deploymentID`),
+	KEY `trackID` (`trackID`)
+) ENGINE=MyISAM;
