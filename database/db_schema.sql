@@ -491,13 +491,11 @@ CREATE TABLE IF NOT EXISTS qraat.`archive_config` (
 CREATE TABLE IF NOT EXISTS qraat.`movebank_export`(
 	`ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 	`deploymentID` int(10) unsigned NOT NULL,
-	`trackID` int(10) unsigned NOT NULL,
 	`time_last_export` decimal(16,6) NOT NULL,
-	`interval` int(10) unsigned NOT NULL,
+	`export_interval` int(10) unsigned NOT NULL,
 	`studyID` varchar(20) NOT NULL,
 	`formatID` varchar(20) NOT NULL,	
 	`enable` tinyint(1) NOT NULL,
 	PRIMARY KEY (`ID`),
-	KEY `deploymentID` (`deploymentID`),
-	KEY `trackID` (`trackID`)
+	KEY `deploymentID` (`deploymentID`)
 ) ENGINE=MyISAM;
