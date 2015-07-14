@@ -35,15 +35,11 @@ Create txlist file
 
 Stop normal operation (this may require more than this depending on the current state of the sites)
   $ rmg auto_off all
-  $ rmg up all
-
-Load caltx.csv
-  $ rmg updatetx --file caltx.csv all
 
 Start recording cal
-  $ rmg start all
+  $ rmg calibration --file caltx.csv all
 
-Check status
+Optional - Check status
   $ rmg status all
 
 
@@ -51,17 +47,16 @@ Do cal run
 (might want to check rmg_fetch.log and rmg_process.log after a short bit to make sure nothing bad is happening)
 
 
-Stop recording cal
-  $ rmg up all
-
-Reload current txlist (assuming they're all on the same list, subject to change)
-  $ rmg updatetx all
-
-Restart system
-  $ rmg start all
-
 Restart scheduler
   $ rmg auto_on all
+
+Optional - Restart system immediately
+  $ rmg start all
+
+Optional - Check status
+  $ rmg status all
+
+
 
 Copy gpx file from Garmin
   gpx/Current/Current.gpx
