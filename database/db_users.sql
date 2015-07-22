@@ -1,40 +1,23 @@
--- DROP USER 'reader'@'localhost';
--- DROP USER 'writer'@'localhost'; 
+-- MySQL users required for qraat backend server
 
--- CREATE USER 'reader'@'localhost' IDENTIFIED BY 'fella'; 
--- CREATE USER 'writer'@'localhost' IDENTIFIED BY 'guy'; 
-
-GRANT SELECT ON qraat.* TO 'reader'@'localhost', 'writer'@'localhost'; 
-GRANT INSERT, UPDATE, DELETE ON qraat.* TO 'writer'@'localhost'; 
-
--- To enable `mysql -u reader` to run without entering a 
+-- 'reader' used for read-only processes
+DROP USER 'reader'@'localhost';
+CREATE USER 'reader'@'localhost' IDENTIFIED BY 'password'; 
+GRANT SELECT ON qraat.* TO 'reader'@'localhost';
+-- To enable mysql client to run without entering a 
 -- password, add the following to /etc/mysql/my.cnf after 
 -- the `[mysql]` line: 
 --  user=reader
---  password=fella
+--  password=password
 
+-- 'writer' used for processes that need to modify qraat tables
+DROP USER 'writer'@'localhost'; 
+CREATE USER 'writer'@'localhost' IDENTIFIED BY 'password'; 
+GRANT SELECT ON qraat.* TO 'writer'@'localhost'; 
+GRANT INSERT, UPDATE, DELETE ON qraat.* TO 'writer'@'localhost'; 
 
--- front-end database users
--- CREATE DATABASE IF NOT EXISTS django;
--- CREATE USER django_admin@'localhost' IDENTIFIED BY 'somesecurepassword';
-GRANT SELECT, INSERT, UPDATE, DELETE, INDEX, CREATE, DROP, ALTER ON django.* TO django_admin@'localhost';
-
--- CREATE USER web_reader@'localhost' IDENTIFIED BY 'somesecurepassword';
-GRANT SELECT ON django.* TO web_reader@'localhost';
-GRANT SELECT ON qraat.* TO web_reader@'localhost';
-
--- CREATE USER web_writer@'localhost' IDENTIFIED BY 'somesecurepassword';
-GRANT SELECT, INSERT, UPDATE ON django.* TO web_writer@'localhost';
-GRANT SELECT ON qraat.* TO web_writer@'localhost';
-GRANT SELECT, INSERT, UPDATE ON qraat.auth_project_collaborator TO web_writer@'localhost';
-GRANT SELECT, INSERT, UPDATE ON qraat.auth_project_viewer TO web_writer@'localhost';
-GRANT SELECT, INSERT, UPDATE ON qraat.deployment TO web_writer@'localhost';
-GRANT SELECT, INSERT, UPDATE ON qraat.location TO web_writer@'localhost';
-GRANT SELECT, INSERT, UPDATE ON qraat.project TO web_writer@'localhost';
-GRANT SELECT, INSERT, UPDATE ON qraat.target TO web_writer@'localhost';
--- GRANT SELECT, INSERT, UPDATE ON qraat.track TO web_writer@'localhost';
-GRANT SELECT, INSERT, UPDATE ON qraat.tx TO web_writer@'localhost';
-GRANT SELECT, INSERT, UPDATE ON qraat.tx_make TO web_writer@'localhost';
-GRANT SELECT, INSERT, UPDATE ON qraat.tx_make_parameters TO web_writer@'localhost';
-GRANT SELECT, INSERT, UPDATE ON qraat.tx_parameters TO web_writer@'localhost';
-
+-- 'replicator' used for the replication processes running on frontend server, connecting via tunnel
+DROP USER 'replicator'@'localhost'; 
+CREATE USER 'replicator'@'localhost' IDENTIFIED BY 'password'; 
+GRANT REPLICATION CLIENT ON *.* TO 'replicator'@'localhost' IDENTIFIED BY PASSWORD '*B361CE0EB6280F4ABD5D5CE9DE1228B2FD736F42' |
+GRANT SELECT, INSERT, UPDATE ON `qraat`.* TO 'replicator'@'localhost'                                                          |
