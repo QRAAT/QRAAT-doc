@@ -1,4 +1,5 @@
 -- front-end database users
+-- actually, frontend server database user grants only, for users and grants see ../frontend_db_users.sql
 
 -- django admin controls django database
 GRANT SELECT, INSERT, UPDATE, DELETE, INDEX, CREATE, DROP, ALTER ON django.* TO django_admin@'localhost';
