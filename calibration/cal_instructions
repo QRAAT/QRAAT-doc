@@ -24,14 +24,8 @@ Add deployment (direct database method)
     insert into deployment (name, description, time_start, txID, targetID, projectID) values ('Cal 7', 'Calibration run for two new mouse sites', 1432934824, 125, 1, 2);
 
 Create txlist file
-  set is_active for given deployment to 1
-  ex.
-    update deployment set is_active=1 where ID=110;
-  $ rmg exporttx --file caltx.csv
-  set is_active back to 0
-  ex.
-   update deployment set is_active=0 where ID=110;
-  remove other transmitters from caltx.csv
+  example using deploymentID 100
+    $ rmg exporttx --file caltx.csv --deploymentID 110
 
 Stop normal operation (this may require more than this depending on the current state of the sites)
   $ rmg auto_off all
