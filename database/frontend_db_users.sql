@@ -2,6 +2,7 @@
 CREATE DATABASE IF NOT EXISTS django;
 CREATE USER django_admin@'localhost' IDENTIFIED BY 'password';
 GRANT SELECT, INSERT, UPDATE, DELETE, INDEX, CREATE, DROP, ALTER ON django.* TO django_admin@'localhost';
+GRANT SELECT ON qraat.* TO django_admin@'localhost';
 
 CREATE USER web_reader@'localhost' IDENTIFIED BY 'password';
 GRANT SELECT ON django.* TO web_reader@'localhost';
