@@ -499,3 +499,19 @@ CREATE TABLE IF NOT EXISTS qraat.`movebank_export`(
 	PRIMARY KEY (`ID`),
 	KEY `deploymentID` (`deploymentID`)
 ) ENGINE=MyISAM;
+
+-- Weather data, on frontend
+CREATE TABLE IF NOT EXISTS qraat.`weather`(
+	`ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+	`station` char(20) NOT NULL,
+	`datetime` char(20),
+	`timezone` char(8),
+	`timestamp` bigint,
+	`speed` decimal(4,1),
+	`direction` smallint,
+	`relhum` smallint,
+	`pressure` decimal(7,3),
+	`temperature` decimal(5,1),
+	`rainfall` decimal(3,1),
+	PRIMARY KEY (`ID`)
+) ENGINE=MyISAM;
