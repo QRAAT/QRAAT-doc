@@ -28,26 +28,6 @@ CREATE TABLE IF NOT EXISTS qraat.`project` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS qraat.`auth_project_viewer` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `groupID` int(10) unsigned NOT NULL COMMENT 'References GUID in web frontend, i.e. `django.auth_group.id`.',
-  `projectID` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `projectID` (`projectID`),
-  UNIQUE KEY (`groupID`, `projectID`), 
-  CONSTRAINT `auth_project_viewer_ibfk_1` FOREIGN KEY (`projectID`) REFERENCES `project` (`ID`)
-) ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS qraat.`auth_project_collaborator` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `groupID` int(10) unsigned NOT NULL COMMENT 'References GUID in web frontend, i.e. `django.auth_group.id`.',
-  `projectID` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `projectID` (`projectID`),
-  UNIQUE KEY (`groupID`, `projectID`), 
-  CONSTRAINT `auth_project_collaborator_ibfk_1` FOREIGN KEY (`projectID`) REFERENCES `project` (`ID`)
-) ENGINE=InnoDB;
-
 
 -- Transmitter
 CREATE TABLE IF NOT EXISTS qraat.`tx` (
@@ -515,3 +495,133 @@ CREATE TABLE IF NOT EXISTS qraat.`weather`(
 	`rainfall` decimal(3,1),
 	PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
+
+-- Replication details
+CREATE TABLE IF NOT EXISTS qraat.`rep_config` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `tablename` varchar(100) NOT NULL COMMENT 'The name of the table to be replicated',
+  `replicate` tinyint(1) DEFAULT '0' COMMENT 'Set to 1 to replicate this table, 0 to ignore this table',
+  `incremental` tinyint(1) DEFAULT '0' COMMENT 'Set to 1 to replicate this table incrementally, 0 to replicate the entire table',
+  `reverse` tinyint(1) DEFAULT '0' COMMENT 'Set to 1 to reverse the replication direction for this table',
+  `idname` varchar(100) NOT NULL COMMENT 'The name of the table index column',
+  `lastid` bigint(20) unsigned DEFAULT NULL COMMENT 'The ID value of the last archived record',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM;
+
+-- Django stuff, as of Oct 2015
+
+CREATE TABLE IF NOT EXISTS qraat.`auth_project_viewer` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `groupID` int(10) unsigned NOT NULL COMMENT 'References GUID in web frontend, i.e. `django.auth_group.id`.',
+  `projectID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `projectID` (`projectID`),
+  UNIQUE KEY (`groupID`, `projectID`), 
+  CONSTRAINT `auth_project_viewer_ibfk_1` FOREIGN KEY (`projectID`) REFERENCES `project` (`ID`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS qraat.`auth_project_collaborator` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `groupID` int(10) unsigned NOT NULL COMMENT 'References GUID in web frontend, i.e. `django.auth_group.id`.',
+  `projectID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `projectID` (`projectID`),
+  UNIQUE KEY (`groupID`, `projectID`), 
+  CONSTRAINT `auth_project_collaborator_ibfk_1` FOREIGN KEY (`projectID`) REFERENCES `project` (`ID`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS qraat.`auth_group` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(80) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS qraat.`auth_group_permissions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `group_id` (`group_id`,`permission_id`),
+  KEY `auth_group_permissions_5f412f9a` (`group_id`),
+  KEY `auth_group_permissions_83d7f98b` (`permission_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS qraat.`auth_permission` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `content_type_id` int(11) NOT NULL,
+  `codename` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `content_type_id` (`content_type_id`,`codename`),
+  KEY `auth_permission_37ef4eb4` (`content_type_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS qraat.`auth_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `password` varchar(128) NOT NULL,
+  `last_login` datetime NOT NULL,
+  `is_superuser` tinyint(1) NOT NULL,
+  `username` varchar(30) NOT NULL,
+  `first_name` varchar(30) NOT NULL,
+  `last_name` varchar(30) NOT NULL,
+  `email` varchar(75) NOT NULL,
+  `is_staff` tinyint(1) NOT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `date_joined` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS qraat.`auth_user_groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`,`group_id`),
+  KEY `auth_user_groups_6340c63c` (`user_id`),
+  KEY `auth_user_groups_5f412f9a` (`group_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS qraat.`django_admin_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `action_time` datetime NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `content_type_id` int(11) DEFAULT NULL,
+  `object_id` longtext,
+  `object_repr` varchar(200) NOT NULL,
+  `action_flag` smallint(5) unsigned NOT NULL,
+  `change_message` longtext NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `django_admin_log_6340c63c` (`user_id`),
+  KEY `django_admin_log_37ef4eb4` (`content_type_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS qraat.`django_content_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `app_label` varchar(100) NOT NULL,
+  `model` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `app_label` (`app_label`,`model`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS qraat.`django_migrations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `app` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `applied` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS qraat.`django_session` (
+  `session_key` varchar(40) NOT NULL,
+  `session_data` longtext NOT NULL,
+  `expire_date` datetime NOT NULL,
+  PRIMARY KEY (`session_key`),
+  KEY `django_session_b7b81f0c` (`expire_date`)
+) ENGINE=InnoDB;
+
+-- end
+
+
