@@ -1,0 +1,36 @@
+
+
+QRAAT Backups and Replication
+
+1. Backups
+
+Goals:
+1. Create and maintain an uptodate copy of the qraat database tables, website and code repository.
+2. Create an uptodate copy of all the est files so that we can reprocess them if need be.
+3. Create an archive of det files, just in case we ever need them again.
+
+The backup is implemented in two steps:
+1.	The script rmg_backup is called daily by cron which writes files to the field station external backup drive.
+2.	The external backup drive is periodically carried to campus where the data are manually copied to the frontend server and also to the Quail Ridge SMB server. Update: the det files are copied to external hard drives.
+
+1. Description of the rmg_backup script.
+
+Database table files are created from the qraat database and written directly to the external backup drive at /mnt/external/backup/rmg_server/database. Database archive files are copied to the frontend server at /mnt/backup/backup/rmg_server/database. The website at /var/www is tarred and zipped to /rmg_server/www.tar.gz and copied to the external backup drive at /mnt/external/backup/rmg_server/www. NB: The django database is not currently backed up.
+
+The code directory at /rmg_server/QRAAT_deployment_code is tarred and zipped to /rmg_server/QRAAT_deployment_code.tar.gz and copied to the external backup drive at /mnt/external/backup/rmg_server/code.
+
+Det files are copied from /rmg_server/archive/det_files to the external backup drive at /mnt/external/backup/rmg_server/archive/det_files.
+
+Est files are copied from /rmg_server/archive/est_files to the external backup drive at /mnt/external/backup/rmg_server/archive/est_files.
+
+All files on the external backup drive are then copied to the secondary external backup drive.
+
+2. Replication
+
+Goal:
+Keep the frontend and backend databases equivalent so that the frontend website can serve current data and changes to the frontend are also made to the backend database.
+
+Replication is implemented in two stages:
+1.	A set of tables are periodically synchronized by calling the script rmg_dbrep through cron, which relies on the Percona database tool pt-table-sync. Currently tables are updated only in the direction backend to frontend.
+2.	Database table files at /mnt/backup/backup/backup/rmg_server/database are loaded into the database using the script load_update. Currently only est files are loaded this way.
+
