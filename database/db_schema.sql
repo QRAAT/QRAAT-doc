@@ -322,7 +322,11 @@ CREATE TABLE IF NOT EXISTS qraat.`true_position` (
   `estID` bigint(20) unsigned NOT NULL,
   `easting` decimal(9,2) DEFAULT NULL,
   `northing` decimal(10,2) DEFAULT NULL,
+  `elevation` decimal(7,2) DEFAULT NULL,
+  `2d_distance` decimal(7,2) DEFAULT NULL,
+  `3d_distance` decimal(7,2) DEFAULT NULL,
   `bearing` decimal(5,2) DEFAULT NULL,
+  `elevation_angle` decimal(4,2) DEFAULT NULL,
   PRIMARY KEY (`estID`)
 ) ENGINE=MyISAM;
 
@@ -380,7 +384,7 @@ CREATE TABLE IF NOT EXISTS qraat.`covariance` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `positionID` bigint(20) unsigned DEFAULT NULL,
   `status` enum('ok', 'nonposdef', 'singular', 'undefined') NOT NULL, 
-  `method` enum('boot','boot2') DEFAULT 'boot',
+  `method` enum('boot','boot2','boot3') DEFAULT NULL,
   `cov11` double DEFAULT NULL,
   `cov12` double DEFAULT NULL,
   `cov21` double DEFAULT NULL,
