@@ -57,14 +57,14 @@ Copy gpx file from Garmin
   rename something discriptive, e.g. cal_20150529.gpx
 
 Insert gps data into database
-  $ rmg_insert_gps -f gpxfilename --dep-id deploymentID
+  $ rmg_insert_gps gpxfilename deploymentID
   ex.
-    rmg_insert_gps -f cal_20150529.gpx --dep-id 110
+    rmg_insert_gps cal_20150529.gpx 110
 
 Interpolate gps data for est times
-  $ rmg_true_position --dep-id deploymentID
+  $ rmg_true_position deploymentID
   ex.
-    rmg_true_position --dep-id 110
+    rmg_true_position 110
 
 Calculate and insert steering vectors
   $ rmg_steering_vector --cal-id calID --site-id siteID
