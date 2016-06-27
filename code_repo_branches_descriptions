@@ -1,0 +1,33 @@
+QRAAT Repo:
+master - installed on qraat server and vm14
+       - will be installed on nodes soon
+       - covariance is broken from position estimation api changes / currently turned off
+       - website entry pages broken from reordering / Peggy tasked to fix
+
+normalization_analyses - Gene's code for looking at various position estimation schemes
+
+xml_list - changing from csv list of transmitters to an xml doc
+         - Can read and run xmllist on Node
+         - missing write from database functionality
+
+est_classification - Gene's thesis work for machine learning classification of est records
+
+covariance_analysis - Eder's work on plotting covariance data
+
+correlation_detector - very old work on testing a correlation detector to replace the time-matched power filter in the detctor, it didn't work any better at the time
+
+cont_cov - continuous covariance recording for direction finding on telemetry tags.  I don't think this works with gnuradio 3.7
+
+gnuradio3.7 - to be delete once I install master on the nodes
+
+QRAAT-doc Repo:
+master - documentation on QRAAT
+
+sim Repo:
+master - Chris's thesis work for position estimation covariance simulation
+
+time-filter Repo:
+master - Chris's work on the time filter for est records.  This was a continuation of Sean's efforts.  The final result should be in QRAAT:master in rmg_estfilter.  Although this is run in the processing, the results are ignored.  Only the prefiltering stage is used.
+
+qraat-node-inst Repo:
+master - Chris's instructions on how to install the software on the nodes.  This has changed some and I should have that written up elsewhere.

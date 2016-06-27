@@ -1,0 +1,19 @@
+Website installation:
+Apache2.4
+django1.8
+MySQL5.5
+
+:$ QRAAT/build_qraat install base
+-needs rmg_env to find db_auth file
+
+:$ QRAAT/www/copywww complete-install
+-there are hardcoded directories at the top of this script
+-this will go through the MySQL setup
+-uses pip to install needed python modules
+
+Update website code:
+:$ QRAAT/build_qraat install base
+-if this has changed
+
+:$ QRAAT/www/copywww update
+-this just copies the static files

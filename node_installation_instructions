@@ -1,0 +1,84 @@
+Node installation: (Ubuntu 14.04.2 live USB)
+Select English
+Select Install Ubuntu Server
+Select English
+Select US
+Select Keyboard
+
+-At this stage I had to mount the USB as a CD-Rom.  This may be fixed in other versions.
+- Alt+F2 to get to a terminal
+- :# umount /dev/sdb1
+- :# mount /dev/sdb1 /cdrom
+
+Hostname: QRAAT-A (or next letter, currently last one used was J)
+Full user name: RMG Remote Site A
+username: rmg
+password: (same password as all the other ones)
+
+partitioning: Guided - use entire disk
+-currently there are two different sized drives
+- 30GB ATA Kingston SMS200S
+- 8.0GB ATA Renice X1
+- 1150556 kB used in install
+
+Install security updates automatically
+Install openssh
+Install Grub on master boot record
+
+-After installation done, with internet
+:$ sudo apt-get update
+:$ sudo apt-get upgrade
+:$ sudo apt-get install git
+:$ sudo apt-get autoremove
+
+:$ git clone https://github.com/QRAAT/QRAAT.git
+:$ QRAAT/node/etc/build-gnuradio
+-for large disks this should just work, for smaller disks one has to install the pieces seperately and delete the source code once each one is installed to have enough room.
+
+:$ QRAAT/build_qraat install node
+
+:$ cp QRAAT/node/etc/80-serial-usb.rules /etc/udev/rules.d/80-serial-usb.rules
+
+:$ cp QRAAT/node/etc/rmg_power_control /etc/sudoers.d/rmg_power_control
+
+Edit /etc/ntp.conf to only use the QRAAT server (currently 10.1.1.57) as the ntp server to sync to
+- "server 10.1.1.57 iburst"
+
+Add QRAAT/node/etc/crontab_node lines to crontab
+
+Append QRAAT/node/etc/ramdisk to /etc/fstab
+
+Add QRAAT public sshkey to ~/.ssh/authorized_keys
+
+
+Before making an image:
+Delete /etc/udev/rules.d/70-persistent-net.rules
+- this is the current NIC hardware which will be different on the new fitPC3.  If this files doesn't exist, Ubuntu creates it at start up.  This makes eth0 work correctly.
+Change /etc/network/interfaces to use sane default IP address (probably should use DHCP)
+
+
+To make image:
+Boot into live version of linux
+plug in and mount (if need be) removeable media
+copy image to removeable media
+- :$ dd if=/dev/sda of=/mnt/removeable_media
+
+
+To load image on target:
+Boot into live version of linux
+plug in and mount (if need be) removeable media
+copy image to removeable media
+- :$ dd of=/dev/sda if=/mnt/removeable_media
+boot target
+update /etc/hosts and /etc/hostname to unique name
+update /etc/network/interfaces with site ip
+
+
+To add new site on QRAAT server:
+Add entry to /etc/hosts
+Add entry to ~/.ssh/config
+Add entry to /rmg_server/sitelist.csv
+Add entry to site table in qraat database
+Test ping and ssh
+rmg updatetx
+
