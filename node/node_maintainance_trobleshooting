@@ -1,0 +1,55 @@
+External visual inspection:
+Solar panels clean, unshaded
+QRAAT antenna straight (all 4 elements)
+Preamp has all cables connected
+Wifi antennas intact, omnis are upright, directionals are pointed in the correct direction
+All cables intact, not loose or chewed
+
+Battery box:
+Batteries not leaking or puffed out
+Check connectors for corrosion
+
+Equipment box:
+Check cable ports are sealed
+Qurinet router (Soekris board) - Green power light should be on, red light should be off, other green light may be blinking indicating communication
+If the QRAAT site is operating:
+Pingbrother router/power switch - numbered light 1 should be on and 2 should be off (3 and 4 will probably be on but nothing is attached so that doesn't matter)
+FitPC3 computer - Green light in front is on (hard to see), left light on ethernet port should be on right light may be blinking indeicating communication
+RMG - Green light should be on, right light should be off but may blink when switching frequency, LCD should display current center frequency.  If red light is solid red and/or LCD displays "No Lock" turn off site and then turn back on, see below.  If red light persists more in-depth troubleshooting is needed.
+If the QRAAT site is not operating:
+Pingbrother router/power switch - numbered light 2 should be on and 1 should be off (3 and 4 will probably be on but nothing is attached so that doesn't matter)
+FitPC3 computer - No lights should be on
+RMG - No lights should be on
+
+Reseting Qurinet router:
+Unplug power cord from unit, wait 5 seconds, plug back in
+Green power light and red light will come on
+Red light will go off in a few seconds
+Takes about 2 minutes to boot
+At some sites (depending on the software version) the wifi isn't able to connect for an indeterminate amount of time
+
+It is advised to not have QRAAT running when doing maintenance or moving cables and equipment
+It is easiest to turn off site from control interface on the server.
+
+Turning off QRAAT:
+If FitPC3 is on, push power button on FitPC3, front green light and ethernet lights should go off fairly immediately
+Unplug power cord from FitPC3
+Unplug power cord from RMG
+Unplug power cord from Pingbrother router
+Unplug power cord from Qurinet router(if need be)
+Remove fuse (if need be, advised if working on the batteries)
+
+Turning on QRAAT:
+Replace fuse (if need be)
+Plug power cord into Qurinet router (if need be)
+Plug power cord into Pingbrother router, green lights will flash, wait until solid to proceed, all 4 should be on
+Plug in RMG, it won't immediately turn on
+Plug in FitPC3, if front green light or ethernet port light doesn't come on check pingbrother light number 1 is on and press power button
+If site was running, after a few seconds the computer should turn on the RMG (by turning pingbrother light 2 off) and start running
+If site was off the computer should turn itself off.
+
+"Push the button" to fix power error (computer doesn't turn on when controlled by the Pingbrother):
+If FitPC3 front green light and/or ethernet port lights are on this may indicate a different problem, either bring the computer in for troubleshooting or to reboot push power button to turn computer off, wait 5 seconds, push power button again to turn computer on, lights should come on.  
+Otherwise, push power button on the FitPC3 to turn computer on.
+If pingbrother light 1 isn't green, unplug FitPC3, unplug Pingbrother, wait 5 seconds, plug in Pingbrother, wait until lights are solid, plug in FitPC3.  If FitPC3 lights didn't come on, push power button.
+The computer may turn itself off after a couple of minutes depending on the system control but that is fine.
