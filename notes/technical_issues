@@ -1,0 +1,33 @@
+4channel_spectrum doesn't work
+  -needs to conform to gnuradio3.7 API
+
+Covariance calculation is broken, is currently not run
+  -needs to conform to changes in the position estimation API
+
+The time filter is run but isn't used except as the parameter filter
+
+Track filter needs work
+  -seperate out the position sanitizing (eliminate multiple positions per timestamp due to asynchronous reprocessing) and the speed filter
+  -track_pos database table reproduction doesn't work correctly because the process deletes entries to mantain the single result criterion
+
+Activity statistic isn't accurate for multiple tunings because the det file doesn't report the tuning used and the different tuning applies different filtering.  This may be remedied by the xml transmitter list.
+
+The xml transmitter list needs work
+  -can read file and run the detector
+  -needs the write file from the database part
+
+nodes don't monitor their own voltage level or schedule
+  -the server, through the scheduler, will turn on/off the system due to voltage or time
+  -with a loss of connectivity the node will continue running
+
+calibration scripts should use the python signal model instead of there own objects
+  -there's an error between the signal's bartlett estimator and the calibration measure method such that the cal result is the complex conjugate of what the system needs.  This is corrected by a hardcoded adjustment.
+  -it would probably be better to fix the signal model as well but it should at least be consistant
+
+there isn't a unifying method to read the node status
+  -should be selectable to human readable and machine readable format
+  -should be used in scheduler, telemetry and 'rmg' scripts
+
+it would be nice to have a signal power or SNR statistic for positions
+
+We need an automated system to detect electronics' failures at the nodes

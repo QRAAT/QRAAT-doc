@@ -67,8 +67,12 @@ Interpolate gps data for est times
     rmg_true_position 110
 
 Calculate and insert steering vectors
+Either:
   $ rmg_steering_vector --cal-id calID --site-id siteID
   ex.
     rmg_steering_vector --cal-id 7 --site-id 1
-
-
+Or:
+  $ rmg_signal_averaging deploymentID
+  $ rmg_model_fit cal.csv model_pattern.csv
+  and then stuff model.csv into the steering_vector
+  see --help for information on this script's options
